@@ -1,0 +1,75 @@
+/* CSS for Dashboard */
+.fa {
+    cursor: pointer;
+}
+
+mat-card-title {
+    color: blue;
+    font-size: 25px;
+}
+
+.mat-mdc-form-field {
+    font-size: 12px;
+    width: 100%;
+}
+
+.mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 4px;
+    color: rgba(0, 0, 0, .87);
+    margin: 8px;
+    width: 70%;
+    overflow: hidden;
+    position: relative;
+    margin-top: 2%;
+    padding: 10px;
+    box-shadow: 10px 10px 15px darksalmon;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+}
+
+section {
+    display: table;
+}
+
+.example-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+}
+
+.example-button-row {
+    display: table-cell;
+    max-width: 600px;
+}
+
+.example-button-row .mat-mdc-button-base {
+    margin: 8px 8px 8px 0;
+}
+
+.example-flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
+
+span.ng-star-inserted {
+    position: relative;
+    display: flex;
+}
