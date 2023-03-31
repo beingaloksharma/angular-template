@@ -1,0 +1,37 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CommonService {
+
+  constructor(
+    private _http:HttpClient
+  ) { }
+
+  //Get 
+  get(url: string): Observable<any> {
+    return this._http.get(url);
+  }
+
+  //Post
+  post(url: string, model: any): Observable<any> {
+    const body = JSON.stringify(model);
+    return this._http.post(url, body);
+  }
+
+  //Update
+  put(url: string, id: number, model: any): Observable<any> {
+    const body = JSON.stringify(model);
+
+    return this._http.put(url + id, body);
+  }
+
+  //Delete
+  delete(url: string, id: number): Observable<any> {
+    return this._http.delete(url + id);
+  }
+
+}
