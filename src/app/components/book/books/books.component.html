@@ -8,7 +8,7 @@
                 <div class="table mt-2">
                     <span>
                         <button mat-fab extended color="primary" class="pull-right" aria-label="Home"
-                            [routerLink]="['/']">
+                            [routerLink]="['/books']">
                             <mat-icon style="padding:0">note_add</mat-icon> New Book Record
                         </button>
                     </span>
@@ -20,7 +20,7 @@
                                 <div class="example-button-container">
                                     <div class="example-button-container">
                                         <button mat-fab color="primary" aria-label="Home"
-                                            [routerLink]="['/book/books']">
+                                            [routerLink]="['/books']">
                                             <mat-icon>home</mat-icon>
                                         </button>
                                     </div>
@@ -103,7 +103,7 @@
                         <ng-container matColumnDef="action">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
                             <td mat-cell *matCellDef="let row">
-                                <i class="fa fa-eye p-2 zoom"  style="color:green"></i>
+                                <i class="fa fa-eye p-2 zoom" [routerLink]="['/books/book', row.id]"  style="color:green"></i>
                                 <i class="fa fa-edit p-2 zoom" 
                                     style="color:blue"></i>
                                 <i class="fa fa-trash p-2 zoom" [hidden]="row.status == 'delete'"

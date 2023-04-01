@@ -5,7 +5,7 @@ export interface Book {
     category: string
     edition: string
     author_name: string
-    isbn: string
+    isbn_no: string
     language: string[]
     keywords: string[]
     publication: string

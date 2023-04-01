@@ -47,7 +47,6 @@ public getBookById(id:number) {
   this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: Book) => {
     this.loading = true;
     setTimeout(() => {
-      console.log(res)
       this.book = res;
       this.loading = false;
     }, 1000)
