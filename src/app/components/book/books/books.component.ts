@@ -5,6 +5,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Book } from 'src/app/shared/models/book';
+import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-books',
@@ -14,7 +17,7 @@ import { Book } from 'src/app/shared/models/book';
 export class BooksComponent implements OnInit {
 
   //Column Names for Table
-  displayedColumns: string[] = ['name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status'];
+  displayedColumns: string[] = ['id', 'name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
   //Table Datasource
   dataSource: MatTableDataSource<Book>;
   //Get HTML element from componet
@@ -27,7 +30,9 @@ export class BooksComponent implements OnInit {
   //Constructor 
   constructor(
     private _common: CommonService,
-    private _constants: ConstantsService
+    private _constants: ConstantsService,
+    private _toastr: ToastrService,
+    private _route: Router,
   ) { }
 
   //ng Life Cycle 
@@ -38,16 +43,44 @@ export class BooksComponent implements OnInit {
 
   //Get All Books
   getAllBooks() {
-    this._common.get(this._constants.SERVER_URL + 'books').subscribe((res: any) => {
-      console.log(res);
+    this._common.get(this._constants.SERVER_URL + 'books').subscribe((res: Book[]) => {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.dataSource = new MatTableDataSource(res);
+        this.dataSource = new MatTableDataSource(res["books"]);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       }, 1000)
-    });
+    },
+      (error: HttpErrorResponse) => {
+        switch (error.status) {
+          case 400: {
+            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            break;
+          }
+          case 403: {
+            this._toastr.error("Unauthorized access");
+            break;
+          }
+          case 404: {
+            this._toastr.error("Record not found");
+            this.loading = true
+            setTimeout(() => {
+              this._route.navigate(['/']);
+              this.loading = false;
+            }, 3000);
+            break;
+          }
+          case 500: {
+            this._toastr.error("Internal Server Error");
+            break;
+          }
+          default: {
+            this._toastr.error("Something went wrong");
+            break;
+          }
+        }
+      });
   }
 
   //Filter On Table

@@ -8,6 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestInterceptor } from './interceptors/request.interceptor';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,21 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot(
+      {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+        preventDuplicates: true,
+        progressAnimation: 'increasing',
+        progressBar: true,
+        tapToDismiss: true,
+        newestOnTop: true,
+        closeButton: false,
+        toastClass: 'ngx-toastr',
+        countDuplicates: false
+      },
+    )
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
