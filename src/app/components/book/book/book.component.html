@@ -1,0 +1,70 @@
+<div *ngIf="loading ;else elseBlock">
+    <app-spinner></app-spinner>
+</div>
+<ng-template #elseBlock>
+    <div class="center">
+        <mat-card class="card" *ngIf="book">
+            <mat-card-header>
+                <div class="table">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1 class="text-primary">Book Information</h1>
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <div [ngClass]="book.status == 'delete' ? 'col-sm-4' : 'col-sm-2'">
+                            <span>
+                                <button mat-mini-fab color="primary" class="pull-right" aria-label="edit">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </span>
+                        </div>
+                        <div class="col-sm-2" [hidden]="book.status == 'delete'">
+                            <span>
+                                <button mat-mini-fab color="warn" class="pull-left" aria-label="delete">
+                                    <mat-icon>delete_forever</mat-icon>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                </div>
+                <mat-card-title color="primary">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span>
+                                <button mat-fab color="primary" aria-label="Home" [routerLink]="['/books']">
+                                    <mat-icon>home</mat-icon>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-divider></mat-divider>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                History
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="row">
+                            <div class="col-sm-3"> Created By</div>
+                            <div class="col-sm-3"> {{book.created_by}}</div>
+                            <div class="col-sm-3">Created At</div>
+                            <div class="col-sm-3">{{book.created_at}}</div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="row">
+                            <div class="col-sm-3">Updated By</div>
+                            <div class="col-sm-3">{{book.updated_by}}</div>
+                            <div class="col-sm-3">Updated At</div>
+                            <div class="col-sm-3">{{book.updated_at }}</div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>

@@ -5,7 +5,6 @@ import { LayoutComponent } from './layout/layout.component';
 import { RouterModule } from '@angular/router';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
-import { DateagoPipe } from './pipes/dateago.pipe';
 
 
 
@@ -13,8 +12,7 @@ import { DateagoPipe } from './pipes/dateago.pipe';
   declarations: [
     LayoutComponent,
     SpinnerComponent,
-    NotfoundComponent,
-    DateagoPipe
+    NotfoundComponent
   ],
   imports: [
     CommonModule,

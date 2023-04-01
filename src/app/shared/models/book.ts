@@ -15,7 +15,7 @@ export interface Book {
     paperback: number
     status: string
     created_at: string
-    creatd_by: string
+    created_by: string
     updated_at?: string
     updated_by?: string
 }

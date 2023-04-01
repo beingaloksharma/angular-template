@@ -4,13 +4,15 @@ import { CommonModule } from '@angular/common';
 import { BookRoutingModule } from './book-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BooksComponent } from './books/books.component';
+import { BookComponent } from './book/book.component';
 
 
 
 @NgModule({
   declarations: [
   
-    BooksComponent
+    BooksComponent,
+       BookComponent
   ],
   imports: [
     CommonModule,
