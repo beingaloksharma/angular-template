@@ -10,7 +10,7 @@ export class ConstantsService {
    /******************** Variables ***************************** */
 
   //Base URL 
-  private baseUrl = "localhost"
+  private baseUrl = "http://localhost"
   //Port 
   private port = ":8080" 
   //url
