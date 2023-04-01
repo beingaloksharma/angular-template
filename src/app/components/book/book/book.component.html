@@ -18,9 +18,9 @@
                                 </button>
                             </span>
                         </div>
-                        <div class="col-sm-2" [hidden]="book.status == 'delete'">
+                        <div class="col-sm-2" [hidden]="book.status == 'Delete'">
                             <span>
-                                <button mat-mini-fab color="warn" class="pull-left" aria-label="delete">
+                                <button mat-mini-fab color="warn" (click)="deleteBook(book.id)" class="pull-left" aria-label="delete">
                                     <mat-icon>delete_forever</mat-icon>
                                 </button>
                             </span>
