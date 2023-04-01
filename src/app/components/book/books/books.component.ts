@@ -38,7 +38,7 @@ export class BooksComponent implements OnInit {
 
   //Get All Books
   getAllBooks() {
-    this._common.get(this._constants.SERVER_URL + '/books').subscribe((res: any) => {
+    this._common.get(this._constants.SERVER_URL + 'books').subscribe((res: any) => {
       console.log(res);
       this.loading = true;
       setTimeout(() => {

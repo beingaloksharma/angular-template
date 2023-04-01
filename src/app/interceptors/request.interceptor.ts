@@ -15,12 +15,12 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     //To Manipulate Request 
     let reqHeader: any;
-    
+
     //Add Header in request
     reqHeader = request.clone({
       setHeaders: {
         'Content-Type': 'application/json',
-        'X-Tenant-Id' : '1'
+        'X-Tenant-Id': '1',
       }
     });
 

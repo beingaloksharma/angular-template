@@ -14,7 +14,7 @@ export class ConstantsService {
   //Port 
   private port = ":8080" 
   //url
-  private url = "/webstarter"
+  private url = "/webstarter/"
   //Server URL
   public SERVER_URL = this.baseUrl + this.port + this.url
   //Status - Active

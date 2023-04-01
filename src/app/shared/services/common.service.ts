@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -13,7 +13,10 @@ export class CommonService {
 
   //Get 
   get(url: string): Observable<any> {
-    return this._http.get(url);
+    let Headers = new HttpHeaders();
+    return this._http.get(url, {
+      headers : Headers
+    });
   }
 
   //Post
