@@ -106,7 +106,7 @@
                                 <i class="fa fa-eye p-2 zoom" [hidden]="row.status == 'Delete'" [routerLink]="['/books/book', row.id]"  style="color:green"></i>
                                 <i class="fa fa-edit p-2 zoom" 
                                     style="color:blue"></i>
-                                <i class="fa fa-trash p-2 zoom" [hidden]="row.status == 'Delete'"
+                                <i class="fa fa-trash p-2 zoom" (click)="deleteBook(row.id)" [hidden]="row.status == 'Delete'"
                                      style="color:red"></i>
                             </td>
                         </ng-container>

@@ -8,6 +8,7 @@ import { Book } from 'src/app/shared/models/book';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-books',
@@ -26,13 +27,15 @@ export class BooksComponent implements OnInit {
 
   //To Store Loading Infromation
   loading: boolean;
+  //Check Status
+  status: boolean;
 
   //Constructor 
   constructor(
     private _common: CommonService,
     private _constants: ConstantsService,
     private _toastr: ToastrService,
-    private _route: Router,
+    private _router: Router,
   ) { }
 
   //ng Life Cycle 
@@ -66,7 +69,7 @@ export class BooksComponent implements OnInit {
             this._toastr.error("Record not found");
             this.loading = true
             setTimeout(() => {
-              this._route.navigate(['/']);
+              this._router.navigate(['/']);
               this.loading = false;
             }, 3000);
             break;
@@ -91,6 +94,68 @@ export class BooksComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  //deleteBook
+  deleteBook(id: number) {
+    //swal Alert
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //call delete action
+        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
+          // Update the table with latest data
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            //Navigate to dashboard
+            this._router.navigate(['/books']);
+          }, 1000)
+        },
+          (error: HttpErrorResponse) => {
+            switch (error.status) {
+              case 400: {
+                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                break;
+              }
+              case 403: {
+                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                break;
+              }
+              case 404: {
+                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this.loading = true
+                setTimeout(() => {
+                  this._router.navigate(['/books']);
+                  this.loading = false;
+                }, 3000);
+                break;
+              }
+              case 500: {
+                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                break;
+              }
+              default: {
+                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                break;
+              }
+            }
+          });
+        //Swal Fire after successfull deletion
+        Swal.fire(
+          'Deleted!',
+          'Your record has been deleted.',
+          'success'
+        )
+      }
+    })
   }
 
 }

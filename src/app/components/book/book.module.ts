@@ -10,9 +10,8 @@ import { BookComponent } from './book/book.component';
 
 @NgModule({
   declarations: [
-  
     BooksComponent,
-       BookComponent
+    BookComponent
   ],
   imports: [
     CommonModule,
