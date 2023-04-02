@@ -3,12 +3,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BooksComponent } from './books/books.component';
 import { BookComponent } from './book/book.component';
+import { CreateBookComponent } from './create-book/create-book.component';
 
 const routes: Routes = [
   {
     path: '', children: [
       { path: '', component: BooksComponent },
       { path: 'book/:id', component: BookComponent },
+      { path: 'create', component: CreateBookComponent },
     ]
   }
 ];
