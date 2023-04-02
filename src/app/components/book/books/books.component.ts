@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Book } from 'src/app/shared/models/book';
+import { Book, UpdateStatus } from 'src/app/shared/models/book';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -96,27 +96,29 @@ export class BooksComponent implements OnInit {
     }
   }
 
-  //deleteBook
-  deleteBook(id: number) {
+  //UpdateBookStatus
+  UpdateBookStatus(id: number, status: string) {
     //swal Alert
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: "Want to update status as " + status,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, update it !',
     }).then((result) => {
       if (result.isConfirmed) {
-        //call delete action
-        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
+        //Decalre model for update status 
+        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: "book-admin" };
+        //update status 
+        this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
           // Update the table with latest data
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            //Navigate to dashboard
-            this._router.navigate(['/books']);
+            //Reload the page 
+            this.getAllBooks();
           }, 1000)
         },
           (error: HttpErrorResponse) => {
@@ -150,8 +152,8 @@ export class BooksComponent implements OnInit {
           });
         //Swal Fire after successfull deletion
         Swal.fire(
-          'Deleted!',
-          'Your record has been deleted.',
+          'Updated!',
+          'Your record has been updated.',
           'success'
         )
       }

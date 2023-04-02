@@ -18,9 +18,9 @@ export class ConstantsService {
   //Server URL
   public SERVER_URL = this.baseUrl + this.port + this.url
   //Status - Active
-  public ACTIVE = "active"
+  public ACTIVE = "Active"
   //Status - Delete
-  public DELETE = "delete"
+  public DELETE = "Delete"
 
   /************************ Functions *************************** */
 

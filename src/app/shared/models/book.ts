@@ -1,3 +1,4 @@
+//Book 
 export interface Book {
     id: number
     tenant_id: number
@@ -18,4 +19,11 @@ export interface Book {
     created_by: string
     updated_at?: string
     updated_by?: string
+}
+
+//Update Status 
+export interface UpdateStatus {
+    id: number
+    status: string
+    updated_by: string
 }

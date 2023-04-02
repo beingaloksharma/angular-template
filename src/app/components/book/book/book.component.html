@@ -95,9 +95,17 @@
                         <mat-divider></mat-divider>
                         <div class="row">
                             <div class="col-sm-3"> Language</div>
-                            <div class="col-sm-3"> {{book.language}}</div>
+                            <div class="col-sm-3"> 
+                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let lang of book.language">
+                                    {{lang["language"]}}
+                                </span>
+                            </div>
                             <div class="col-sm-3">Keywords</div>
-                            <div class="col-sm-3">{{book.keywords}}</div>
+                            <div class="col-sm-3">
+                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let keyword of book.keywords">
+                                    {{keyword["keyword"]}}
+                                </span>
+                            </div>
                         </div>
                         <mat-divider></mat-divider>
                         <div class="row">
