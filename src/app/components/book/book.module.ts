@@ -6,6 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { BooksComponent } from './books/books.component';
 import { BookComponent } from './book/book.component';
 import { CreateBookComponent } from './create-book/create-book.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -18,7 +19,8 @@ import { CreateBookComponent } from './create-book/create-book.component';
   imports: [
     CommonModule,
     BookRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ]
 })
 export class BookModule { }

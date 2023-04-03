@@ -1,1 +1,175 @@
-<p>create-book works!</p>
+<div *ngIf="loading ;else elseBlock">
+    <app-spinner></app-spinner>
+</div>
+<ng-template #elseBlock>
+    <div class="center">
+        <mat-card class="card">
+            <mat-card-header>
+                <mat-card-title color="primary">
+                    <section>
+                        <div class="example-button-row">
+                            <div class="example-flex-container">
+                                <div class="example-button-container">
+                                    <div class="example-button-container">
+                                        <button mat-fab color="primary" aria-label="Home" [routerLink]="['/books']">
+                                            <mat-icon>home</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="example-label">
+                            <button mat-button color="accent" aria-disabled="true" tabindex="-1">
+                                <h1>Book</h1>
+                            </button>
+                        </div>
+                    </section>
+                    <mat-divider></mat-divider>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="bookForm" (ngSubmit)="SaveAndUpdateBook()">
+                    <!-- First Row -->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Name</mat-label>
+                                <input matInput placeholder="Enter Book Name" formControlName="name">
+                                <mat-icon matSuffix>book</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Author Name</mat-label>
+                                <input matInput placeholder="Enter Author Name" formControlName="author_name">
+                                <mat-icon matSuffix>person_pin</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Select Category</mat-label>
+                                <mat-select formControlName="category">
+                                    <mat-option *ngFor="let category of categories" value={{category}}> {{category}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>vertical_split</mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <!-- Second Row -->
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label> Select Edition</mat-label>
+                                <mat-select formControlName="edition">
+                                    <mat-option *ngFor="let edition of editions" value={{edition}}> {{edition}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>vertical_split</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label> Select Edition Year</mat-label>
+                                <mat-select formControlName="edition_year">
+                                    <mat-option *ngFor="let year of years" value={{year}}> {{year}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>event</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label> ISBN No</mat-label>
+                                <input matInput placeholder="Enter ISBN No" formControlName="isbn_no">
+                                <mat-icon matSuffix>confirmation_number</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <div>
+                                <mat-label> Reading Age </mat-label>
+                            </div>
+                            <mat-slider [max]="60" [min]="14" [step]="1" [discrete]=false [disableRipple]=true>
+                                <input matSliderThumb #agevalue formControlName="reading_age">
+                            </mat-slider>
+                            <b style="color:blue"> {{agevalue.value}}</b>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <!-- Third Row -->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Country of Origin</mat-label>
+                                <input matInput placeholder="Enter Country Name" formControlName="country_of_origin">
+                                <mat-icon matSuffix>book</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Publication</mat-label>
+                                <input matInput placeholder="Enter Publication Name" formControlName="publication">
+                                <mat-icon matSuffix>book</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Publication Date</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="publication_date">
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="picker">
+                                    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <!-- Fourth Row -->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Language</mat-label>
+                                <mat-select multiple formControlName="language">
+                                    <mat-option *ngFor="let language of languages" value={{language}}>{{language}}</mat-option>
+                                  </mat-select>
+                                <mat-icon matSuffix>language</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Keywords</mat-label>
+                                <input matInput multiple placeholder="Enter Keywords" formControlName="keywords">
+                                <mat-icon matSuffix>vpn_key</mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="outline" class="width">
+                                <mat-label>Paperback</mat-label>
+                                <input matInput placeholder="Enter Paperback No" formControlName="paperback">
+                                <mat-icon matSuffix>book</mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button mat-fab extended color="primary">
+                                <mat-icon>save</mat-icon>
+                                {{btnText}}
+                            </button>
+                            <button mat-fab extended color="warn" class="ms-2">
+                                <mat-icon>cancel</mat-icon>
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="col-sm-4"></div>
+                    </div>
+                    <mat-divider></mat-divider>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>
