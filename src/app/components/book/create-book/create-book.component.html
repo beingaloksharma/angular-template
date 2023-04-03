@@ -36,6 +36,9 @@
                                 <mat-label>Name</mat-label>
                                 <input matInput placeholder="Enter Book Name" formControlName="name">
                                 <mat-icon matSuffix>book</mat-icon>
+                                <mat-error *ngIf="ctrl['name'].hasError('required')">
+                                    <mat-hint> Name is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-4">
@@ -43,6 +46,9 @@
                                 <mat-label>Author Name</mat-label>
                                 <input matInput placeholder="Enter Author Name" formControlName="author_name">
                                 <mat-icon matSuffix>person_pin</mat-icon>
+                                <mat-error *ngIf="ctrl['author_name'].hasError('required')">
+                                    <mat-hint> Author Name is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-4">
@@ -53,6 +59,9 @@
                                     </mat-option>
                                 </mat-select>
                                 <mat-icon matSuffix>vertical_split</mat-icon>
+                                <mat-error *ngIf="ctrl['category'].hasError('required')">
+                                    <mat-hint> Category is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -67,6 +76,9 @@
                                     </mat-option>
                                 </mat-select>
                                 <mat-icon matSuffix>vertical_split</mat-icon>
+                                <mat-error *ngIf="ctrl['edition'].hasError('required')">
+                                    <mat-hint> Edition is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-3">
@@ -77,6 +89,9 @@
                                     </mat-option>
                                 </mat-select>
                                 <mat-icon matSuffix>event</mat-icon>
+                                <mat-error *ngIf="ctrl['edition_year'].hasError('required')">
+                                    <mat-hint> Edition Year is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-3">
@@ -84,6 +99,9 @@
                                 <mat-label> ISBN No</mat-label>
                                 <input matInput placeholder="Enter ISBN No" formControlName="isbn_no">
                                 <mat-icon matSuffix>confirmation_number</mat-icon>
+                                <mat-error *ngIf="ctrl['isbn_no'].hasError('required')">
+                                    <mat-hint> ISBN No is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-3">
@@ -104,6 +122,9 @@
                                 <mat-label>Country of Origin</mat-label>
                                 <input matInput placeholder="Enter Country Name" formControlName="country_of_origin">
                                 <mat-icon matSuffix>book</mat-icon>
+                                <mat-error *ngIf="ctrl['reading_age'].hasError('required')">
+                                    <mat-hint> Country Origin is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-4">
@@ -111,17 +132,22 @@
                                 <mat-label>Publication</mat-label>
                                 <input matInput placeholder="Enter Publication Name" formControlName="publication">
                                 <mat-icon matSuffix>book</mat-icon>
+                                <mat-error *ngIf="ctrl['publication'].hasError('required')">
+                                    <mat-hint> Publication is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
                                 <mat-label>Publication Date</mat-label>
-                                <input matInput [matDatepicker]="picker" formControlName="publication_date">
-                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <input [min]="minDate" [max]="maxDate" matInput [matDatepicker]="picker" formControlName="publication_date">
                                 <mat-datepicker-toggle matIconSuffix [for]="picker">
                                     <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                                 </mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
+                                <mat-error *ngIf="ctrl['publication_date'].hasError('required')">
+                                    <mat-hint> Publication date is required !!! </mat-hint>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -129,20 +155,17 @@
                     <!-- Fourth Row -->
                     <div class="row">
                         <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Language</mat-label>
-                                <mat-select multiple formControlName="language">
-                                    <mat-option *ngFor="let language of languages" value={{language}}>{{language}}</mat-option>
-                                  </mat-select>
-                                <mat-icon matSuffix>language</mat-icon>
-                            </mat-form-field>
+                            <ng-select placeholder="Select Language" appearance="outline" class="width"
+                                [multiple]="true" formControlName="language">
+                                <ng-option *ngFor="let language of languages"
+                                    [value]="language">{{language}}</ng-option>
+                            </ng-select>
                         </div>
                         <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Keywords</mat-label>
-                                <input matInput multiple placeholder="Enter Keywords" formControlName="keywords">
-                                <mat-icon matSuffix>vpn_key</mat-icon>
-                            </mat-form-field>
+                            <ng-select placeholder="Enter Keywords" appearance="outline" class="width"
+                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn" [multiple]="true"
+                                bindLabel="name">
+                            </ng-select>
                         </div>
                         <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
@@ -160,7 +183,7 @@
                                 <mat-icon>save</mat-icon>
                                 {{btnText}}
                             </button>
-                            <button mat-fab extended color="warn" class="ms-2">
+                            <button mat-fab extended color="warn" class="ms-2" (click)="onReset()">
                                 <mat-icon>cancel</mat-icon>
                                 Cancel
                             </button>

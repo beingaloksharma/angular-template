@@ -7,6 +7,7 @@ import { BooksComponent } from './books/books.component';
 import { BookComponent } from './book/book.component';
 import { CreateBookComponent } from './create-book/create-book.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
@@ -20,7 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     BookRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule
   ]
 })
 export class BookModule { }

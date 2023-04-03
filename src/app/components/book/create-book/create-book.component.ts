@@ -1,7 +1,12 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DBOps } from 'src/app/shared/DBOps/dbops';
 import { Book } from 'src/app/shared/models/book';
+import { CommonService } from 'src/app/shared/services/common.service';
+import { ConstantsService } from 'src/app/shared/services/constants.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-book',
@@ -9,14 +14,16 @@ import { Book } from 'src/app/shared/models/book';
   styleUrls: ['./create-book.component.css']
 })
 export class CreateBookComponent implements OnInit {
+  //To store keyboards
+  keywords: string[] = [];
   //Book Category
-  categories : string[] = ["Health, Family & Personal Development","Literature & Fiction","Analysis & Strategy","Sciences, Technology & Medicine","Children's Early Learning","New Age & Spirituality"]
+  categories: string[] = ["Health, Family & Personal Development", "Literature & Fiction", "Analysis & Strategy", "Sciences, Technology & Medicine", "Children's Early Learning", "New Age & Spirituality"]
   //Edition
-  editions : string[] = ["First", "Second","Third","Fourth","Fifth"]
+  editions: string[] = ["First", "Second", "Third", "Fourth", "Fifth"]
   //language
-  languages : string[] = ["Hindi","English","Marathi","Maithali","Bhojpuri","Punjabi","Urdu","Tamil","Telgu"]
+  languages: string[] = ["Hindi", "English", "Marathi", "Maithali", "Bhojpuri", "Punjabi", "Urdu", "Tamil", "Telgu"]
   //Year
-  years : number[] = new Array();
+  years: number[] = new Array();
   //Check Submission 
   isSubmit: boolean = false;
   //Button Text 
@@ -32,26 +39,35 @@ export class CreateBookComponent implements OnInit {
   //hide me 
   hideme: boolean = true;
   //minimum date
-  minDate = new Date(1947, 0, 1);
+  minDate = new Date(2000, 0, 1);
   //maximum date
-  maxDate = new Date(2005, 0, 1);
+  maxDate = new Date();
 
   //Constructor 
   constructor(
-    private _fb: FormBuilder
-  ) { 
+    private _fb: FormBuilder,
+    private _constants: ConstantsService,
+    private _commonService:CommonService,
+    private _toastr:ToastrService,
+    private _router:Router
+  ) {
 
     //loop for year 
     for (let i = new Date().getFullYear(); i > 1970; i--) {
-       this.years.push(i);
+      this.years.push(i);
     }
-  
+
   }
 
   //ngOnInit
   ngOnInit() {
     //Initialize Book
     this.setInitiaState();
+  }
+
+  //Add Keywords 
+  addKeywordsFn(name) {
+    return name;
   }
 
   //Initialize Book Form 
@@ -63,21 +79,19 @@ export class CreateBookComponent implements OnInit {
     //bookForm
     this.bookForm = this._fb.group({
       id: [null],
-      name: [""],
-      category: [""],
-      edition: [""],
-      edition_year: [""],
-      author_name: [""],
-      isbn_no: [""],
+      name: ["", Validators.compose([Validators.required])],
+      category: ["",Validators.compose([Validators.required])],
+      edition: ["",Validators.compose([Validators.required])],
+      edition_year: ["",Validators.compose([Validators.required])],
+      author_name: ["",Validators.compose([Validators.required])],
+      isbn_no: ["",Validators.compose([Validators.required])],
       language: [""],
       keywords: [""],
-      publication: [""],
+      publication: ["",Validators.compose([Validators.required])],
       reading_age: [""],
-      publication_date: [""],
-      country_of_origin: [""],
-      paperback: [""],
-      created_by: [""],
-      updated_by: [""]
+      publication_date: ["",Validators.compose([Validators.required])],
+      country_of_origin: ["",Validators.compose([Validators.required])],
+      paperback: [""]
     });
   }
 
@@ -85,7 +99,139 @@ export class CreateBookComponent implements OnInit {
   SaveAndUpdateBook() {
     //submission is true 
     this.isSubmit = true
-    console.log(this.bookForm.value);
+    if (this.bookForm.valid) {
+      //check button action
+      switch (this.dbOps) {
+        case DBOps.Create:
+          //set data to form 
+          this.payload = {
+            id: null,
+            tenant_id: 1,
+            name: this.bookForm.value['name'],
+            author_name: this.bookForm.value['author_name'],
+            category: this.bookForm.value['category'],
+            reading_age:  this.bookForm.value['reading_age'].toString(),
+            edition: this.bookForm.value['edition'] + " " + this.bookForm.value['edition_year'],
+            publication_date: this.bookForm.value['publication_date'],
+            isbn_no: this.bookForm.value['isbn_no'],
+            publication: this.bookForm.value['publication'],
+            country_of_origin: this.bookForm.value['country_of_origin'],
+            paperback: +this.bookForm.value['paperback'],
+            language: this.bookForm.value['language'],
+            keywords: this.bookForm.value['keywords'],
+            status: this._constants.ACTIVE,
+            created_by: "app-create"
+          }
+          //call service
+          this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
+            //Set Loader true 
+            this.loading = true;
+            setTimeout(() => {
+              //Set Loader false 
+              this.loading = false;
+              //Reset the form in Initial state 
+              this.onReset();
+              //Promt success message
+              this._toastr.success("Book record added sucessfully");
+              //redirect to home page 
+              this._router.navigate(['/books']);
+            }, 1000)
+          },
+            (error: HttpErrorResponse) => {
+              switch (error.status) {
+                case 400: {
+                  this._toastr.error("Bad request");
+                  break;
+                }
+                case 403: {
+                  this._toastr.error("Unauthorized access");
+                  break;
+                }
+                case 500: {
+                  this._toastr.error("Internal Server Error");
+                  break;
+                }
+                default: {
+                  this._toastr.error("Something went wrong");
+                  break;
+                }
+              }
+            }
+          );
+          break;
+        case DBOps.Update:
+          //set data to form 
+          this.payload = {
+            id: this.bookForm.value['id'],
+            tenant_id: 1,
+            name: this.bookForm.value['name'],
+            author_name: this.bookForm.value['author_name'],
+            category: this.bookForm.value['category'],
+            reading_age:  this.bookForm.value['reading_age'].toString(),
+            edition: this.bookForm.value['edition'] + " " + this.bookForm.value['edition_year'],
+            publication_date: this.bookForm.value['publication_date'],
+            isbn_no: this.bookForm.value['isbn_no'],
+            publication: this.bookForm.value['publication'],
+            country_of_origin: this.bookForm.value['country_of_origin'],
+            paperback: +this.bookForm.value['paperback'],
+            language: this.bookForm.value['langauge'],
+            keywords: this.bookForm.value['keywords'],
+            status: this._constants.ACTIVE,
+            updated_by: "app-update",
+          }
+          //call service
+          this._commonService.put(this._constants.SERVER_URL + 'book', this.payload.id, this.payload).subscribe((res: any) => {
+            //Set Loader true 
+            this.loading = true;
+            setTimeout(() => {
+              //Set Loader false 
+              this.loading = false;
+              //Reset the form in Initial state 
+              this.onReset();
+              //Promt success message
+              this._toastr.success("User record updated sucessfully");
+              //redirect to home page 
+              this._router.navigate(['/books/book/',this.payload.id]);
+            }, 1000)
+          },
+            (error: HttpErrorResponse) => {
+              switch (error.status) {
+                case 400: {
+                  this._toastr.error("Bad request");
+                  break;
+                }
+                case 403: {
+                  this._toastr.error("Unauthorized access");
+                  break;
+                }
+                case 500: {
+                  this._toastr.error("Internal Server Error");
+                  break;
+                }
+                default: {
+                  this._toastr.error("Something went wrong");
+                  break;
+                }
+              }
+            }
+          );
+          break;
+      }
+    }
+  }
+
+   //Control Name 
+   get ctrl() {
+    return this.bookForm.controls;
+  }
+
+  //Reset the Book form 
+  onReset() {
+    this.btnText = "Save";
+    //Reset Form 
+    this.bookForm.reset();
+    //Reset Database Operation
+    this.dbOps = DBOps.Create;
   }
 
 }

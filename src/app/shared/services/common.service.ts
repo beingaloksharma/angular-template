@@ -28,7 +28,6 @@ export class CommonService {
   //Update
   put(url: string, id: number, model: any): Observable<any> {
     const body = JSON.stringify(model);
-
     return this._http.put(url + id, body);
   }
 
