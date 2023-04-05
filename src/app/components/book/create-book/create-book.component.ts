@@ -1,5 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DBOps } from 'src/app/shared/DBOps/dbops';
 import { Book, Keywords, Languages } from 'src/app/shared/models/book';

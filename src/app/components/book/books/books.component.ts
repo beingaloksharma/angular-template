@@ -61,19 +61,6 @@ export class BooksComponent implements OnInit {
             this._toastr.error(error.statusText + " :: " + error.error.error_message);
             break;
           }
-          case 403: {
-            this._toastr.error("Unauthorized access");
-            break;
-          }
-          case 404: {
-            this._toastr.error("Record not found");
-            this.loading = true
-            setTimeout(() => {
-              this._router.navigate(['/']);
-              this.loading = false;
-            }, 3000);
-            break;
-          }
           case 500: {
             this._toastr.error("Internal Server Error");
             break;
