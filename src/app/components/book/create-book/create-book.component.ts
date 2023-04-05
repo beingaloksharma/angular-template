@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './create-book.component.html',
   styleUrls: ['./create-book.component.css']
 })
-export class CreateBookComponent implements OnInit, AfterViewInit {
+export class CreateBookComponent implements OnInit {
   //To store keyboards
   keywords: Keywords[] = [];
   //Book Category
@@ -64,7 +64,6 @@ export class CreateBookComponent implements OnInit, AfterViewInit {
     this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {
       for (let i = 0; i < res.length; i++) {
         this.languages.push({ language: res[i].language })
-        console.log(res[i].language)
       }
     });
 
@@ -72,13 +71,8 @@ export class CreateBookComponent implements OnInit, AfterViewInit {
     this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe((res: Keywords[]) => {
       for (let i = 0; i < res.length; i++) {
         this.keywords.push({ keyword: res[i].keyword })
-        console.log(res[i].keyword)
       }
     });
-
-    console.log("Languages :: ", this.languages)
-    console.log("Keywords :: ", this.keywords)
-
 
   }
 
@@ -88,15 +82,14 @@ export class CreateBookComponent implements OnInit, AfterViewInit {
     this.setInitiaState();
   }
 
-  //ngAfterViewInit
-  ngAfterViewInit(): void { }
+  //Add Language 
+  addLanguagesFn(language) {
+    return { 'language': language };
+  }
 
-  //ngAfterContentInit
-  ngAfterContentInit(): void { }
-
-  //Add Tags 
-  addTagsFn(name) {
-    return name;
+  //Add Keyword 
+  addKeywordsFn(keyword) {
+    return { 'keyword': keyword };
   }
 
   //Initialize Book Form 
@@ -113,8 +106,8 @@ export class CreateBookComponent implements OnInit, AfterViewInit {
       edition: ["", Validators.compose([Validators.required])],
       author_name: ["", Validators.compose([Validators.required])],
       isbn_no: ["", Validators.compose([Validators.required])],
-      languages: ["", Validators.compose([Validators.required])],
-      keywords: ["", Validators.compose([Validators.required])],
+      languages: [""],
+      keywords: ["",],
       publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
       publication_date: ["", Validators.compose([Validators.required])],
@@ -266,7 +259,6 @@ export class CreateBookComponent implements OnInit, AfterViewInit {
   private getBookDetailsForUpdate(id: number) {
     //call service 
     this._commonService.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: any) => {
-      console.log(res)
       //Loading true
       this.loading = true
       setTimeout(() => {

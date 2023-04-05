@@ -143,8 +143,8 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <ng-select placeholder="Select Languages" appearance="outline" class="width"
-                            formControlName="languages" [items]="languages" [addTag]="addTagsFn" [multiple]="true"
-                            bindLabel="name">
+                            formControlName="languages" [items]="languages" [addTag]="addLanguagesFn" [multiple]="true"
+                            bindLabel="language">
                         </ng-select>
                         <mat-error *ngIf="ctrl['languages'].hasError('required')">
                             <mat-hint> Languages are required !!! </mat-hint>
@@ -152,8 +152,8 @@
                         </div>
                         <div class="col-sm-4">
                             <ng-select placeholder="Select Keywords" appearance="outline" class="width"
-                                formControlName="keywords" [items]="keywords" [addTag]="addTagsFn"  [multiple]="true"
-                                bindLabel="name">
+                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn"  [multiple]="true"
+                                bindLabel="keyword">
                             </ng-select>
                             <mat-error *ngIf="ctrl['keywords'].hasError('required')">
                                 <mat-hint> Keywords are required !!! </mat-hint>
