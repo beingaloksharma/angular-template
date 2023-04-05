@@ -13,7 +13,7 @@
                         <div class="col-sm-2"></div>
                         <div [ngClass]="book.status == 'delete' ? 'col-sm-4' : 'col-sm-2'">
                             <span>
-                                <button mat-mini-fab color="primary" class="pull-right" aria-label="edit">
+                                <button mat-mini-fab color="primary" [routerLink]="['/books/update', book.id]" class="pull-right" aria-label="edit">
                                     <mat-icon>edit</mat-icon>
                                 </button>
                             </span>
@@ -96,7 +96,7 @@
                         <div class="row">
                             <div class="col-sm-3"> Language</div>
                             <div class="col-sm-3"> 
-                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let lang of book.language">
+                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let lang of book.languages">
                                     {{lang["language"]}}
                                 </span>
                             </div>

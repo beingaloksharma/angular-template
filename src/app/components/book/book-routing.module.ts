@@ -11,6 +11,7 @@ const routes: Routes = [
       { path: '', component: BooksComponent },
       { path: 'book/:id', component: BookComponent },
       { path: 'create', component: CreateBookComponent },
+      { path: 'update/:id', component: CreateBookComponent },
     ]
   }
 ];

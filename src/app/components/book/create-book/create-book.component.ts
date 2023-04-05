@@ -1,11 +1,11 @@
 import { ToastrService } from 'ngx-toastr';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DBOps } from 'src/app/shared/DBOps/dbops';
-import { Book } from 'src/app/shared/models/book';
+import { Book, Keywords, Languages } from 'src/app/shared/models/book';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -13,17 +13,15 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './create-book.component.html',
   styleUrls: ['./create-book.component.css']
 })
-export class CreateBookComponent implements OnInit {
+export class CreateBookComponent implements OnInit, AfterViewInit {
   //To store keyboards
-  keywords: string[] = [];
+  keywords: Keywords[] = [];
   //Book Category
   categories: string[] = ["Health, Family & Personal Development", "Literature & Fiction", "Analysis & Strategy", "Sciences, Technology & Medicine", "Children's Early Learning", "New Age & Spirituality"]
   //Edition
   editions: string[] = ["First", "Second", "Third", "Fourth", "Fifth"]
   //language
-  languages: string[] = ["Hindi", "English", "Marathi", "Maithali", "Bhojpuri", "Punjabi", "Urdu", "Tamil", "Telgu"]
-  //Year
-  years: number[] = new Array();
+  languages: Languages[] = [];
   //Check Submission 
   isSubmit: boolean = false;
   //Button Text 
@@ -36,8 +34,6 @@ export class CreateBookComponent implements OnInit {
   payload: Book;
   //loading
   loading: boolean;
-  //hide me 
-  hideme: boolean = true;
   //minimum date
   minDate = new Date(2000, 0, 1);
   //maximum date
@@ -47,26 +43,59 @@ export class CreateBookComponent implements OnInit {
   constructor(
     private _fb: FormBuilder,
     private _constants: ConstantsService,
-    private _commonService:CommonService,
-    private _toastr:ToastrService,
-    private _router:Router
+    private _commonService: CommonService,
+    private _toastr: ToastrService,
+    private _router: Router,
+    private _route: ActivatedRoute
   ) {
 
-    //loop for year 
-    for (let i = new Date().getFullYear(); i > 1970; i--) {
-      this.years.push(i);
-    }
+    //To Get param value 
+    this._route.params.subscribe((res: any) => {
+      //check param id value 
+      if (res['id'] === undefined) {
+        this._router.navigate(['/books/create']);
+      } else {
+        //Load in browser
+        this.getBookDetailsForUpdate(res['id']);
+      }
+    })
+
+    //Get Languages 
+    this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {
+      for (let i = 0; i < res.length; i++) {
+        this.languages.push({ language: res[i].language })
+        console.log(res[i].language)
+      }
+    });
+
+    //Get Keywords 
+    this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe((res: Keywords[]) => {
+      for (let i = 0; i < res.length; i++) {
+        this.keywords.push({ keyword: res[i].keyword })
+        console.log(res[i].keyword)
+      }
+    });
+
+    console.log("Languages :: ", this.languages)
+    console.log("Keywords :: ", this.keywords)
+
 
   }
 
   //ngOnInit
-  ngOnInit() {
+  ngOnInit(): void {
     //Initialize Book
     this.setInitiaState();
   }
 
-  //Add Keywords 
-  addKeywordsFn(name) {
+  //ngAfterViewInit
+  ngAfterViewInit(): void { }
+
+  //ngAfterContentInit
+  ngAfterContentInit(): void { }
+
+  //Add Tags 
+  addTagsFn(name) {
     return name;
   }
 
@@ -80,17 +109,16 @@ export class CreateBookComponent implements OnInit {
     this.bookForm = this._fb.group({
       id: [null],
       name: ["", Validators.compose([Validators.required])],
-      category: ["",Validators.compose([Validators.required])],
-      edition: ["",Validators.compose([Validators.required])],
-      edition_year: ["",Validators.compose([Validators.required])],
-      author_name: ["",Validators.compose([Validators.required])],
-      isbn_no: ["",Validators.compose([Validators.required])],
-      language: [""],
-      keywords: [""],
-      publication: ["",Validators.compose([Validators.required])],
+      category: ["", Validators.compose([Validators.required])],
+      edition: ["", Validators.compose([Validators.required])],
+      author_name: ["", Validators.compose([Validators.required])],
+      isbn_no: ["", Validators.compose([Validators.required])],
+      languages: ["", Validators.compose([Validators.required])],
+      keywords: ["", Validators.compose([Validators.required])],
+      publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
-      publication_date: ["",Validators.compose([Validators.required])],
-      country_of_origin: ["",Validators.compose([Validators.required])],
+      publication_date: ["", Validators.compose([Validators.required])],
+      country_of_origin: ["", Validators.compose([Validators.required])],
       paperback: [""]
     });
   }
@@ -110,14 +138,14 @@ export class CreateBookComponent implements OnInit {
             name: this.bookForm.value['name'],
             author_name: this.bookForm.value['author_name'],
             category: this.bookForm.value['category'],
-            reading_age:  this.bookForm.value['reading_age'].toString(),
-            edition: this.bookForm.value['edition'] + " " + this.bookForm.value['edition_year'],
+            reading_age: this.bookForm.value['reading_age'].toString(),
+            edition: this.bookForm.value['edition'],
             publication_date: this.bookForm.value['publication_date'],
             isbn_no: this.bookForm.value['isbn_no'],
             publication: this.bookForm.value['publication'],
             country_of_origin: this.bookForm.value['country_of_origin'],
             paperback: +this.bookForm.value['paperback'],
-            language: this.bookForm.value['language'],
+            languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
             created_by: "app-create"
@@ -167,20 +195,20 @@ export class CreateBookComponent implements OnInit {
             name: this.bookForm.value['name'],
             author_name: this.bookForm.value['author_name'],
             category: this.bookForm.value['category'],
-            reading_age:  this.bookForm.value['reading_age'].toString(),
-            edition: this.bookForm.value['edition'] + " " + this.bookForm.value['edition_year'],
+            reading_age: this.bookForm.value['reading_age'].toString(),
+            edition: this.bookForm.value['edition'],
             publication_date: this.bookForm.value['publication_date'],
             isbn_no: this.bookForm.value['isbn_no'],
             publication: this.bookForm.value['publication'],
             country_of_origin: this.bookForm.value['country_of_origin'],
             paperback: +this.bookForm.value['paperback'],
-            language: this.bookForm.value['langauge'],
+            languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
             updated_by: "app-update",
           }
           //call service
-          this._commonService.put(this._constants.SERVER_URL + 'book', this.payload.id, this.payload).subscribe((res: any) => {
+          this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
             //Set Loader true 
             this.loading = true;
             setTimeout(() => {
@@ -191,7 +219,7 @@ export class CreateBookComponent implements OnInit {
               //Promt success message
               this._toastr.success("User record updated sucessfully");
               //redirect to home page 
-              this._router.navigate(['/books/book/',this.payload.id]);
+              this._router.navigate(['/books/book/', this.payload.id]);
             }, 1000)
           },
             (error: HttpErrorResponse) => {
@@ -220,8 +248,8 @@ export class CreateBookComponent implements OnInit {
     }
   }
 
-   //Control Name 
-   get ctrl() {
+  //Control Name 
+  get ctrl() {
     return this.bookForm.controls;
   }
 
@@ -232,6 +260,52 @@ export class CreateBookComponent implements OnInit {
     this.bookForm.reset();
     //Reset Database Operation
     this.dbOps = DBOps.Create;
+  }
+
+  //getBookDetailsForUpdate
+  private getBookDetailsForUpdate(id: number) {
+    //call service 
+    this._commonService.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: any) => {
+      console.log(res)
+      //Loading true
+      this.loading = true
+      setTimeout(() => {
+        //Set Value to bookForm
+        this.bookForm.patchValue(res);
+        //Set btnAction 
+        this.btnText = "Update";
+        //Set DbOps
+        this.dbOps = DBOps.Update;
+        //Loading false
+        this.loading = false;
+      }, 1000);
+    },
+      (error: HttpErrorResponse) => {
+        switch (error.status) {
+          case 400: {
+            this._toastr.error("Bad request");
+            break;
+          }
+          case 404: {
+            this._toastr.error("Record not found");
+            this.loading = true
+            setTimeout(() => {
+              this._router.navigate(['/books']);
+              this.loading = false;
+            }, 3000);
+            break;
+          }
+          case 500: {
+            this._toastr.error("Internal Server Error");
+            break;
+          }
+          default: {
+            this._toastr.error("Something went wrong");
+            break;
+          }
+        }
+      }
+    )
   }
 
 }

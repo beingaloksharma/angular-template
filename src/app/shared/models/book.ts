@@ -7,7 +7,7 @@ export interface Book {
     edition: string
     author_name: string
     isbn_no: string
-    language: string[]
+    languages: string[]
     keywords: string[]
     publication: string
     reading_age: string
@@ -26,4 +26,14 @@ export interface UpdateStatus {
     id: number
     status: string
     updated_by: string
+}
+
+//Languages
+export interface Languages {
+    language: string
+}
+
+//Keywords
+export interface Keywords {
+    keyword: string
 }

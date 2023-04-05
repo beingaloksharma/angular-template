@@ -68,7 +68,7 @@
                     <mat-divider></mat-divider>
                     <!-- Second Row -->
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
                                 <mat-label> Select Edition</mat-label>
                                 <mat-select formControlName="edition">
@@ -81,20 +81,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-sm-3">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label> Select Edition Year</mat-label>
-                                <mat-select formControlName="edition_year">
-                                    <mat-option *ngFor="let year of years" value={{year}}> {{year}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-icon matSuffix>event</mat-icon>
-                                <mat-error *ngIf="ctrl['edition_year'].hasError('required')">
-                                    <mat-hint> Edition Year is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
                                 <mat-label> ISBN No</mat-label>
                                 <input matInput placeholder="Enter ISBN No" formControlName="isbn_no">
@@ -104,7 +91,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div>
                                 <mat-label> Reading Age </mat-label>
                             </div>
@@ -155,17 +142,22 @@
                     <!-- Fourth Row -->
                     <div class="row">
                         <div class="col-sm-4">
-                            <ng-select placeholder="Select Language" appearance="outline" class="width"
-                                [multiple]="true" formControlName="language">
-                                <ng-option *ngFor="let language of languages"
-                                    [value]="language">{{language}}</ng-option>
-                            </ng-select>
+                            <ng-select placeholder="Select Languages" appearance="outline" class="width"
+                            formControlName="languages" [items]="languages" [addTag]="addTagsFn" [multiple]="true"
+                            bindLabel="name">
+                        </ng-select>
+                        <mat-error *ngIf="ctrl['languages'].hasError('required')">
+                            <mat-hint> Languages are required !!! </mat-hint>
+                        </mat-error>
                         </div>
                         <div class="col-sm-4">
-                            <ng-select placeholder="Enter Keywords" appearance="outline" class="width"
-                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn" [multiple]="true"
+                            <ng-select placeholder="Select Keywords" appearance="outline" class="width"
+                                formControlName="keywords" [items]="keywords" [addTag]="addTagsFn"  [multiple]="true"
                                 bindLabel="name">
                             </ng-select>
+                            <mat-error *ngIf="ctrl['keywords'].hasError('required')">
+                                <mat-hint> Keywords are required !!! </mat-hint>
+                            </mat-error>
                         </div>
                         <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
@@ -188,7 +180,8 @@
                                 Cancel
                             </button>
                         </div>
-                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                        </div>
                     </div>
                     <mat-divider></mat-divider>
                 </form>

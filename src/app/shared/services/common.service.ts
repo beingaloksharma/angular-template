@@ -26,9 +26,9 @@ export class CommonService {
   }
 
   //Update
-  put(url: string, id: number, model: any): Observable<any> {
+  put(url: string, model: any): Observable<any> {
     const body = JSON.stringify(model);
-    return this._http.put(url + id, body);
+    return this._http.put(url, body);
   }
 
   //Delete
