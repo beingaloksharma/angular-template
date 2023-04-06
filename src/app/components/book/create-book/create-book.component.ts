@@ -159,17 +159,9 @@ export class CreateBookComponent implements OnInit {
             }, 1000)
           },
             (error: HttpErrorResponse) => {
-              switch (error.status) {
-                case 400: {
-                  this._toastr.error("Bad request");
-                  break;
-                }
-                case 403: {
-                  this._toastr.error("Unauthorized access");
-                  break;
-                }
-                case 500: {
-                  this._toastr.error("Internal Server Error");
+              switch (error.error.error_code) {
+                case error.error.error_code: {
+                  this._toastr.error(error.error.error_message);
                   break;
                 }
                 default: {
@@ -216,17 +208,9 @@ export class CreateBookComponent implements OnInit {
             }, 1000)
           },
             (error: HttpErrorResponse) => {
-              switch (error.status) {
-                case 400: {
-                  this._toastr.error("Bad request");
-                  break;
-                }
-                case 403: {
-                  this._toastr.error("Unauthorized access");
-                  break;
-                }
-                case 500: {
-                  this._toastr.error("Internal Server Error");
+              switch (error.error.error_code) {
+                case error.error.error_code: {
+                  this._toastr.error(error.error.error_message);
                   break;
                 }
                 default: {

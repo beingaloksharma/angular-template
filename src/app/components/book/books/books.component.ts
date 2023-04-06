@@ -58,15 +58,19 @@ export class BooksComponent implements OnInit {
       (error: HttpErrorResponse) => {
         switch (error.status) {
           case 400: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            this._toastr.error(error.error.error_message);
+            break;
+          }
+          case 404: {
+            this._toastr.error(error.error.error_message);
             break;
           }
           case 500: {
-            this._toastr.error("Internal Server Error");
+            this._toastr.error(error.error.error_message);
             break;
           }
           default: {
-            this._toastr.error("Something went wrong");
+            this._toastr.error(error.statusText);
             break;
           }
         }
@@ -111,15 +115,11 @@ export class BooksComponent implements OnInit {
           (error: HttpErrorResponse) => {
             switch (error.status) {
               case 400: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
-                break;
-              }
-              case 403: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 break;
               }
               case 404: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 this.loading = true
                 setTimeout(() => {
                   this._router.navigate(['/books']);
@@ -128,11 +128,15 @@ export class BooksComponent implements OnInit {
                 break;
               }
               case 500: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 break;
               }
               default: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                if (error.ok) {
+                  this._toastr.error("Backend Server is not running");
+                  break;
+                }
+                this._toastr.error(error.statusText);
                 break;
               }
             }

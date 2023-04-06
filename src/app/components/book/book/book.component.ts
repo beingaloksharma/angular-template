@@ -55,15 +55,11 @@ export class BookComponent {
       (error: HttpErrorResponse) => {
         switch (error.status) {
           case 400: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
-            break;
-          }
-          case 403: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            this._toastr.error(error.error.error_message);
             break;
           }
           case 404: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            this._toastr.error(error.error.error_message);
             this.loading = true
             setTimeout(() => {
               this._router.navigate(['/books']);
@@ -72,11 +68,11 @@ export class BookComponent {
             break;
           }
           case 500: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            this._toastr.error(error.error.error_message);
             break;
           }
           default: {
-            this._toastr.error(error.statusText + " :: " + error.error.error_message);
+            this._toastr.error(error.statusText);
             break;
           }
         }
@@ -109,15 +105,11 @@ export class BookComponent {
           (error: HttpErrorResponse) => {
             switch (error.status) {
               case 400: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
-                break;
-              }
-              case 403: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 break;
               }
               case 404: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 this.loading = true
                 setTimeout(() => {
                   this._router.navigate(['/books']);
@@ -126,11 +118,11 @@ export class BookComponent {
                 break;
               }
               case 500: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.error.error_message);
                 break;
               }
               default: {
-                this._toastr.error(error.statusText + " :: " + error.error.error_message);
+                this._toastr.error(error.statusText);
                 break;
               }
             }
