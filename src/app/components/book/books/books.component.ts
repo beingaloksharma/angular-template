@@ -1,7 +1,7 @@
 import { ConstantsService } from './../../../shared/services/constants.service';
 import { CommonService } from './../../../shared/services/common.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Book, UpdateStatus } from 'src/app/shared/models/book';
@@ -25,6 +25,12 @@ export class BooksComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  // ********************** Mat Paginator Input ******************** //
+   pageIndex : number = 0;
+   totalBooks : number;
+   limit : number = 5;
+  // ********************** Mat Paginator ******************** //
+
   //To Store Loading Infromation
   loading: boolean;
   //Check Status
@@ -44,15 +50,26 @@ export class BooksComponent implements OnInit {
     this.getAllBooks();
   }
 
+  //ngAfterViewInit()
+   ngAfterViewInit() {
+  }
+
+  pageChanged(event: PageEvent) {
+    console.log({ event });
+    this.pageIndex = event.pageIndex
+    this.limit = event.pageSize
+    this.getAllBooks();
+  }
+
   //Get All Books
   getAllBooks() {
-    this._common.get(this._constants.SERVER_URL + 'books').subscribe((res: Book[]) => {
+    this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe((res: Book[]) => {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
         this.dataSource = new MatTableDataSource(res["books"]);
+        this.totalBooks = res["total"]
         this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
       }, 1000)
     },
       (error: HttpErrorResponse) => {
