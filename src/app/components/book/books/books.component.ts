@@ -55,7 +55,6 @@ export class BooksComponent implements OnInit {
   }
 
   pageChanged(event: PageEvent) {
-    console.log({ event });
     this.pageIndex = event.pageIndex
     this.limit = event.pageSize
     this.getAllBooks();
