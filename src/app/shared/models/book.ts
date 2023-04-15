@@ -62,3 +62,17 @@ export interface ForgotPassword {
     password: string
     confirm_password: string
 }
+
+//User Profile 
+export interface UserProfile {
+    id: number
+    name: string
+    email: string
+    moblie: string
+    status: string
+    user_name: string
+    created_at: string
+    created_by: string
+    updated_at: string
+    updated_by: string
+}

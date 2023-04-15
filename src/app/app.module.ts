@@ -35,7 +35,7 @@ import { AuthModule } from './components/auth/auth.module';
         countDuplicates: false
       },
     ),
-    AuthModule,
+    AuthModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},

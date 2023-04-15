@@ -5,9 +5,7 @@ import { contentRoutes } from './shared/routes/content.routes';
 import { AuthGuard } from './components/auth/auth.guard';
 
 const routes: Routes = [
-  {path:'', pathMatch:'full', redirectTo:'auth'},
-  { path: 'auth', loadChildren: () => import('../app/components/auth/auth-routing.module').then(m => m.AuthRoutingModule) },
-  { path: 'books', component: LayoutComponent, children: contentRoutes, canActivate: [AuthGuard] },
+  { path: '', component: LayoutComponent, children: contentRoutes, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

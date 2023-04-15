@@ -78,7 +78,6 @@ export class LoginComponent {
           this.loading = false;
           //Reset the form in Initial state 
           this.onReset();
-         
         }, 1000)
       },
         (error: HttpErrorResponse) => {

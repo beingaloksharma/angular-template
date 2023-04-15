@@ -1,0 +1,61 @@
+<div *ngIf="loading ;else elseBlock">
+    <div class="wrapper">
+        <div class="overlay">
+            <div class="spinner-wrapper">
+                <div class="spinner-border text-primary"></div>
+            </div>
+            <h1 class="loading">Loading....</h1>
+        </div>
+    </div>
+</div>
+<ng-template #elseBlock>
+<div class="card">
+    <div class="card-header">User Profile</div>
+    <div class="card-body" *ngIf="userProfile">
+        <table class="table">
+            <tbody>
+              <tr>
+                <td>Id</td>
+                <td>{{userProfile.id}}</td>
+              </tr>
+              <tr>
+                <td>Name</td>
+                <td>{{userProfile.name}}</td>
+              </tr>
+              <tr>
+                <td>Email</td>
+                <td>{{userProfile.email}}</td>
+              </tr>
+              <tr>
+                <td>Moblie No</td>
+                <td>{{userProfile.moblie}}</td>
+              </tr>
+              <tr>
+                <td>Status</td>
+                <td>{{userProfile.status}}</td>
+              </tr>
+              <tr>
+                <td>User Name</td>
+                <td>{{userProfile.user_name}}</td>
+              </tr>
+              <tr>
+                <td>Created By</td>
+                <td>{{userProfile.created_by}}</td>
+              </tr>
+              <tr>
+                <td>Created At</td>
+                <td>{{userProfile.created_at}}</td>
+              </tr>
+              <tr>
+                <td>Updated By</td>
+                <td>{{userProfile.updated_by}}</td>
+              </tr>
+              <tr>
+                <td>Updated At</td>
+                <td>{{userProfile.updated_at}}</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
+</ng-template>
