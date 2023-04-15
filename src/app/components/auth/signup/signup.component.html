@@ -1,0 +1,117 @@
+<div *ngIf="loading ;else elseBlock">
+    <app-spinner></app-spinner>
+</div>
+<ng-template #elseBlock>
+<div class="center">
+    <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title color="primary">
+                <h1>Register Here</h1>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="signupForm" (ngSubmit)="singup()">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="Enter Your Name" formControlName="name">
+                            <mat-icon matSuffix>supervised_user_circle</mat-icon>
+                            <mat-error *ngIf="ctrl['name'].hasError('required')">
+                                <mat-hint> Name is required !!! </mat-hint>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput placeholder="Enter Your Email" formControlName="email">
+                            <mat-icon matSuffix>supervised_user_circle</mat-icon>
+                            <mat-error *ngIf="ctrl['email'].hasError('required')">
+                                <mat-hint> Email is required !!! </mat-hint>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Moblie No</mat-label>
+                            <input matInput placeholder="Enter Your Moblie No" formControlName="moblie">
+                            <mat-icon matSuffix>supervised_user_circle</mat-icon>
+                            <mat-error *ngIf="ctrl['moblie'].hasError('required')">
+                                <mat-hint> Moblie no is required !!! </mat-hint>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Username or Email</mat-label>
+                            <input matInput placeholder="Enter Your Username or Email" formControlName="user_name">
+                            <mat-icon matSuffix>supervised_user_circle</mat-icon>
+                            <mat-error *ngIf="ctrl['user_name'].hasError('required')">
+                                <mat-hint> User Name is required !!! </mat-hint>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" placeholder="Enter Your Password"
+                            formControlName="password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="ctrl['password'].hasError('required')">
+                            <mat-hint> Password is required !!! </mat-hint>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirm Password</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" placeholder="Enter Your Confirm Password"
+                            formControlName="confirm_password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="ctrl['confirm_password'].hasError('required')">
+                            <mat-hint> Confirm Password is required !!! </mat-hint>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <section class="example-section">
+                        <mat-checkbox class="example-margin" [labelPosition]="labelPosition"
+                            formControlName="terms_and_conditions">Terms and
+                            Conditions</mat-checkbox>
+                        <mat-error *ngIf="ctrl['terms_and_conditions'].hasError('required')">
+                            <mat-hint> Terms and Conditions is required !!! </mat-hint>
+                        </mat-error>
+                    </section>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button mat-raised-button color="primary" type="submit">Signup</button>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-sm-4">
+                    <a routerLink="../login"> ohh !!!. Login Here </a>
+                </div>
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                    <a routerLink="../forgot-password"> Forgot Password ? </a>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+</ng-template>

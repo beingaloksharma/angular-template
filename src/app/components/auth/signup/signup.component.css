@@ -1,0 +1,16 @@
+.card {
+    background-color: #fff;
+    border-radius: 5px;
+    color: rgba(0, 0, 0, .87);
+    width: 50%;
+    overflow: hidden;
+    position: relative;
+    margin-top: 1%;
+    box-shadow: 10px 10px 15px darksalmon;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+}
