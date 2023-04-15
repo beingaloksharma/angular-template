@@ -16,12 +16,15 @@ export class RequestInterceptor implements HttpInterceptor {
     //To Manipulate Request 
     let reqHeader: any;
     let x_tenant_id: string
+    let token: string
 
     //check localstorage 
-    if(localStorage.length === 0){
-      x_tenant_id = '0'
+    if (localStorage.length === 0) {
+      x_tenant_id = '0';
+      token = "";
     } else {
-      x_tenant_id = JSON.parse( localStorage.getItem('userdetails')).id.toString()
+      x_tenant_id = JSON.parse(localStorage.getItem('userdetails')).id.toString();
+      token = localStorage.getItem('token');
     }
 
     //Add Header in request
@@ -29,6 +32,7 @@ export class RequestInterceptor implements HttpInterceptor {
       setHeaders: {
         'Content-Type': 'application/json',
         'X-Tenant-Id': x_tenant_id,
+        'Authorization' : "Bearer " + token,
       }
     });
 

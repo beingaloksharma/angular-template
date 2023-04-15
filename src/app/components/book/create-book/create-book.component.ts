@@ -141,7 +141,7 @@ export class CreateBookComponent implements OnInit {
             languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
-            created_by: "app-create"
+            created_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
           this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
@@ -190,7 +190,7 @@ export class CreateBookComponent implements OnInit {
             languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
-            updated_by: "app-update",
+            updated_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
           this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {

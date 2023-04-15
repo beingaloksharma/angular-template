@@ -25,7 +25,7 @@ export class LayoutComponent {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, Logout Me !!!'
     }).then((result) => {
       if (result.isConfirmed) {
        this._auth.logout()

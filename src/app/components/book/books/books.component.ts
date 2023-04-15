@@ -117,7 +117,7 @@ export class BooksComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         //Decalre model for update status 
-        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: "book-admin" };
+        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
         //update status 
         this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
           // Update the table with latest data
