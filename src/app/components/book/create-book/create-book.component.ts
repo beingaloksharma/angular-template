@@ -62,16 +62,12 @@ export class CreateBookComponent implements OnInit {
 
     //Get Languages 
     this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {
-      for (let i = 0; i < res.length; i++) {
-        this.languages.push({ language: res[i].language })
-      }
+      this.languages = res;
     });
 
     //Get Keywords 
     this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe((res: Keywords[]) => {
-      for (let i = 0; i < res.length; i++) {
-        this.keywords.push({ keyword: res[i].keyword })
-      }
+      this.keywords = res;
     });
 
   }
@@ -107,7 +103,7 @@ export class CreateBookComponent implements OnInit {
       author_name: ["", Validators.compose([Validators.required])],
       isbn_no: ["", Validators.compose([Validators.required])],
       languages: [""],
-      keywords: ["",],
+      keywords: [""],
       publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
       publication_date: ["", Validators.compose([Validators.required])],

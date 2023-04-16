@@ -14,6 +14,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     UserRoutingModule,
     SharedModule
-  ]
+  ],
+  exports: [],
 })
 export class UserModule { }
