@@ -37,3 +37,42 @@ export interface Languages {
 export interface Keywords {
     keyword: string
 }
+
+//User Sign Up
+export interface Singup {
+    name: string
+    email: string
+    moblie: string
+    user_name: string
+    password: string
+    confirm_password: string
+    terms_and_conditions: boolean
+    created_by: string
+}
+
+//Login
+export interface Login {
+    user_name: string
+    password: string
+}
+
+//Forgot Password 
+export interface ForgotPassword {
+    user_name: string
+    password: string
+    confirm_password: string
+}
+
+//User Profile 
+export interface UserProfile {
+    id: number
+    name: string
+    email: string
+    moblie: string
+    status: string
+    user_name: string
+    created_at: string
+    created_by: string
+    updated_at: string
+    updated_by: string
+}

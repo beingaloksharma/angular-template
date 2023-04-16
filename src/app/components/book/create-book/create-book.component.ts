@@ -62,16 +62,12 @@ export class CreateBookComponent implements OnInit {
 
     //Get Languages 
     this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {
-      for (let i = 0; i < res.length; i++) {
-        this.languages.push({ language: res[i].language })
-      }
+      this.languages = res;
     });
 
     //Get Keywords 
     this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe((res: Keywords[]) => {
-      for (let i = 0; i < res.length; i++) {
-        this.keywords.push({ keyword: res[i].keyword })
-      }
+      this.keywords = res;
     });
 
   }
@@ -107,7 +103,7 @@ export class CreateBookComponent implements OnInit {
       author_name: ["", Validators.compose([Validators.required])],
       isbn_no: ["", Validators.compose([Validators.required])],
       languages: [""],
-      keywords: ["",],
+      keywords: [""],
       publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
       publication_date: ["", Validators.compose([Validators.required])],
@@ -141,7 +137,7 @@ export class CreateBookComponent implements OnInit {
             languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
-            created_by: "app-create"
+            created_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
           this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
@@ -190,7 +186,7 @@ export class CreateBookComponent implements OnInit {
             languages: this.bookForm.value['languages'],
             keywords: this.bookForm.value['keywords'],
             status: this._constants.ACTIVE,
-            updated_by: "app-update",
+            updated_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
           this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {

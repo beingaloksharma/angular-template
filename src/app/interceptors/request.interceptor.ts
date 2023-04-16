@@ -15,12 +15,24 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     //To Manipulate Request 
     let reqHeader: any;
+    let x_tenant_id: string
+    let token: string
+
+    //check localstorage 
+    if (localStorage.length === 0) {
+      x_tenant_id = '0';
+      token = "";
+    } else {
+      x_tenant_id = JSON.parse(localStorage.getItem('userdetails')).id.toString();
+      token = localStorage.getItem('token');
+    }
 
     //Add Header in request
     reqHeader = request.clone({
       setHeaders: {
         'Content-Type': 'application/json',
-        'X-Tenant-Id': '1',
+        'X-Tenant-Id': x_tenant_id,
+        'Authorization' : "Bearer " + token,
       }
     });
 
