@@ -17,9 +17,9 @@ import { AuthModule } from './components/auth/auth.module';
   ],
   imports: [
     BrowserModule,
+    SharedModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    SharedModule,
     HttpClientModule,
     ToastrModule.forRoot(
       {
