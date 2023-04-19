@@ -12,7 +12,8 @@ export class LayoutComponent {
 
   //Constructor 
   constructor(
-    private _auth:AuthService
+    private _auth:AuthService,
+    private _router:Router
   ){}
 
   //Logout 
@@ -37,6 +38,12 @@ export class LayoutComponent {
         )
       }
     })
+  }
+
+  //navigate To userDetails 
+  userDetails() {
+    //Route path 
+    this._router.navigate(['/user/profile'], {queryParams : {'user_name' : JSON.parse(localStorage["userdetails"])["user_name"]}});
   }
 
 }

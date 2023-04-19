@@ -1,7 +1,11 @@
+<div *ngIf="loading ;else elseBlock">
+    <app-spinner></app-spinner>
+</div>
+<ng-template #elseBlock>
 <div class="container mt-3">
     <h2></h2>
     <div class="card">
-        <div class="card-header bg-primary text-white text-center">User Profile</div>
+        <div class="card-header bg-primary text-white" style="font-size:20px">User Profile</div>
         <div class="card-body">
             <table class="table table-striped" *ngIf="userProfile">
                 <tbody>
@@ -65,7 +69,7 @@
                             <strong>Created At</strong>
                         </div>
                         <div class="col-sm-3">
-                            <strong> {{userProfile.created_at | dateago }} </strong>
+                            <strong> {{userProfile.created_at | date }} | ({{userProfile.created_at | dateago }}) </strong>
                         </div>
                     </div>
                     <hr class="solid" style="border-top: 1px solid blue">
@@ -80,7 +84,7 @@
                             <strong>Updated At</strong>
                         </div>
                         <div class="col-sm-3">
-                            <strong> {{userProfile.updated_at | dateago }} </strong>
+                            <strong> {{userProfile.updated_at | date }} | ({{userProfile.updated_at | dateago }}) </strong>
                         </div>
                     </div>
                     <hr class="solid" style="border-top: 1px solid blue">
@@ -89,4 +93,5 @@
         </div>
     </div>
 </div>
-<div style="margin-bottom:10%"></div>
+<div style="margin-bottom:5%"></div>
+</ng-template>

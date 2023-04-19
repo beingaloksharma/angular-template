@@ -8,3 +8,7 @@ footer {
     background-color: DarkSalmon;
     color: white;
 }
+
+ul.nav.justify-content-end.mt-2 {
+    margin-right: 9%;
+}

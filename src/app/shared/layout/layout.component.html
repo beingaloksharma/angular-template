@@ -1,18 +1,18 @@
 <ul class="nav justify-content-end mt-2" style="margin-top:2%;">
-    <li class="nav-item p-1">
+    <li class="nav-item p-1 float-start">
         <button mat-mini-fab color="primary" aria-label="Home" [routerLink]="['/books']">
             <mat-icon>home</mat-icon>
         </button>
     </li>
     <li class="nav-item p-1">
-        <button type="button" class="btn btn-primary"  [routerLink]="['/user/profile']">User Profile</button>
+        <button type="button" class="btn btn-outline-primary"  (click)="userDetails()">User Profile</button>
     </li>
     <li class="nav-item p-1">
-        <button type="button" class="btn btn-primary" (click)="logout()">Logout</button>
+        <button type="button" class="btn btn-outline-primary" (click)="logout()">Logout</button>
     </li>
 </ul>
 <router-outlet></router-outlet>
 <footer>
     <p> <i class="fa fa-copyright"></i> Angular Template 2023<br>
     </p>
-</footer>JSON.parse(localStorage["userdetails"])["user_name"]
+</footer>

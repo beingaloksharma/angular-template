@@ -67,8 +67,6 @@ export class LoginComponent {
       }
       //Call Service 
       this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
-        //Promt success message
-        this._toastr.success("User Login sucessfully");
         //Set Loader true 
         this.loading = true;
         setTimeout(() => {
@@ -89,6 +87,10 @@ export class LoginComponent {
           switch (error.status) {
             case 400: {
               this._toastr.error("Bad request");
+              break;
+            }
+            case 404: {
+              this._toastr.error(error.error['error_message']);
               break;
             }
             case 500: {
