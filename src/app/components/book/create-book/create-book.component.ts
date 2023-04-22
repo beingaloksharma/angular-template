@@ -14,6 +14,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./create-book.component.css']
 })
 export class CreateBookComponent implements OnInit {
+  //To Store Countries 
+  countries: string[] = [];
+  //To Store Publications
+  publications: string[] = [];
   //To store keyboards
   keywords: Keywords[] = [];
   //Book Category
@@ -70,6 +74,16 @@ export class CreateBookComponent implements OnInit {
       this.keywords = res;
     });
 
+    //Get Countires 
+    this._commonService.get(this._constants.SERVER_URL + "countries").subscribe((res: string[]) => {
+      this.countries = res;
+    });
+
+    //Get Publications 
+    this._commonService.get(this._constants.SERVER_URL + "publications").subscribe((res: string[]) => {
+      this.publications = res;
+    });
+
   }
 
   //ngOnInit
@@ -102,8 +116,8 @@ export class CreateBookComponent implements OnInit {
       edition: ["", Validators.compose([Validators.required])],
       author_name: ["", Validators.compose([Validators.required])],
       isbn_no: ["", Validators.compose([Validators.required])],
-      languages: [""],
-      keywords: [""],
+      languages: ["", Validators.compose([Validators.required])],
+      keywords: ["", Validators.compose([Validators.required])],
       publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
       publication_date: ["", Validators.compose([Validators.required])],

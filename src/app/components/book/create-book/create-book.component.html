@@ -94,29 +94,26 @@
                     <!-- Third Row -->
                     <div class="row">
                         <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Country of Origin</mat-label>
-                                <input matInput placeholder="Enter Country Name" formControlName="country_of_origin">
-                                <mat-icon matSuffix>book</mat-icon>
-                                <mat-error *ngIf="ctrl['reading_age'].hasError('required')">
-                                    <mat-hint> Country Origin is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
+                            <ng-select placeholder="Select Country Name" class="width" appearance="outline"
+                                [items]="countries" formControlName="country_of_origin" [addTag]="true">
+                            </ng-select>
+                            <mat-error *ngIf="ctrl['country_of_origin'].hasError('required')">
+                                <mat-hint> Country Origin is required !!! </mat-hint>
+                            </mat-error>
                         </div>
                         <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Publication</mat-label>
-                                <input matInput placeholder="Enter Publication Name" formControlName="publication">
-                                <mat-icon matSuffix>book</mat-icon>
-                                <mat-error *ngIf="ctrl['publication'].hasError('required')">
-                                    <mat-hint> Publication is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
+                            <ng-select placeholder="Enter Publication Name" formControlName="publication" class="width"
+                                appearance="outline" [items]="publications" [addTag]="true">
+                            </ng-select>
+                            <mat-error *ngIf="ctrl['publication'].hasError('required')">
+                                <mat-hint> Publication is required !!! </mat-hint>
+                            </mat-error>
                         </div>
                         <div class="col-sm-4">
                             <mat-form-field appearance="outline" class="width">
                                 <mat-label>Publication Date</mat-label>
-                                <input [min]="minDate" [max]="maxDate" matInput [matDatepicker]="picker" formControlName="publication_date">
+                                <input [min]="minDate" [max]="maxDate" matInput [matDatepicker]="picker"
+                                    formControlName="publication_date">
                                 <mat-datepicker-toggle matIconSuffix [for]="picker">
                                     <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                                 </mat-datepicker-toggle>
@@ -132,16 +129,16 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <ng-select placeholder="Select Languages" appearance="outline" class="width"
-                            formControlName="languages" [items]="languages" [addTag]="addLanguagesFn" [multiple]="true"
-                            bindLabel="language">
-                        </ng-select>
-                        <mat-error *ngIf="ctrl['languages'].hasError('required')">
-                            <mat-hint> Languages are required !!! </mat-hint>
-                        </mat-error>
+                                formControlName="languages" [items]="languages" [addTag]="addLanguagesFn"
+                                [multiple]="true" bindLabel="language">
+                            </ng-select>
+                            <mat-error *ngIf="ctrl['languages'].hasError('required')">
+                                <mat-hint> Languages are required !!! </mat-hint>
+                            </mat-error>
                         </div>
                         <div class="col-sm-4">
                             <ng-select placeholder="Select Keywords" appearance="outline" class="width"
-                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn"  [multiple]="true"
+                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn" [multiple]="true"
                                 bindLabel="keyword">
                             </ng-select>
                             <mat-error *ngIf="ctrl['keywords'].hasError('required')">
