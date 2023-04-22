@@ -99,11 +99,23 @@ export class SignupComponent {
         //Check Status Code
         switch (error.status) {
           case 400: {
-            this._toastr.error("Bad request");
+            this._toastr.error(error.error.error_message);
+            break;
+          }
+          case 404: {
+            this._toastr.error(error.error.error_message);
+            break;
+          }
+          case 409: {
+            this._toastr.error(error.error.error_message);
             break;
           }
           case 500: {
-            this._toastr.error("Internal Server Error");
+            this._toastr.error(error.error.error_message);
+            break;
+          }
+          case 600: {
+            this._toastr.error(error.error.error_message);
             break;
           }
           default: {

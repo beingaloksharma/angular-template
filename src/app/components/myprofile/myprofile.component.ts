@@ -2,9 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserProfile } from 'src/app/shared/models/book';
+import { DeactivateTenant, UserProfile } from 'src/app/shared/models/book';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-myprofile',
@@ -77,6 +78,79 @@ export class MyprofileComponent {
           }
         }
       });
+  }
+
+  //Deactivate Tenant 
+  deactivateTenant(status:string) {
+    //swal Alert
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Want to delete your tenant ",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it !',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Decalre model for update status 
+        var deactiateTenant: DeactivateTenant = { status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
+        //Deactivate Tenant 
+        this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe((res: any) => {
+          // Update the table with latest data
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            //redirect to login page 
+            this._router.navigate(['auth/login']);
+          }, 1000)
+        },
+          (error: HttpErrorResponse) => {
+            switch (error.status) {
+              case 400: {
+                this._toastr.error(error.error.error_message);
+                break;
+              }
+              case 404: {
+                this._toastr.error(error.error.error_message);
+                this.loading = true
+                setTimeout(() => {
+                  //redirect to login page 
+                  this._router.navigate(['auth/login']);
+                  this.loading = false;
+                }, 2000);
+                break;
+              }
+              case 409: {
+                this._toastr.error(error.error.error_message);
+                break;
+              }
+              case 500: {
+                this._toastr.error(error.error.error_message);
+                break;
+              }
+              case 602: {
+                this._toastr.error(error.error.error_message);
+                break;
+              }
+              default: {
+                if (error.ok) {
+                  this._toastr.error("Backend Server is not running");
+                  break;
+                }
+                this._toastr.error(error.statusText);
+                break;
+              }
+            }
+          });
+        //Swal Fire after successfull deletion
+        Swal.fire(
+          'Deleted!',
+          'Your tenant has been deleted.',
+          'success'
+        )
+      }
+    })
   }
 
 }

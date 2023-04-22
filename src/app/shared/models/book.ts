@@ -76,3 +76,9 @@ export interface UserProfile {
     updated_at: string
     updated_by: string
 }
+
+//DeactivateTenant 
+export interface DeactivateTenant {
+    status: string
+    updated_by: string
+}
