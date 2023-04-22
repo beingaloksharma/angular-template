@@ -9,12 +9,15 @@ import Swal from 'sweetalert2';
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
-
+   name:string = "";
   //Constructor 
   constructor(
     private _auth:AuthService,
     private _router:Router
-  ){}
+  ){
+    //To Store Name
+    this.name = JSON.parse(localStorage.getItem('userdetails')).name ;
+  }
 
   //Logout 
   logout(){

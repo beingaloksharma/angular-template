@@ -88,7 +88,7 @@ export class SignupComponent {
            //Reset the form in Initial state 
            this.onReset();
            //redirect to home page 
-           this._router.navigate(['../login']);
+           this._router.navigate(['auth/login']);
          }, 1000)
       },
       (error: HttpErrorResponse) => {
