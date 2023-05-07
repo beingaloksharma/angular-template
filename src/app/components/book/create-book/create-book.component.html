@@ -1,177 +1,243 @@
-<div *ngIf="loading ;else elseBlock">
-    <app-spinner></app-spinner>
+<div class="center">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title color="primary">
+        <section>
+          <div class="example-label">
+            <button
+              mat-button
+              color="accent"
+              aria-disabled="true"
+              tabindex="-1"
+            >
+              <h1>Book</h1>
+            </button>
+          </div>
+        </section>
+        <mat-divider></mat-divider>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="bookForm" (ngSubmit)="SaveAndUpdateBook()">
+        <!-- First Row -->
+        <div class="row">
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label>Name</mat-label>
+              <input
+                matInput
+                placeholder="Enter Book Name"
+                formControlName="name"
+              />
+              <mat-icon matSuffix>book</mat-icon>
+              <mat-error *ngIf="ctrl['name'].hasError('required')">
+                <mat-hint> Name is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label>Author Name</mat-label>
+              <input
+                matInput
+                placeholder="Enter Author Name"
+                formControlName="author_name"
+              />
+              <mat-icon matSuffix>person_pin</mat-icon>
+              <mat-error *ngIf="ctrl['author_name'].hasError('required')">
+                <mat-hint> Author Name is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label>Select Category</mat-label>
+              <mat-select formControlName="category">
+                <mat-option
+                  *ngFor="let category of categories"
+                  value="{{ category }}"
+                >
+                  {{ category }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>vertical_split</mat-icon>
+              <mat-error *ngIf="ctrl['category'].hasError('required')">
+                <mat-hint> Category is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <!-- Second Row -->
+        <div class="row">
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label> Select Edition</mat-label>
+              <mat-select formControlName="edition">
+                <mat-option
+                  *ngFor="let edition of editions"
+                  value="{{ edition }}"
+                >
+                  {{ edition }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>vertical_split</mat-icon>
+              <mat-error *ngIf="ctrl['edition'].hasError('required')">
+                <mat-hint> Edition is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label> ISBN No</mat-label>
+              <input
+                matInput
+                placeholder="Enter ISBN No"
+                formControlName="isbn_no"
+              />
+              <mat-icon matSuffix>confirmation_number</mat-icon>
+              <mat-error *ngIf="ctrl['isbn_no'].hasError('required')">
+                <mat-hint> ISBN No is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <div>
+              <mat-label> Reading Age </mat-label>
+            </div>
+            <mat-slider
+              [max]="60"
+              [min]="14"
+              [step]="1"
+              [discrete]="false"
+              [disableRipple]="true"
+            >
+              <input matSliderThumb #agevalue formControlName="reading_age" />
+            </mat-slider>
+            <b style="color: blue"> {{ agevalue.value }}</b>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <!-- Third Row -->
+        <div class="row">
+          <div class="col-sm-4">
+            <ng-select
+              placeholder="Select Country Name"
+              class="width"
+              appearance="outline"
+              [items]="countries"
+              formControlName="country_of_origin"
+              [addTag]="true"
+            >
+            </ng-select>
+            <mat-error *ngIf="ctrl['country_of_origin'].hasError('required')">
+              <mat-hint> Country Origin is required !!! </mat-hint>
+            </mat-error>
+          </div>
+          <div class="col-sm-4">
+            <ng-select
+              placeholder="Enter Publication Name"
+              formControlName="publication"
+              class="width"
+              appearance="outline"
+              [items]="publications"
+              [addTag]="true"
+            >
+            </ng-select>
+            <mat-error *ngIf="ctrl['publication'].hasError('required')">
+              <mat-hint> Publication is required !!! </mat-hint>
+            </mat-error>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label>Publication Date</mat-label>
+              <input
+                [min]="minDate"
+                [max]="maxDate"
+                matInput
+                [matDatepicker]="picker"
+                formControlName="publication_date"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="picker">
+                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="ctrl['publication_date'].hasError('required')">
+                <mat-hint> Publication date is required !!! </mat-hint>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <!-- Fourth Row -->
+        <div class="row">
+          <div class="col-sm-4">
+            <ng-select
+              placeholder="Select Languages"
+              appearance="outline"
+              class="width"
+              formControlName="languages"
+              [items]="languages"
+              [addTag]="addLanguagesFn"
+              [multiple]="true"
+              bindLabel="language"
+            >
+            </ng-select>
+            <mat-error *ngIf="ctrl['languages'].hasError('required')">
+              <mat-hint> Languages are required !!! </mat-hint>
+            </mat-error>
+          </div>
+          <div class="col-sm-4">
+            <ng-select
+              placeholder="Select Keywords"
+              appearance="outline"
+              class="width"
+              formControlName="keywords"
+              [items]="keywords"
+              [addTag]="addKeywordsFn"
+              [multiple]="true"
+              bindLabel="keyword"
+            >
+            </ng-select>
+            <mat-error *ngIf="ctrl['keywords'].hasError('required')">
+              <mat-hint> Keywords are required !!! </mat-hint>
+            </mat-error>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="width">
+              <mat-label>Paperback</mat-label>
+              <input
+                matInput
+                placeholder="Enter Paperback No"
+                formControlName="paperback"
+              />
+              <mat-icon matSuffix>book</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row">
+          <div class="col-sm-4"></div>
+          <div class="col-sm-4">
+            <button mat-fab extended color="primary">
+              <mat-icon>save</mat-icon>
+              {{ btnText }}
+            </button>
+            <button
+              mat-fab
+              extended
+              color="warn"
+              class="ms-2"
+              (click)="onReset()"
+            >
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </div>
+          <div class="col-sm-4"></div>
+        </div>
+        <mat-divider></mat-divider>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
-<ng-template #elseBlock>
-    <div class="center">
-        <mat-card class="card">
-            <mat-card-header>
-                <mat-card-title color="primary">
-                    <section>
-                        <div class="example-label">
-                            <button mat-button color="accent" aria-disabled="true" tabindex="-1">
-                                <h1>Book</h1>
-                            </button>
-                        </div>
-                    </section>
-                    <mat-divider></mat-divider>
-                </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <form [formGroup]="bookForm" (ngSubmit)="SaveAndUpdateBook()">
-                    <!-- First Row -->
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Name</mat-label>
-                                <input matInput placeholder="Enter Book Name" formControlName="name">
-                                <mat-icon matSuffix>book</mat-icon>
-                                <mat-error *ngIf="ctrl['name'].hasError('required')">
-                                    <mat-hint> Name is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Author Name</mat-label>
-                                <input matInput placeholder="Enter Author Name" formControlName="author_name">
-                                <mat-icon matSuffix>person_pin</mat-icon>
-                                <mat-error *ngIf="ctrl['author_name'].hasError('required')">
-                                    <mat-hint> Author Name is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Select Category</mat-label>
-                                <mat-select formControlName="category">
-                                    <mat-option *ngFor="let category of categories" value={{category}}> {{category}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-icon matSuffix>vertical_split</mat-icon>
-                                <mat-error *ngIf="ctrl['category'].hasError('required')">
-                                    <mat-hint> Category is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <!-- Second Row -->
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label> Select Edition</mat-label>
-                                <mat-select formControlName="edition">
-                                    <mat-option *ngFor="let edition of editions" value={{edition}}> {{edition}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-icon matSuffix>vertical_split</mat-icon>
-                                <mat-error *ngIf="ctrl['edition'].hasError('required')">
-                                    <mat-hint> Edition is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label> ISBN No</mat-label>
-                                <input matInput placeholder="Enter ISBN No" formControlName="isbn_no">
-                                <mat-icon matSuffix>confirmation_number</mat-icon>
-                                <mat-error *ngIf="ctrl['isbn_no'].hasError('required')">
-                                    <mat-hint> ISBN No is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-sm-4">
-                            <div>
-                                <mat-label> Reading Age </mat-label>
-                            </div>
-                            <mat-slider [max]="60" [min]="14" [step]="1" [discrete]=false [disableRipple]=true>
-                                <input matSliderThumb #agevalue formControlName="reading_age">
-                            </mat-slider>
-                            <b style="color:blue"> {{agevalue.value}}</b>
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <!-- Third Row -->
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <ng-select placeholder="Select Country Name" class="width" appearance="outline"
-                                [items]="countries" formControlName="country_of_origin" [addTag]="true">
-                            </ng-select>
-                            <mat-error *ngIf="ctrl['country_of_origin'].hasError('required')">
-                                <mat-hint> Country Origin is required !!! </mat-hint>
-                            </mat-error>
-                        </div>
-                        <div class="col-sm-4">
-                            <ng-select placeholder="Enter Publication Name" formControlName="publication" class="width"
-                                appearance="outline" [items]="publications" [addTag]="true">
-                            </ng-select>
-                            <mat-error *ngIf="ctrl['publication'].hasError('required')">
-                                <mat-hint> Publication is required !!! </mat-hint>
-                            </mat-error>
-                        </div>
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Publication Date</mat-label>
-                                <input [min]="minDate" [max]="maxDate" matInput [matDatepicker]="picker"
-                                    formControlName="publication_date">
-                                <mat-datepicker-toggle matIconSuffix [for]="picker">
-                                    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-                                </mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
-                                <mat-error *ngIf="ctrl['publication_date'].hasError('required')">
-                                    <mat-hint> Publication date is required !!! </mat-hint>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <!-- Fourth Row -->
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <ng-select placeholder="Select Languages" appearance="outline" class="width"
-                                formControlName="languages" [items]="languages" [addTag]="addLanguagesFn"
-                                [multiple]="true" bindLabel="language">
-                            </ng-select>
-                            <mat-error *ngIf="ctrl['languages'].hasError('required')">
-                                <mat-hint> Languages are required !!! </mat-hint>
-                            </mat-error>
-                        </div>
-                        <div class="col-sm-4">
-                            <ng-select placeholder="Select Keywords" appearance="outline" class="width"
-                                formControlName="keywords" [items]="keywords" [addTag]="addKeywordsFn" [multiple]="true"
-                                bindLabel="keyword">
-                            </ng-select>
-                            <mat-error *ngIf="ctrl['keywords'].hasError('required')">
-                                <mat-hint> Keywords are required !!! </mat-hint>
-                            </mat-error>
-                        </div>
-                        <div class="col-sm-4">
-                            <mat-form-field appearance="outline" class="width">
-                                <mat-label>Paperback</mat-label>
-                                <input matInput placeholder="Enter Paperback No" formControlName="paperback">
-                                <mat-icon matSuffix>book</mat-icon>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="row">
-                        <div class="col-sm-4"></div>
-                        <div class="col-sm-4">
-                            <button mat-fab extended color="primary">
-                                <mat-icon>save</mat-icon>
-                                {{btnText}}
-                            </button>
-                            <button mat-fab extended color="warn" class="ms-2" (click)="onReset()">
-                                <mat-icon>cancel</mat-icon>
-                                Cancel
-                            </button>
-                        </div>
-                        <div class="col-sm-4">
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                </form>
-            </mat-card-content>
-        </mat-card>
-    </div>
-</ng-template>

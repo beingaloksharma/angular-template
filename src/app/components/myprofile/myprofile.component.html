@@ -1,115 +1,130 @@
-<div *ngIf="loading ;else elseBlock">
-    <app-spinner></app-spinner>
+<div class="container mt-3">
+  <h2></h2>
+  <div class="card">
+    <div class="card-header bg-primary text-white" style="font-size: 20px">
+      User Profile
+    </div>
+    <div class="card-body">
+      <table class="table table-striped" *ngIf="userProfile">
+        <tbody>
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>ID</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.id }} </strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>Status</strong>
+            </div>
+            <div class="col-sm-3">
+              <!-- <strong> {{userProfile.status}} </strong> -->
+              <span *ngIf="userProfile.status == 'Active'">
+                <button mat-fab extended>
+                  <mat-icon>check_circle</mat-icon> {{ userProfile.status }}
+                </button>
+              </span>
+              <span *ngIf="userProfile.status == 'Delete'">
+                <button mat-fab extended color="warn">
+                  <mat-icon>delete</mat-icon> {{ userProfile.status }}
+                </button>
+              </span>
+            </div>
+          </div>
+          <hr class="solid" style="border-top: 1px solid blue" />
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Name</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.name }} </strong>
+            </div>
+          </div>
+          <hr class="solid" style="border-top: 1px solid blue" />
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Email</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.email }} </strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>User Name</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.user_name }} </strong>
+            </div>
+          </div>
+          <hr class="solid" style="border-top: 1px solid blue" />
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Created By</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.created_by }} </strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>Created At</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>
+                {{ userProfile.created_at | date }} | ({{
+                  userProfile.created_at | dateago
+                }})
+              </strong>
+            </div>
+          </div>
+          <hr class="solid" style="border-top: 1px solid blue" />
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Updated By</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong> {{ userProfile.updated_by }} </strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>Updated At</strong>
+            </div>
+            <div class="col-sm-3">
+              <strong>
+                {{ userProfile.updated_at | date }} | ({{
+                  userProfile.updated_at | dateago
+                }})
+              </strong>
+            </div>
+          </div>
+          <hr class="solid" style="border-top: 1px solid blue" />
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<ng-template #elseBlock>
-    <div class="container mt-3">
-        <h2></h2>
-        <div class="card">
-            <div class="card-header bg-primary text-white" style="font-size:20px">User Profile</div>
-            <div class="card-body">
-                <table class="table table-striped" *ngIf="userProfile">
-                    <tbody>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <strong>ID</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.id}} </strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong>Status</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <!-- <strong> {{userProfile.status}} </strong> -->
-                                <span *ngIf="userProfile.status == 'Active'">
-                                    <button mat-fab extended>
-                                        <mat-icon>check_circle</mat-icon> {{userProfile.status}}
-                                    </button>
-                                </span>
-                                <span *ngIf="userProfile.status == 'Delete'">
-                                    <button mat-fab extended color="warn">
-                                        <mat-icon>delete</mat-icon> {{userProfile.status}}
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <hr class="solid" style="border-top: 1px solid blue">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <strong>Name</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.name}} </strong>
-                            </div>
-                        </div>
-                        <hr class="solid" style="border-top: 1px solid blue">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <strong>Email</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.email}} </strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong>User Name</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.user_name}} </strong>
-                            </div>
-                        </div>
-                        <hr class="solid" style="border-top: 1px solid blue">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <strong>Created By</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.created_by}} </strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong>Created At</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.created_at | date }} | ({{userProfile.created_at | dateago }})
-                                </strong>
-                            </div>
-                        </div>
-                        <hr class="solid" style="border-top: 1px solid blue">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <strong>Updated By</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.updated_by}} </strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong>Updated At</strong>
-                            </div>
-                            <div class="col-sm-3">
-                                <strong> {{userProfile.updated_at | date }} | ({{userProfile.updated_at | dateago }})
-                                </strong>
-                            </div>
-                        </div>
-                        <hr class="solid" style="border-top: 1px solid blue">
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="container mt-3">
+  <h2></h2>
+  <div class="card danger">
+    <div class="card-header bg-danger text-white" style="font-size: 20px">
+      Danger Zone
     </div>
-    <div class="container mt-3">
-        <h2></h2>
-        <div class="card danger" >
-            <div class="card-header bg-danger text-white" style="font-size:20px">Danger Zone</div>
-            <div class="card-body" *ngIf="userProfile">
-                <div class="row">
-                    <div class="col-sm-6">
-                      <strong>Delete Your Tenant</strong>
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-danger" (click)="deactivateTenant(userProfile.status == 'Active' ? 'Delete' : 'Active')">Click Here</button>
-                    </div>
-                </div>
-            </div>
+    <div class="card-body" *ngIf="userProfile">
+      <div class="row">
+        <div class="col-sm-6">
+          <strong>Delete Your Tenant</strong>
         </div>
+        <div class="col-sm-3">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="
+              deactivateTenant(
+                userProfile.status == 'Active' ? 'Delete' : 'Active'
+              )
+            "
+          >
+            Click Here
+          </button>
+        </div>
+      </div>
     </div>
-    <div style="margin-bottom:5%"></div>
-</ng-template>
+  </div>
+</div>
+<div style="margin-bottom: 5%"></div>
