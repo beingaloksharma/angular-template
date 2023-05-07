@@ -1,46 +1,80 @@
 <div class="center">
-    <mat-card class="card">
-        <mat-card-header>
-            <mat-card-title color="primary">
-                <h1>Login</h1>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="login()">
-            <div class="row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Username or Email</mat-label>
-                    <input matInput placeholder="Enter Your Username or Email" formControlName="user_name">
-                    <mat-icon matSuffix>supervised_user_circle</mat-icon>
-                  </mat-form-field>
-            </div>
-            <div class="row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Password</mat-label>
-                    <input matInput [type]="hide ? 'password' : 'text'" placeholder="Enter Your Password" formControlName="password">
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </button>
-                  </mat-form-field>
-            </div>
-            <div class="row">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-4">
-                    <button mat-raised-button color="primary" type="submit">Login</button>
-                </div>
-                <div class="col-sm-4"></div>
-            </div>
-        </form>
-            <div class="row">
-                <div class="col-sm-4">
-                <a routerLink="../signup"> ohh !!!. Register Here </a>
-                </div>
-                <div class="col-sm-4">
-                </div>
-                <div class="col-sm-4">
-                   <a routerLink="../forgot-password"> Forgot Password ? </a>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+  <mat-card class="card">
+    <div class="center"><h1><b>Book Store Management</b></h1></div>
+    <mat-card-header>
+      <mat-card-title color="primary">
+        <h1>Login</h1>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Username or Email</mat-label>
+            <input
+              matInput
+              placeholder="Enter Your Username or Email"
+              formControlName="user_name"
+            />
+            <mat-icon matSuffix>supervised_user_circle</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              placeholder="Enter Your Password"
+              formControlName="password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hide = !hide"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="center">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            style="width:50%"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <div class="center">Or</div>
+    <mat-divider></mat-divider>
+    <mat-card-actions class="center">
+          <button
+            routerLink="../signup"
+            mat-raised-button
+            color="accent"
+            type="button"
+            style="width:50%"
+          >
+            Sign Up
+          </button>
+          <mat-icon></mat-icon>
+          <button
+            routerLink="../forgot-password"
+            mat-raised-button
+            color="accent"
+            type="button"
+            style="width:50%"
+          >
+            Forgot Password
+          </button>
+          <mat-icon></mat-icon>
+    </mat-card-actions>
+  </mat-card>
 </div>
