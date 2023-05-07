@@ -12,3 +12,19 @@ footer {
 ul.nav.justify-content-end.mt-2 {
     margin-right: 9%;
 }
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+mat-drawer {
+    width: 260px;
+}
+mat-drawer-container {
+    height: 100%;
+}
+mat-drawer {
+    background: whitesmoke;
+    color: black;
+}

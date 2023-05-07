@@ -19,6 +19,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
+import { MatTreeModule } from '@angular/material/tree';
 
 const components = [
   MatSliderModule,
@@ -39,7 +44,12 @@ const components = [
   MatDatepickerModule,
   MatExpansionModule,
   MatChipsModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatSidenavModule,
+  MatToolbarModule,
+  MatMenuModule,
+  MatListModule,
+  MatTreeModule,
 ]
 
 @NgModule({

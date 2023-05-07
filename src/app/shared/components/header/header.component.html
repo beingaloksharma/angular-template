@@ -1,0 +1,22 @@
+<mat-toolbar>
+  <mat-toolbar-row class="justify-content-between">
+    <button mat-icon-button (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="row mr-2 ml-auto">
+      <div class="flex-container">
+        <div>
+          <button mat-mini-fab color="primary" (click)="userDetails()">
+            <mat-icon>person_pin</mat-icon>
+          </button>
+          Profile
+        </div>
+        <div>
+          <button mat-mini-fab color="primary" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+          </button> Logout
+        </div>
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

@@ -1,4 +1,4 @@
-<ul class="nav justify-content-end mt-2" style="margin-top:2%;">
+<!-- <ul class="nav justify-content-end mt-2" style="margin-top:2%;">
     <li class="nav-item p-1 float-start">
         <b>Welcome :: {{name}}</b>
     </li>
@@ -18,4 +18,16 @@
 <footer>
     <p> <i class="fa fa-copyright"></i> Angular Template 2023<br>
     </p>
-</footer>
+</footer> -->
+
+<mat-drawer-container style="height: 100%">
+    <mat-drawer class="example-sidenav" mode="side" [opened]="sideBarOpen" autosize>
+      <!-- <mat-drawer mode="side" opened="true"> -->
+      <app-side-nav></app-side-nav>
+    </mat-drawer>
+    <mat-drawer-content>
+      <app-header (toggleSidebarForMe)="sideBarToggler()"></app-header>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>
+  

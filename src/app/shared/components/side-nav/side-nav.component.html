@@ -1,0 +1,32 @@
+<mat-nav-list>
+    <div class="logo py-4">
+      Book Management
+    </div>
+    <mat-divider></mat-divider>
+    <!-- User Information -->
+    <!-- <h2 matSubheader class="mt-2" style="padding-left:15px">
+     Welcome {{name}}
+    </h2> -->
+    <!-- Dashboard -->
+    <h2 matSubheader class="mt-2" style="padding-left:15px">Dashboard</h2>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/dashboard">
+      <mat-icon>dashboard</mat-icon> Dashboard
+    </a>
+    <mat-divider></mat-divider>
+    <!-- Book Management -->
+    <h2 matSubheader class="mt-2" style="padding-left:15px">Book Management</h2>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="books">
+      <mat-icon>book</mat-icon> Books
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/books/create">
+      <mat-icon>note_add</mat-icon> New Book
+    </a>
+    <mat-divider></mat-divider>
+    <!-- User Profile -->
+    <h2 matSubheader class="mt-2" style="padding-left:15px">Profile</h2>
+    <a mat-list-item routerLinkActive="list-item-active" (click)="userDetails()">
+      <mat-icon>person_pin</mat-icon> Profile
+    </a>
+  
+  </mat-nav-list>
+  

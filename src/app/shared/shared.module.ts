@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { DateagoPipe } from './pipes/dateago.pipe';
+import { HeaderComponent } from './components/header/header.component';
+import { SideNavComponent } from './components/side-nav/side-nav.component';
 
 
 
@@ -14,7 +16,9 @@ import { DateagoPipe } from './pipes/dateago.pipe';
     LayoutComponent,
     SpinnerComponent,
     NotfoundComponent,
-    DateagoPipe
+    DateagoPipe,
+    HeaderComponent,
+    SideNavComponent
   ],
   imports: [
     CommonModule,
