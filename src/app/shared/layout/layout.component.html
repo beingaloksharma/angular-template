@@ -1,33 +1,14 @@
-<!-- <ul class="nav justify-content-end mt-2" style="margin-top:2%;">
-    <li class="nav-item p-1 float-start">
-        <b>Welcome :: {{name}}</b>
-    </li>
-    <li class="nav-item p-1 float-start">
-        <button mat-mini-fab color="primary" aria-label="Home" [routerLink]="['/books']">
-            <mat-icon>home</mat-icon>
-        </button>
-    </li>
-    <li class="nav-item p-1">
-        <button type="button" class="btn btn-outline-primary"  (click)="userDetails()">User Profile</button>
-    </li>
-    <li class="nav-item p-1">
-        <button type="button" class="btn btn-outline-primary" (click)="logout()">Logout</button>
-    </li>
-</ul>
-<router-outlet></router-outlet>
-<footer>
-    <p> <i class="fa fa-copyright"></i> Angular Template 2023<br>
-    </p>
-</footer> -->
-
-<mat-drawer-container>
-    <mat-drawer class="example-sidenav" mode="side" [opened]="sideBarOpen" autosize>
-      <!-- <mat-drawer mode="side" opened="true"> -->
-      <app-side-nav></app-side-nav>
-    </mat-drawer>
-    <mat-drawer-content>
-      <app-header (toggleSidebarForMe)="sideBarToggler()"></app-header>
-      <router-outlet></router-outlet>
-    </mat-drawer-content>
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer
+    class="example-sidenav"
+    mode="side"
+    [opened]="sideBarOpen"
+    autosize
+  >
+    <app-side-nav></app-side-nav>
+  </mat-drawer>
+  <mat-drawer-content>
+    <app-header (toggleSidebarForMe)="sideBarToggler()"></app-header>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
 </mat-drawer-container>
-  

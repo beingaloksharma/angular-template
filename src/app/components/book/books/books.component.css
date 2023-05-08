@@ -25,7 +25,6 @@ mat-card-title {
 }
 
 .center {
-    display: flex;
     justify-content: center;
     justify-items: center;
 }
