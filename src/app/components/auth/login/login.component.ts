@@ -22,8 +22,6 @@ export class LoginComponent {
   loginForm: FormGroup;
   //Check Submission 
   isSubmit: boolean = false;
-  //loading
-  loading: boolean;
 
   //constructor
   constructor(
@@ -67,16 +65,12 @@ export class LoginComponent {
       }
       //Call Service 
       this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
-        //Set Loader true 
-        this.loading = true;
         setTimeout(() => {
           //Call Auth Service 
           this._auth.authLogin(res);
-          //Set Loader false 
-          this.loading = false;
           //Reset the form in Initial state 
           this.onReset();
-        }, 1000)
+        })
       },
         (error: HttpErrorResponse) => {
           //Print Log

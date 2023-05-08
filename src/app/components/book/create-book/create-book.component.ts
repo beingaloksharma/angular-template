@@ -36,8 +36,6 @@ export class CreateBookComponent implements OnInit {
   dbOps: DBOps;
   //payload 
   payload: Book;
-  //loading
-  loading: boolean;
   //minimum date
   minDate = new Date(2000, 0, 1);
   //maximum date
@@ -155,18 +153,14 @@ export class CreateBookComponent implements OnInit {
           }
           //call service
           this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
-            //Set Loader true 
-            this.loading = true;
             setTimeout(() => {
-              //Set Loader false 
-              this.loading = false;
               //Reset the form in Initial state 
               this.onReset();
               //Promt success message
               this._toastr.success("Book record added sucessfully");
               //redirect to home page 
               this._router.navigate(['/books']);
-            }, 1000)
+            })
           },
             (error: HttpErrorResponse) => {
               switch (error.error.error_code) {
@@ -204,18 +198,14 @@ export class CreateBookComponent implements OnInit {
           }
           //call service
           this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
-            //Set Loader true 
-            this.loading = true;
             setTimeout(() => {
-              //Set Loader false 
-              this.loading = false;
               //Reset the form in Initial state 
               this.onReset();
               //Promt success message
               this._toastr.success("User record updated sucessfully");
               //redirect to home page 
               this._router.navigate(['/books/book/', this.payload.id]);
-            }, 1000)
+            })
           },
             (error: HttpErrorResponse) => {
               switch (error.error.error_code) {
@@ -253,8 +243,6 @@ export class CreateBookComponent implements OnInit {
   private getBookDetailsForUpdate(id: number) {
     //call service 
     this._commonService.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: any) => {
-      //Loading true
-      this.loading = true
       setTimeout(() => {
         //Set Value to bookForm
         this.bookForm.patchValue(res);
@@ -262,9 +250,7 @@ export class CreateBookComponent implements OnInit {
         this.btnText = "Update";
         //Set DbOps
         this.dbOps = DBOps.Update;
-        //Loading false
-        this.loading = false;
-      }, 1000);
+      });
     },
       (error: HttpErrorResponse) => {
         switch (error.status) {
@@ -274,10 +260,8 @@ export class CreateBookComponent implements OnInit {
           }
           case 404: {
             this._toastr.error("Record not found");
-            this.loading = true
             setTimeout(() => {
               this._router.navigate(['/books']);
-              this.loading = false;
             }, 3000);
             break;
           }

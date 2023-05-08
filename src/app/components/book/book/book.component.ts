@@ -17,8 +17,6 @@ export class BookComponent {
   id: number;
   //To Store Book
   book: Book;
-  //To Store Loading Infromation
-  loading: boolean;
   //disabled
   isDisabled: boolean = true;
 
@@ -46,11 +44,9 @@ export class BookComponent {
   //getBookById
   public getBookById(id: number) {
     this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: Book) => {
-      this.loading = true;
       setTimeout(() => {
         this.book = res;
-        this.loading = false;
-      }, 1000)
+      })
     },
       (error: HttpErrorResponse) => {
         switch (error.status) {
@@ -60,10 +56,8 @@ export class BookComponent {
           }
           case 404: {
             this._toastr.error(error.error.error_message);
-            this.loading = true
             setTimeout(() => {
               this._router.navigate(['/books']);
-              this.loading = false;
             }, 3000);
             break;
           }
@@ -94,13 +88,10 @@ export class BookComponent {
       if (result.isConfirmed) {
         //call delete action
         this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
           setTimeout(() => {
-            this.loading = false;
             //Navigate to dashboard
             this._router.navigate(['/books']);
-          }, 1000)
+          })
         },
           (error: HttpErrorResponse) => {
             switch (error.status) {
@@ -110,10 +101,8 @@ export class BookComponent {
               }
               case 404: {
                 this._toastr.error(error.error.error_message);
-                this.loading = true
                 setTimeout(() => {
                   this._router.navigate(['/books']);
-                  this.loading = false;
                 }, 3000);
                 break;
               }

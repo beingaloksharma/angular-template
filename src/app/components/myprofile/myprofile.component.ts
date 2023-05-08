@@ -18,8 +18,6 @@ export class MyprofileComponent {
   public userProfile: UserProfile
   //To Store user name 
   user_name: string = "";
-  //To Store Loading Infromation
-  loading: boolean;
 
   //Constructor 
   constructor(
@@ -46,11 +44,9 @@ export class MyprofileComponent {
   private getUserDetails(username: string) {
     //Call Service 
     this._common.get(this._constants.SERVER_URL + "userprofile?user_name=" + username).subscribe((res: UserProfile) => {
-      this.loading = true;
       setTimeout(() => {
         this.userProfile = res;
-        this.loading = false;
-      }, 1000)
+      })
     },
       (error: HttpErrorResponse) => {
         switch (error.status) {
@@ -59,13 +55,11 @@ export class MyprofileComponent {
             break;
           }
           case 404: {
-            this.loading = true;
             setTimeout(() => {
               this._toastr.error(error.error.error_message);
               //redirect to home page 
               this._router.navigate(['books'])
-              this.loading = false;
-            }, 1000)
+            })
             break;
           }
           case 500: {
@@ -97,13 +91,10 @@ export class MyprofileComponent {
         var deactiateTenant: DeactivateTenant = { status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
         //Deactivate Tenant 
         this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
           setTimeout(() => {
-            this.loading = false;
             //redirect to login page 
             this._router.navigate(['auth/login']);
-          }, 1000)
+          })
         },
           (error: HttpErrorResponse) => {
             switch (error.status) {
@@ -113,12 +104,10 @@ export class MyprofileComponent {
               }
               case 404: {
                 this._toastr.error(error.error.error_message);
-                this.loading = true
                 setTimeout(() => {
                   //redirect to login page 
                   this._router.navigate(['auth/login']);
-                  this.loading = false;
-                }, 2000);
+                });
                 break;
               }
               case 409: {

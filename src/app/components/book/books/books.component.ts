@@ -31,8 +31,6 @@ export class BooksComponent implements OnInit {
    limit : number = 5;
   // ********************** Mat Paginator ******************** //
 
-  //To Store Loading Infromation
-  loading: boolean;
   //Check Status
   status: boolean;
 
@@ -63,13 +61,11 @@ export class BooksComponent implements OnInit {
   //Get All Books
   getAllBooks() {
     this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe((res: Book[]) => {
-      this.loading = true;
       setTimeout(() => {
-        this.loading = false;
         this.dataSource = new MatTableDataSource(res["books"]);
         this.totalBooks = res["total"]
         this.dataSource.paginator = this.paginator;
-      }, 1000)
+      })
     },
       (error: HttpErrorResponse) => {
         switch (error.status) {
@@ -120,13 +116,10 @@ export class BooksComponent implements OnInit {
         var updateStatus: UpdateStatus = { id: id, status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
         //update status 
         this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
           setTimeout(() => {
-            this.loading = false;
             //Reload the page 
             this.getAllBooks();
-          }, 1000)
+          })
         },
           (error: HttpErrorResponse) => {
             switch (error.status) {
@@ -136,11 +129,9 @@ export class BooksComponent implements OnInit {
               }
               case 404: {
                 this._toastr.error(error.error.error_message);
-                this.loading = true
                 setTimeout(() => {
                   this._router.navigate(['/books']);
-                  this.loading = false;
-                }, 3000);
+                });
                 break;
               }
               case 500: {

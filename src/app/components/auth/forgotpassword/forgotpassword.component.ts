@@ -21,8 +21,6 @@ export class ForgotpasswordComponent {
   payload: ForgotPassword
   //Check Submission 
   isSubmit: boolean = false;
-  //loading
-  loading: boolean;
 
   //Constrcutor
   constructor(
@@ -69,16 +67,12 @@ export class ForgotpasswordComponent {
        this._commonService.post(this._constants.SERVER_URL + "forgot", this.payload).subscribe((res :any) => {
          //Promt success message
          this._toastr.success("Password Updated sucessfully"); 
-         //Set Loader true 
-          this.loading = true;
           setTimeout(() => {
-            //Set Loader false 
-            this.loading = false;
             //Reset the form in Initial state 
             this.onReset();
             //redirect to home page 
             this._router.navigate(['auth/login']);
-          }, 1000)
+          })
        },
        (error: HttpErrorResponse) => {
          //Print Log
