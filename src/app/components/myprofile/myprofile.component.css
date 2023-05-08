@@ -1,14 +1,10 @@
 .card {
-    width: 80%;
-    margin-left: 10%;
     border-radius: 4px;
     color: rgba(0, 0, 0, .87);
     box-shadow: 10px 10px 15px darksalmon;
 }
 
 .danger {
-    width: 50%;
-    margin-left: 10%;
     border-radius: 4px;
     color: rgba(0, 0, 0, .87);
     box-shadow: 10px 10px 15px red;

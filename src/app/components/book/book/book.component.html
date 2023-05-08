@@ -1,10 +1,18 @@
-<div class="center">
+<div class="">
   <mat-card class="card" *ngIf="book">
     <mat-card-header>
       <div class="table">
         <div class="row">
           <div class="col-sm-6">
-            <h1 class="text-primary">Book Information</h1>
+            <button
+            mat-button
+            color="accent"
+            aria-disabled="true"
+            tabindex="-1"
+          >
+            <h1>Book Information</h1>
+          </button>
+            <mat-divider></mat-divider>
           </div>
           <div class="col-sm-2"></div>
           <div [ngClass]="book.status == 'delete' ? 'col-sm-4' : 'col-sm-2'">
@@ -34,7 +42,6 @@
             </span>
           </div>
         </div>
-        <mat-divider></mat-divider>
       </div>
     </mat-card-header>
     <mat-card-content>

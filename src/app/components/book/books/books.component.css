@@ -13,17 +13,10 @@ mat-card-title {
     width: 100%;
 }
 
-.mat-mdc-form-field {
-    font-size: 14px;
-    width: 100%;
-}
-
 .card {
     background-color: #fff;
     border-radius: 4px;
     color: rgba(0, 0, 0, .87);
-    margin: 8px;
-    width: 90%;
     overflow: hidden;
     position: relative;
     margin-top: 2%;

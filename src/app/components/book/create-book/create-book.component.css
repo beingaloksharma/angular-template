@@ -2,11 +2,9 @@
     background-color: #fff;
     border-radius: 4px;
     color: rgba(0, 0, 0, .87);
-    margin: 8px;
-    width: 80%;
     overflow: hidden;
     position: relative;
-    margin-top: 5%;
+    margin-top: 1%;
     padding: 10px;
     box-shadow: 10px 10px 15px darksalmon;
 }
