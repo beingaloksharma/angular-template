@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { DateagoPipe } from './pipes/dateago.pipe';
 import { HeaderComponent } from './components/header/header.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
-
+import { FirstletterPipe } from './pipes/firstletter.pipe';
 
 
 @NgModule({
@@ -14,7 +14,8 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
     LayoutComponent,
     DateagoPipe,
     HeaderComponent,
-    SideNavComponent
+    SideNavComponent,
+    FirstletterPipe
   ],
   imports: [
     CommonModule,
@@ -23,7 +24,8 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
   ],
   exports: [
     MaterialUiModule,
-    DateagoPipe
+    DateagoPipe,
+    FirstletterPipe
   ]
 })
 export class SharedModule { }

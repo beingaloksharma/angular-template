@@ -1,11 +1,28 @@
 .card {
-    border-radius: 4px;
-    color: rgba(0, 0, 0, .87);
-    box-shadow: 10px 10px 15px darksalmon;
+  background-color: #fff;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.87);
+  overflow: hidden;
+  position: relative;
+  padding: 10px;
+  box-shadow: 10px 10px 15px darksalmon;
 }
 
-.danger {
-    border-radius: 4px;
-    color: rgba(0, 0, 0, .87);
-    box-shadow: 10px 10px 15px red;
+.center {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+}
+
+#avatar {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-color: pink;
+}
+
+.avatar_name {
+  text-align: center;
+  margin-top: 6.5rem;
+  font-size: 180px;
 }

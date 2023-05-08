@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DeactivateTenant, UserProfile } from 'src/app/shared/models/book';
@@ -141,5 +141,6 @@ export class MyprofileComponent {
       }
     })
   }
+
 
 }

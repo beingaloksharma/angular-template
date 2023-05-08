@@ -71,6 +71,7 @@ export interface UserProfile {
     moblie: string
     status: string
     user_name: string
+    profile_link: string
     created_at: string
     created_by: string
     updated_at: string

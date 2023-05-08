@@ -1,130 +1,117 @@
-<div class="container mt-3">
-  <h2></h2>
-  <div class="card">
-    <div class="card-header bg-primary text-white" style="font-size: 20px">
-      User Profile
-    </div>
-    <div class="card-body">
-      <table class="table table-striped" *ngIf="userProfile">
-        <tbody>
-          <div class="row">
-            <div class="col-sm-3">
-              <strong>ID</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.id }} </strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>Status</strong>
-            </div>
-            <div class="col-sm-3">
-              <!-- <strong> {{userProfile.status}} </strong> -->
-              <span *ngIf="userProfile.status == 'Active'">
-                <button mat-fab extended>
-                  <mat-icon>check_circle</mat-icon> {{ userProfile.status }}
-                </button>
-              </span>
-              <span *ngIf="userProfile.status == 'Delete'">
-                <button mat-fab extended color="warn">
-                  <mat-icon>delete</mat-icon> {{ userProfile.status }}
-                </button>
-              </span>
-            </div>
-          </div>
-          <hr class="solid" style="border-top: 1px solid blue" />
-          <div class="row">
-            <div class="col-sm-3">
-              <strong>Name</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.name }} </strong>
-            </div>
-          </div>
-          <hr class="solid" style="border-top: 1px solid blue" />
-          <div class="row">
-            <div class="col-sm-3">
-              <strong>Email</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.email }} </strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>User Name</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.user_name }} </strong>
-            </div>
-          </div>
-          <hr class="solid" style="border-top: 1px solid blue" />
-          <div class="row">
-            <div class="col-sm-3">
-              <strong>Created By</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.created_by }} </strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>Created At</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>
-                {{ userProfile.created_at | date }} | ({{
-                  userProfile.created_at | dateago
-                }})
-              </strong>
-            </div>
-          </div>
-          <hr class="solid" style="border-top: 1px solid blue" />
-          <div class="row">
-            <div class="col-sm-3">
-              <strong>Updated By</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong> {{ userProfile.updated_by }} </strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>Updated At</strong>
-            </div>
-            <div class="col-sm-3">
-              <strong>
-                {{ userProfile.updated_at | date }} | ({{
-                  userProfile.updated_at | dateago
-                }})
-              </strong>
-            </div>
-          </div>
-          <hr class="solid" style="border-top: 1px solid blue" />
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<div class="container mt-3">
-  <h2></h2>
-  <div class="card danger">
-    <div class="card-header bg-danger text-white" style="font-size: 20px">
-      Danger Zone
-    </div>
-    <div class="card-body" *ngIf="userProfile">
-      <div class="row">
-        <div class="col-sm-6">
-          <strong>Delete Your Tenant</strong>
-        </div>
-        <div class="col-sm-3">
-          <button
-            type="button"
-            class="btn btn-danger"
-            (click)="
-              deactivateTenant(
-                userProfile.status == 'Active' ? 'Delete' : 'Active'
-              )
-            "
-          >
-            Click Here
+<div class="row" style="width: 100%" *ngIf="userProfile">
+  <div class="col-sm-6">
+    <mat-card class="card" style="margin: 5%">
+      <mat-card-header>
+        <mat-card-title>
+          <button mat-button color="accent" aria-disabled="true" tabindex="-1">
+            <h1>Profile</h1>
+            <mat-divider></mat-divider>
           </button>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row mt-4 mb-2">
+          <div class="col-sm-6">Status</div>
+          <div class="col-sm-6">
+            <span *ngIf="userProfile.status == 'Active'">
+              <button mat-fab extended>
+                <mat-icon>check_circle</mat-icon> {{ userProfile.status }}
+              </button>
+            </span>
+            <span *ngIf="userProfile.status == 'Delete'">
+              <button mat-fab extended color="warn">
+                <mat-icon>delete</mat-icon> {{ userProfile.status }}
+              </button>
+            </span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Name</div>
+          <div class="col-sm-6">{{ userProfile.name }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Email</div>
+          <div class="col-sm-6">{{ userProfile.email }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Username</div>
+          <div class="col-sm-6">{{ userProfile.user_name }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Created By</div>
+          <div class="col-sm-6">{{ userProfile.created_by }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Cretaed At</div>
+          <div class="col-sm-6">
+            {{ userProfile.created_at | date }} | ({{
+              userProfile.created_at | dateago
+            }})
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Updated By</div>
+          <div class="col-sm-6">{{ userProfile.updated_by }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row mt-4">
+          <div class="col-sm-6">Updated At</div>
+          <div class="col-sm-6">
+            {{ userProfile.updated_at | date }} | ({{
+              userProfile.updated_at | dateago
+            }})
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-sm-6">
+    <mat-card class="card" style="margin: 5%">
+      <div class="center" *ngIf="userProfile.profile_link == ''">
+        <div id="avatar">
+          <img
+            mat-card-image
+            class="rounded-circle"
+            src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+            alt="profile Picture"
+            style="height: 300px; width: 300px"
+          />
         </div>
       </div>
-    </div>
+      <div class="center" *ngIf="userProfile.profile_link != ''">
+        <div id="avatar">
+          <div class="avatar_name">{{ userProfile.name | firstletter }}</div>
+        </div>
+      </div>
+      <mat-card-content>
+        <div class="center mt-3" style="font-size: 20px">
+          <b>{{ userProfile.name | uppercase }}</b>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="center mt-3">
+        <button type="button" style="margin: 3px" class="btn btn-primary">
+          Upload Profile Picture
+        </button>
+        <button
+          type="button"
+          style="margin: 3px"
+          class="btn btn-danger"
+          (click)="
+            deactivateTenant(
+              userProfile.status == 'Active' ? 'Delete' : 'Active'
+            )
+          "
+        >
+          Deactivate Your Accout
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>
-<div style="margin-bottom: 5%"></div>

@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 export class BooksComponent implements OnInit {
 
   //Column Names for Table
-  displayedColumns: string[] = ['id', 'name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
+  displayedColumns: string[] = ['name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
   //Table Datasource
   dataSource: MatTableDataSource<Book>;
   //Get HTML element from componet
