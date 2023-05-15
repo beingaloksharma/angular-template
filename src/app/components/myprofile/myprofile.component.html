@@ -78,45 +78,62 @@
     </mat-card>
   </div>
   <div class="col-sm-6">
-    <mat-card class="card" style="margin: 5%">
-      <div class="center" *ngIf="userProfile.profile_link == ''">
-        <div id="avatar">
-          <img
-            mat-card-image
-            class="rounded-circle"
-            src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-            alt="profile Picture"
-            style="height: 300px; width: 300px"
+    <div class="row" style="margin: 5%">
+      <mat-card class="card">
+        <div class="center" *ngIf="userProfile.display_profile != ''">
+          <div id="avatar">
+            <img
+              mat-card-image
+              class="rounded-circle"
+              src={{userProfile.display_profile}}
+              alt="profile Picture"
+              style="height: 250px; width: 250px"
+            />
+          </div>
+        </div>
+        <div class="center" *ngIf="userProfile.display_profile == ''">
+          <div id="avatar">
+            <div class="avatar_name">{{ userProfile.name | firstletter }}</div>
+          </div>
+          <mat-divider class="mb-2"></mat-divider>
+        </div>
+        <mat-card-content>
+          <div class="center mt-3" style="font-size: 20px">
+            <b>{{ userProfile.name | uppercase }}</b>
+          </div>
+        </mat-card-content>
+        <mat-card-actions class="center">
+          <button
+            type="button"
+            style="margin: 3px"
+            class="btn btn-danger"
+            (click)="
+              deactivateTenant(
+                userProfile.status == 'Active' ? 'Delete' : 'Active'
+              )
+            "
+          >
+            Deactivate Your Accout
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+    <div class="row mt-3">
+      <mat-card class="card">
+        <mat-card-actions class="center mt-3">
+          <input
+            type="file"
+            style="margin: 3px; width: 50%"
+            class="form-control"
+            accept="image/*"
+            (change)="onChange($event)"
+            name="files[]"
           />
-        </div>
-      </div>
-      <div class="center" *ngIf="userProfile.profile_link != ''">
-        <div id="avatar">
-          <div class="avatar_name">{{ userProfile.name | firstletter }}</div>
-        </div>
-      </div>
-      <mat-card-content>
-        <div class="center mt-3" style="font-size: 20px">
-          <b>{{ userProfile.name | uppercase }}</b>
-        </div>
-      </mat-card-content>
-      <mat-card-actions class="center mt-3">
-        <!-- <button type="button" style="margin: 3px" class="btn btn-primary">
-          Upload Profile Picture
-        </button> -->
-        <button
-          type="button"
-          style="margin: 3px"
-          class="btn btn-danger"
-          (click)="
-            deactivateTenant(
-              userProfile.status == 'Active' ? 'Delete' : 'Active'
-            )
-          "
-        >
-          Deactivate Your Accout
-        </button>
-      </mat-card-actions>
-    </mat-card>
+          <button type="button" style="margin: 3px" class="btn btn-primary" (click)="UpdateProfile()" >
+            Update 
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
 </div>

@@ -28,6 +28,15 @@ export class RequestInterceptor implements HttpInterceptor {
     }
 
     //Add Header in request
+    if (request.headers.has('File')) {
+      reqHeader = request.clone({
+        setHeaders: {
+          // 'Content-Type': 'multipart/form-data',
+          'X-Tenant-Id': x_tenant_id,
+          'Authorization' : "Bearer " + token,
+        }
+      });
+    } else {
     reqHeader = request.clone({
       setHeaders: {
         'Content-Type': 'application/json',
@@ -35,6 +44,7 @@ export class RequestInterceptor implements HttpInterceptor {
         'Authorization' : "Bearer " + token,
       }
     });
+  }
 
     return next.handle(reqHeader);
   }
