@@ -1,3 +1,11 @@
+<div class="wrapper" *ngIf="this._loader.getLoading()">
+  <div class="overlay">
+    <div class="spinner-wrapper">
+      <mat-spinner color="accent"> </mat-spinner>
+    </div>
+  </div>
+</div>
+
 <div class="row" style="width: 100%" *ngIf="userProfile">
   <div class="col-sm-6">
     <mat-card class="card" style="margin: 5%">
@@ -85,7 +93,7 @@
             <img
               mat-card-image
               class="rounded-circle"
-              src={{userProfile.display_profile}}
+              src="{{ userProfile.display_profile }}"
               alt="profile Picture"
               style="height: 250px; width: 250px"
             />
@@ -129,8 +137,13 @@
             (change)="onChange($event)"
             name="files[]"
           />
-          <button type="button" style="margin: 3px" class="btn btn-primary" (click)="UpdateProfile()" >
-            Update 
+          <button
+            type="button"
+            style="margin: 3px"
+            class="btn btn-primary"
+            (click)="UpdateProfile()"
+          >
+            Update
           </button>
         </mat-card-actions>
       </mat-card>

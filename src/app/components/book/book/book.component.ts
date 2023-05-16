@@ -6,11 +6,12 @@ import { ConstantsService } from 'src/app/shared/services/constants.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Book } from 'src/app/shared/models/book';
 import Swal from 'sweetalert2';
+import { LoaderService } from 'src/app/loader.service';
 
 @Component({
   selector: 'app-book',
   templateUrl: './book.component.html',
-  styleUrls: ['./book.component.css']
+  styleUrls: ['./book.component.css'],
 })
 export class BookComponent {
   //To Get Id from URL
@@ -27,27 +28,36 @@ export class BookComponent {
     private _toastr: ToastrService,
     private _constants: ConstantsService,
     private _router: Router,
+    public _loader: LoaderService
   ) {
-    //To get params from URL 
+    //To get params from URL
     this._route.params.subscribe((res: any) => {
       //To Store Param in id
-      this.id = res['id']
-    })
+      this.id = res['id'];
+    });
   }
 
-  //ngOnInit() - Life Cycle Hooks 
+  //ngOnInit() - Life Cycle Hooks
   ngOnInit() {
-    //Load UserInfo, When Page Loaded 
+    //Load UserInfo, When Page Loaded
     this.getBookById(this.id);
   }
 
   //getBookById
   public getBookById(id: number) {
-    this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: Book) => {
-      setTimeout(() => {
-        this.book = res;
-      })
-    },
+    //Call Service
+    this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe(
+      (res: Book) => {
+        //Set Loader
+        this._loader.setLoading(true);
+        //Timeout
+        setTimeout(() => {
+          //Response
+          this.book = res;
+          //Reset Loader
+          this._loader.setLoading(false);
+        }, 3000);
+      },
       (error: HttpErrorResponse) => {
         switch (error.status) {
           case 400: {
@@ -70,7 +80,8 @@ export class BookComponent {
             break;
           }
         }
-      });
+      }
+    );
   }
 
   //deleteBook
@@ -83,16 +94,24 @@ export class BookComponent {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
         //call delete action
-        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
-          setTimeout(() => {
-            //Navigate to dashboard
-            this._router.navigate(['/books']);
-          })
-        },
+        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe(
+          (res: any) => {
+            //Set Loader
+            this._loader.setLoading(true);
+            //Timeout
+            setTimeout(() => {
+              //Navigate to dashboard
+              this._router.navigate(['/books']);
+              //Reset Loader
+              this._loader.setLoading(false);
+              //Swal Fire after successfull deletion
+              Swal.fire('Deleted!', 'Your record has been deleted.', 'success');
+            }, 3000);
+          },
           (error: HttpErrorResponse) => {
             switch (error.status) {
               case 400: {
@@ -115,15 +134,9 @@ export class BookComponent {
                 break;
               }
             }
-          });
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Deleted!',
-          'Your record has been deleted.',
-          'success'
-        )
+          }
+        );
       }
-    })
+    });
   }
-
 }

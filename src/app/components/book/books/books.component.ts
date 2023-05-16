@@ -9,16 +9,25 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { LoaderService } from 'src/app/loader.service';
 
 @Component({
   selector: 'app-books',
   templateUrl: './books.component.html',
-  styleUrls: ['./books.component.css']
+  styleUrls: ['./books.component.css'],
 })
 export class BooksComponent implements OnInit {
-
   //Column Names for Table
-  displayedColumns: string[] = ['name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
+  displayedColumns: string[] = [
+    'name',
+    'author_name',
+    'publication',
+    'edition',
+    'publication_date',
+    'language',
+    'status',
+    'action',
+  ];
   //Table Datasource
   dataSource: MatTableDataSource<Book>;
   //Get HTML element from componet
@@ -26,67 +35,81 @@ export class BooksComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // ********************** Mat Paginator Input ******************** //
-   pageIndex : number = 0;
-   totalBooks : number;
-   limit : number = 5;
+  pageIndex: number = 0;
+  totalBooks: number;
+  limit: number = 5;
   // ********************** Mat Paginator ******************** //
 
   //Check Status
   status: boolean;
 
-  //Constructor 
+  //Constructor
   constructor(
     private _common: CommonService,
     private _constants: ConstantsService,
     private _toastr: ToastrService,
     private _router: Router,
-  ) { }
+    public _loader: LoaderService
+  ) {}
 
-  //ng Life Cycle 
+  //ng Life Cycle
   ngOnInit() {
     //Load All Books
     this.getAllBooks();
   }
 
   //ngAfterViewInit()
-   ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   pageChanged(event: PageEvent) {
-    this.pageIndex = event.pageIndex
-    this.limit = event.pageSize
+    this.pageIndex = event.pageIndex;
+    this.limit = event.pageSize;
     this.getAllBooks();
   }
 
   //Get All Books
   getAllBooks() {
-    this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe((res: Book[]) => {
-      setTimeout(() => {
-        this.dataSource = new MatTableDataSource(res["books"]);
-        this.totalBooks = res["total"]
-        this.dataSource.paginator = this.paginator;
-      })
-    },
-      (error: HttpErrorResponse) => {
-        switch (error.status) {
-          case 400: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 404: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 500: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          default: {
-            this._toastr.error(error.statusText);
-            break;
+    this._common
+      .get(
+        this._constants.SERVER_URL +
+          'books' +
+          `?pageno=${this.pageIndex}&limit=${this.limit}`
+      )
+      .subscribe(
+        (res: Book[]) => {
+          //Set Loader
+          this._loader.setLoading(true);
+          //Timeout
+          setTimeout(() => {
+            //Books Table
+            this.dataSource = new MatTableDataSource(res['books']);
+            this.totalBooks = res['total'];
+            this.dataSource.paginator = this.paginator;
+            //Reset Loader
+            this._loader.setLoading(false);
+          }, 3000);
+        },
+        (error: HttpErrorResponse) => {
+          switch (error.status) {
+            case 400: {
+              this._toastr.error(error.error.error_message);
+              break;
+            }
+            case 404: {
+              this._toastr.error(error.error.error_message);
+              break;
+            }
+            case 500: {
+              this._toastr.error(error.error.error_message);
+              break;
+            }
+            default: {
+              this._toastr.error(error.statusText);
+              break;
+            }
           }
         }
-      });
+      );
   }
 
   //Filter On Table
@@ -104,7 +127,7 @@ export class BooksComponent implements OnInit {
     //swal Alert
     Swal.fire({
       title: 'Are you sure?',
-      text: "Want to update status as " + status,
+      text: 'Want to update status as ' + status,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -112,50 +135,62 @@ export class BooksComponent implements OnInit {
       confirmButtonText: 'Yes, update it !',
     }).then((result) => {
       if (result.isConfirmed) {
-        //Decalre model for update status 
-        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
-        //update status 
-        this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
-          setTimeout(() => {
-            //Reload the page 
-            this.getAllBooks();
-          })
-        },
-          (error: HttpErrorResponse) => {
-            switch (error.status) {
-              case 400: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 404: {
-                this._toastr.error(error.error.error_message);
-                setTimeout(() => {
-                  this._router.navigate(['/books']);
-                });
-                break;
-              }
-              case 500: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              default: {
-                if (error.ok) {
-                  this._toastr.error("Backend Server is not running");
+        //Decalre model for update status
+        var updateStatus: UpdateStatus = {
+          id: id,
+          status: status,
+          updated_by: JSON.parse(localStorage.getItem('userdetails')).name,
+        };
+        //update status
+        this._common
+          .post(this._constants.SERVER_URL + 'book/status', updateStatus)
+          .subscribe(
+            (res: any) => {
+              //Set Loader
+              this._loader.setLoading(true);
+              //Timeout
+              setTimeout(() => {
+                //Reload the page
+                this.getAllBooks();
+                //Reset Loader
+                this._loader.setLoading(false);
+                //Swal Fire after successfull deletion
+                Swal.fire(
+                  'Updated!',
+                  'Your record has been updated.',
+                  'success'
+                );
+              }, 3000);
+            },
+            (error: HttpErrorResponse) => {
+              switch (error.status) {
+                case 400: {
+                  this._toastr.error(error.error.error_message);
                   break;
                 }
-                this._toastr.error(error.statusText);
-                break;
+                case 404: {
+                  this._toastr.error(error.error.error_message);
+                  setTimeout(() => {
+                    this._router.navigate(['/books']);
+                  });
+                  break;
+                }
+                case 500: {
+                  this._toastr.error(error.error.error_message);
+                  break;
+                }
+                default: {
+                  if (error.ok) {
+                    this._toastr.error('Backend Server is not running');
+                    break;
+                  }
+                  this._toastr.error(error.statusText);
+                  break;
+                }
               }
             }
-          });
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Updated!',
-          'Your record has been updated.',
-          'success'
-        )
+          );
       }
-    })
+    });
   }
-
 }

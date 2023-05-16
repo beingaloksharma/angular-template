@@ -7,20 +7,21 @@ import { Login } from 'src/app/shared/models/book';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
 import { AuthService } from '../auth.service';
+import { LoaderService } from 'src/app/loader.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   //hide
   hide = true;
-  //Payload 
-  payload: Login
-  //login Form 
+  //Payload
+  payload: Login;
+  //login Form
   loginForm: FormGroup;
-  //Check Submission 
+  //Check Submission
   isSubmit: boolean = false;
 
   //constructor
@@ -30,8 +31,9 @@ export class LoginComponent {
     private _commonService: CommonService,
     private _toastr: ToastrService,
     private _router: Router,
-    private _auth:AuthService
-  ) { }
+    private _auth: AuthService,
+    public _loader: LoaderService
+  ) {}
 
   //ngOnInit
   ngOnInit(): void {
@@ -39,80 +41,87 @@ export class LoginComponent {
     this.setInitiaState();
   }
 
-  //Initialize Book Form 
+  //Initialize Book Form
   setInitiaState(): void {
     //loginForm
     this.loginForm = this._fb.group({
-      user_name: ["", Validators.compose([Validators.required])],
-      password: ["", Validators.compose([Validators.required])],
+      user_name: ['', Validators.compose([Validators.required])],
+      password: ['', Validators.compose([Validators.required])],
     });
   }
 
-  //Control Name 
+  //Control Name
   get ctrl() {
     return this.loginForm.controls;
   }
 
   //login
   login() {
-    //check is submit 
+    //check is submit
     this.isSubmit = true;
     //check signup from validation
     if (this.loginForm.valid) {
       this.payload = {
         user_name: this.loginForm.value['user_name'],
         password: this.loginForm.value['password'],
-      }
-      //Call Service 
-      this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
-        setTimeout(() => {
-          //Call Auth Service 
-          this._auth.authLogin(res);
-          //Reset the form in Initial state 
-          this.onReset();
-        })
-      },
-        (error: HttpErrorResponse) => {
-          //Print Log
-          console.warn("Error Message :: ", error.message);
-          console.warn("Error StatusText :: ", error.statusText);
-          console.warn("Error URL :: ", error.url);
-          //Check Status Code
-          switch (error.status) {
-            case 400: {
-              this._toastr.error("Bad request");
-              break;
-            }
-            case 404: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            case 500: {
-              this._toastr.error("Internal Server Error");
-              break;
-            }
-            case 600: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            case 601: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            default: {
-              this._toastr.error("Something went wrong");
-              break;
+      };
+      //Call Service
+      this._commonService
+        .post(this._constants.SERVER_URL + 'login', this.payload)
+        .subscribe(
+          (res: any) => {
+            //Set Loader
+            this._loader.setLoading(true);
+            //timeout
+            setTimeout(() => {
+              //Call Auth Service
+              this._auth.authLogin(res);
+              //Reset the form in Initial state
+              this.onReset();
+              //Reset Loader
+              this._loader.setLoading(false);
+            },3000);
+          },
+          (error: HttpErrorResponse) => {
+            //Print Log
+            console.warn('Error Message :: ', error.message);
+            console.warn('Error StatusText :: ', error.statusText);
+            console.warn('Error URL :: ', error.url);
+            //Check Status Code
+            switch (error.status) {
+              case 400: {
+                this._toastr.error('Bad request');
+                break;
+              }
+              case 404: {
+                this._toastr.error(error.error['error_message']);
+                break;
+              }
+              case 500: {
+                this._toastr.error('Internal Server Error');
+                break;
+              }
+              case 600: {
+                this._toastr.error(error.error['error_message']);
+                break;
+              }
+              case 601: {
+                this._toastr.error(error.error['error_message']);
+                break;
+              }
+              default: {
+                this._toastr.error('Something went wrong');
+                break;
+              }
             }
           }
-        }
-      )
+        );
     }
   }
 
-  //Reset Form 
+  //Reset Form
   onReset() {
-    //Clear Login form 
+    //Clear Login form
     this.loginForm.reset();
   }
-
 }

@@ -10,37 +10,35 @@ import { RequestInterceptor } from './interceptors/request.interceptor';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { AuthModule } from './components/auth/auth.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     SharedModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ToastrModule.forRoot(
-      {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-        preventDuplicates: true,
-        progressAnimation: 'increasing',
-        progressBar: true,
-        tapToDismiss: true,
-        newestOnTop: true,
-        closeButton: false,
-        toastClass: 'ngx-toastr',
-        countDuplicates: false
-      },
-    ),
-    AuthModule
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+      progressAnimation: 'increasing',
+      progressBar: true,
+      tapToDismiss: true,
+      newestOnTop: true,
+      closeButton: false,
+      toastClass: 'ngx-toastr',
+      countDuplicates: false,
+    }),
+    AuthModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true}
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
