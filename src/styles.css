@@ -3,24 +3,52 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "./swal-custom.css";
 
+/* Core Brand Colors */
 :root {
   --primary-color: #6200ea;
-  /* Deep Purple */
-  --accent-color: #00bfa5;
-  /* Teal */
+  /* Deeper Purple */
+  --accent-color: #eb2ee1;
+  /* Darker Teal for better text contrast */
+
+  /* Semantic Colors */
+  --success-color: #2e7d32;
+  /* Darker Green */
+  --error-color: #c62828;
+  /* Darker Red */
+  --warning-color: #ef6c00;
+  /* Darker Orange */
+  --info-color: #0277bd;
+  /* Darker Blue */
+
+  /* Backgrounds & Surfaces */
   --bg-color: #f3f4f6;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --glass-bg: rgba(255, 255, 255, 0.95);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  /* Slightly more opaque for better readability */
+
+  /* Text Colors */
+  --text-primary: #111827;
+  /* Almost Black - High Contrast */
+  --text-secondary: #4b5563;
+  /* Darker Grey - Medium Contrast */
+  --text-on-primary: #ffffff;
+
+  /* UI Elements */
   --border-radius: 12px;
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Button & Interactive */
+  --btn-cancel-bg: #e5e7eb;
+  --btn-cancel-text: #1f2937;
+  --btn-cancel-hover: #d1d5db;
 }
 
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-color);
-  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-image: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  /* Softer background */
   min-height: 100vh;
   color: var(--text-primary);
 }
@@ -33,7 +61,7 @@ h4,
 h5,
 h6 {
   font-family: 'Poppins', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 1rem;
 }
@@ -43,7 +71,7 @@ h6 {
 .mat-card {
   border-radius: var(--border-radius) !important;
   box-shadow: var(--card-shadow) !important;
-  background: var(--glass-bg) !important;
+  background: var(--card-bg) !important;
   padding: 1rem !important;
   width: 100%;
 }
@@ -57,9 +85,12 @@ h6 {
 .mat-mdc-raised-button.mat-primary,
 .mat-raised-button.mat-primary {
   background-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+  /* Ensure white text */
   border-radius: 8px !important;
   padding: 0 2rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
+  /* Thicker font for better readability */
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -72,9 +103,8 @@ h6 {
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+  background: radial-gradient(circle at center, #f1f5f9 0%, #cbd5e1 100%);
   perspective: 1000px;
-  /* Enable 3D space */
   overflow: hidden;
 }
 
@@ -90,11 +120,13 @@ h6 {
 .mat-mdc-card,
 .mat-card {
   border-radius: 20px !important;
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: var(--card-bg) !important;
   backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  /* Whiter border for visibility */
   box-shadow:
-    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    /* Slightly stronger shadow */
     0 5px 15px rgba(0, 0, 0, 0.05),
     inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease !important;
@@ -104,7 +136,8 @@ h6 {
 .mat-card:hover {
   transform: translateY(-5px) rotateX(2deg) !important;
   box-shadow:
-    0 25px 45px rgba(98, 0, 234, 0.15),
+    0 30px 60px rgba(98, 0, 234, 0.2),
+    /* Vibrant shadow on hover */
     0 10px 20px rgba(98, 0, 234, 0.1) !important;
 }
 
@@ -112,13 +145,16 @@ h6 {
 .auth-header h1 {
   text-align: center;
   font-size: 2.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  font-weight: 800;
+  /* Bolder */
+  /* Gradient text */
+  background: linear-gradient(135deg, var(--primary-color) 0%, #512da8 100%);
+  /* Darker gradient end */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
   transform: translateZ(20px);
   /* 3D pop */
 }
@@ -265,13 +301,13 @@ h6 {
 /* Global Icon Styling */
 .mat-icon {
   font-family: 'Material Icons' !important;
-  /* Use gradient for icons to match 3D theme */
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  /* Use gradient for icons to match 3D theme, now with PINK as requested */
+  background: linear-gradient(135deg, pink 0%, var(--accent-color) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   /* Fallback color if gradient fails */
-  color: var(--primary-color);
+  color: pink;
 
   /* 3D Depth */
   filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
