@@ -111,18 +111,30 @@ export class CreateBookComponent implements OnInit {
     //bookForm
     this.bookForm = this._fb.group({
       id: [null],
-      name: ["", Validators.compose([Validators.required])],
+      name: ["", Validators.compose([
+        Validators.required,
+        Validators.minLength(3)
+      ])],
       category: ["", Validators.compose([Validators.required])],
       edition: ["", Validators.compose([Validators.required])],
-      author_name: ["", Validators.compose([Validators.required])],
-      isbn_no: ["", Validators.compose([Validators.required])],
+      author_name: ["", Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z .]*$')
+      ])],
+      isbn_no: ["", Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9-]*$'),
+        Validators.minLength(10)
+      ])],
       languages: ["", Validators.compose([Validators.required])],
       keywords: ["", Validators.compose([Validators.required])],
       publication: ["", Validators.compose([Validators.required])],
       reading_age: [""],
       publication_date: ["", Validators.compose([Validators.required])],
       country_of_origin: ["", Validators.compose([Validators.required])],
-      paperback: [""]
+      paperback: ["", Validators.compose([
+        Validators.pattern('^[0-9]*$')
+      ])]
     });
   }
 

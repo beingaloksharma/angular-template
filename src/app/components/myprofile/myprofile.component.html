@@ -13,11 +13,11 @@
                             <mat-icon class="avatar-icon">account_circle</mat-icon>
                         </div>
                         <div class="profile-title">
-                            <h1>{{userProfile.name}}</h1>
+                            <h1>{{userProfile.name | titlecase}}</h1>
                             <p class="subtitle">@{{userProfile.user_name}}</p>
                             <span class="status-badge" [class.active]="userProfile.status === 'Active'"
                                 [class.inactive]="userProfile.status !== 'Active'">
-                                {{userProfile.status}}
+                                {{userProfile.status | titlecase}}
                             </span>
                         </div>
                     </div>

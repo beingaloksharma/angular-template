@@ -8,8 +8,8 @@
             <!-- Header -->
             <div class="mat-card-header">
                 <div class="header-title-group">
-                    <h1 class="header-title">{{book.name}}</h1>
-                    <span class="header-subtitle">by {{book.author_name}}</span>
+                    <h1 class="header-title">{{book.name | titlecase}}</h1>
+                    <span class="header-subtitle">by {{book.author_name | titlecase}}</span>
                 </div>
 
                 <div class="header-actions">
@@ -33,7 +33,7 @@
                         <div class="value">
                             <span class="badge"
                                 [ngClass]="{'badge-status-active': book.status === 'Active', 'badge-status-delete': book.status === 'Delete'}">
-                                {{book.status}}
+                                {{book.status | titlecase}}
                             </span>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="info-item">
                         <span class="label">Category</span>
-                        <div class="value">{{book.category}}</div>
+                        <div class="value">{{book.category | titlecase}}</div>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">Publisher</span>
-                        <div class="value">{{book.publication}}</div>
+                        <div class="value">{{book.publication | titlecase}}</div>
                     </div>
                     <div class="info-item">
                         <span class="label">Release Date</span>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="info-item">
                         <span class="label">Edition</span>
-                        <div class="value">{{book.edition}}</div>
+                        <div class="value">{{book.edition | titlecase}}</div>
                     </div>
                     <div class="info-item">
                         <span class="label">ISBN</span>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="info-item">
                         <span class="label">Country</span>
-                        <div class="value">{{book.country_of_origin}}</div>
+                        <div class="value">{{book.country_of_origin | titlecase}}</div>
                     </div>
                 </div>
 
@@ -98,7 +98,7 @@
                         <span class="label d-block mb-2">Languages</span>
                         <div class="d-flex flex-wrap">
                             <span class="badge badge-chip" *ngFor="let lang of book.languages">
-                                {{lang['language']}}
+                                {{lang['language'] | titlecase}}
                             </span>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                         <span class="label d-block mb-2">Keywords</span>
                         <div class="d-flex flex-wrap">
                             <span class="badge badge-chip" *ngFor="let key of book.keywords">
-                                {{key['keyword']}}
+                                {{key['keyword'] | titlecase}}
                             </span>
                         </div>
                     </div>
@@ -119,11 +119,11 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div>Created: {{book.created_at | date:'medium'}}</div>
-                            <div>By: {{book.created_by}}</div>
+                            <div>By: {{book.created_by | titlecase}}</div>
                         </div>
                         <div class="col-md-3">
                             <div>Updated: {{book.updated_at | date:'medium'}}</div>
-                            <div>By: {{book.updated_by}}</div>
+                            <div>By: {{book.updated_by | titlecase}}</div>
                         </div>
                     </div>
                 </div>

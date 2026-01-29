@@ -45,13 +45,28 @@ export class SignupComponent {
   setInitiaState(): void {
     //signupForm
     this.signupForm = this._fb.group({
-      name: ["", Validators.compose([Validators.required])],
+      name: ["", Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern('^[a-zA-Z ]*$') // Letters and spaces only
+      ])],
       email: ["", Validators.compose([Validators.required, Validators.email])],
-      moblie: ["", Validators.compose([Validators.required])],
-      password: ["", Validators.compose([Validators.required, Validators.minLength(6)])],
+      moblie: ["", Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$') // Exact 10 digits
+      ])],
+      password: ["", Validators.compose([
+        Validators.required,
+        Validators.minLength(6),
+        Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$') // At least 1 letter and 1 number
+      ])],
       confirm_password: ["", Validators.compose([Validators.required])],
       terms_and_conditions: [true, Validators.compose([Validators.requiredTrue])],
-      user_name: ["", Validators.compose([Validators.required])],
+      user_name: ["", Validators.compose([
+        Validators.required,
+        Validators.minLength(4),
+        Validators.pattern('^[a-zA-Z0-9_]*$') // Alphanumeric with underscore
+      ])],
     }, {
       validator: this.passwordMatchValidator
     });

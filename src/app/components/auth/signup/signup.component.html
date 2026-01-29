@@ -101,7 +101,7 @@
                                 I agree to the <a href="javascript:void(0)">Terms and Conditions</a>
                             </mat-checkbox>
                             <mat-error
-                                *ngIf="isSubmit && signupForm.get('terms_and_conditions')?.hasError('requiredTrue')"
+                                *ngIf="(isSubmit || signupForm.get('terms_and_conditions')?.touched || signupForm.get('terms_and_conditions')?.dirty) && signupForm.get('terms_and_conditions')?.hasError('requiredTrue')"
                                 style="font-size: 0.75rem; margin-top: 4px;">
                                 You must accept the terms and conditions
                             </mat-error>
