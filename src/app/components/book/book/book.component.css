@@ -1,91 +1,189 @@
-.card {
-    background-color: #fff;
-    border-radius: 4px;
-    color: rgba(0, 0, 0, .87);
-    margin: 8px;
-    width: 60%;
+/* Container */
+.book-details-container {
+    padding: 24px;
+    animation: fadeIn 0.6s ease-out;
+    display: flex;
+    justify-content: center;
+}
+
+/* Base Card */
+.mat-card {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    background: #ffffff;
+    width: 100%;
+    max-width: 1200px;
     overflow: hidden;
     position: relative;
-    margin-top: 5%;
-    padding: 10px;
-    box-shadow: 10px 10px 15px darksalmon;
 }
 
-.center {
+/* Header */
+.mat-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 24px;
     display: flex;
-    justify-content: center;
-    justify-items: center;
-}
-
-.row {
-    margin-top: 1%;
-    padding: 10px;
-}
-
-section {
-    display: table;
-}
-
-.example-label {
-    display: table-cell;
-    font-size: 14px;
-    margin-left: 8px;
-    min-width: 120px;
-}
-
-.example-button-row {
-    display: table-cell;
-    max-width: 600px;
-}
-
-.example-button-row .mat-mdc-button-base {
-    margin: 8px 8px 8px 0;
-}
-
-.example-flex-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.example-button-container {
-    display: flex;
-    justify-content: center;
-    width: 120px;
-}
-
-.mat-column-demo-position {
-    width: 32px;
-    border-right: 1px solid currentColor;
-    padding-right: 24px;
-    text-align: center;
-}
-
-.mat-column-demo-name {
-    padding-left: 16px;
-    font-size: 20px;
-}
-
-.mat-column-demo-weight {
-    font-style: italic;
-}
-
-.mat-column-demo-symbol {
-    width: 32px;
-    text-align: center;
-    font-weight: bold;
-}
-
-.example-headers-align .mat-expansion-panel-header-description {
     justify-content: space-between;
     align-items: center;
 }
 
-.example-headers-align .mat-mdc-form-field+.mat-mdc-form-field {
-    margin-left: 8px;
+.header-title-group {
+    display: flex;
+    flex-direction: column;
 }
 
-span.ng-star-inserted {
-    position: relative;
+.header-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 5px;
+}
+
+.header-actions {
     display: flex;
+    gap: 12px;
+}
+
+/* Action Buttons */
+.action-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px !important;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-edit {
+    background-color: white !important;
+    color: #6200ea !important;
+}
+
+.btn-delete {
+    background-color: #ff5252 !important;
+    color: white !important;
+}
+
+/* Card Content */
+.mat-card-content {
+    padding: 24px;
+}
+
+/* Section Styling */
+.section-title {
+    color: #455a64;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-icon {
+    color: #764ba2;
+}
+
+/* Grid Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+/* Info Items */
+.info-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.info-item:hover {
+    border-left-color: #764ba2;
+    background: #f3e5f5;
+}
+
+.label {
+    font-size: 0.85rem;
+    color: #78909c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #263238;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.badge-status-active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.badge-status-delete {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.badge-chip {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mat-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
 }

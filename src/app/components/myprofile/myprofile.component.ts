@@ -81,7 +81,7 @@ export class MyprofileComponent {
   }
 
   //Deactivate Tenant 
-  deactivateTenant(status:string) {
+  deactivateTenant(status: string) {
     //swal Alert
     Swal.fire({
       title: 'Are you sure?',
@@ -97,58 +97,33 @@ export class MyprofileComponent {
         var deactiateTenant: DeactivateTenant = { status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
         //Deactivate Tenant 
         this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            //redirect to login page 
-            this._router.navigate(['auth/login']);
-          }, 1000)
+          //Swal Fire after successfull deletion
+          Swal.fire(
+            'Deleted!',
+            'Your tenant has been deleted.',
+            'success'
+          ).then(() => {
+            // Update the table with latest data
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              //redirect to login page 
+              this._router.navigate(['auth/login']);
+            }, 1000)
+          });
         },
           (error: HttpErrorResponse) => {
-            switch (error.status) {
-              case 400: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 404: {
-                this._toastr.error(error.error.error_message);
-                this.loading = true
-                setTimeout(() => {
-                  //redirect to login page 
-                  this._router.navigate(['auth/login']);
-                  this.loading = false;
-                }, 2000);
-                break;
-              }
-              case 409: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 500: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 602: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              default: {
-                if (error.ok) {
-                  this._toastr.error("Backend Server is not running");
-                  break;
-                }
-                this._toastr.error(error.statusText);
-                break;
-              }
+            // Check based on backend error format
+            const msg = error.error?.error_message || error.statusText || "Something went wrong";
+            this._toastr.error(msg);
+
+            // Handle specific navigation for 404 if needed
+            if (error.status === 404) {
+              setTimeout(() => {
+                this._router.navigate(['auth/login']);
+              }, 2000);
             }
           });
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Deleted!',
-          'Your tenant has been deleted.',
-          'success'
-        )
       }
     })
   }

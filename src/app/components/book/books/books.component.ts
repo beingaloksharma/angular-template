@@ -26,9 +26,9 @@ export class BooksComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   // ********************** Mat Paginator Input ******************** //
-   pageIndex : number = 0;
-   totalBooks : number;
-   limit : number = 5;
+  pageIndex: number = 0;
+  totalBooks: number;
+  limit: number = 5;
   // ********************** Mat Paginator ******************** //
 
   //To Store Loading Infromation
@@ -51,7 +51,7 @@ export class BooksComponent implements OnInit {
   }
 
   //ngAfterViewInit()
-   ngAfterViewInit() {
+  ngAfterViewInit() {
   }
 
   pageChanged(event: PageEvent) {
@@ -120,49 +120,34 @@ export class BooksComponent implements OnInit {
         var updateStatus: UpdateStatus = { id: id, status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
         //update status 
         this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            //Reload the page 
-            this.getAllBooks();
-          }, 1000)
+          //Swal Fire after successfull deletion
+          Swal.fire(
+            'Updated!',
+            'Your record has been updated.',
+            'success'
+          ).then(() => {
+            // Update the table with latest data
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              //Reload the page 
+              this.getAllBooks();
+            }, 1000)
+          });
         },
           (error: HttpErrorResponse) => {
-            switch (error.status) {
-              case 400: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 404: {
-                this._toastr.error(error.error.error_message);
-                this.loading = true
-                setTimeout(() => {
-                  this._router.navigate(['/books']);
-                  this.loading = false;
-                }, 3000);
-                break;
-              }
-              case 500: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              default: {
-                if (error.ok) {
-                  this._toastr.error("Backend Server is not running");
-                  break;
-                }
-                this._toastr.error(error.statusText);
-                break;
-              }
+            //Standard error handling
+            const msg = error.error?.error_message || error.statusText || "Something went wrong";
+            this._toastr.error(msg);
+
+            if (error.status === 404) {
+              this.loading = true
+              setTimeout(() => {
+                this._router.navigate(['/books']);
+                this.loading = false;
+              }, 3000);
             }
           });
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Updated!',
-          'Your record has been updated.',
-          'success'
-        )
       }
     })
   }

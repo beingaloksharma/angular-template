@@ -1,46 +1,53 @@
+<div *ngIf="loading">
+    <app-spinner></app-spinner>
+</div>
 <div class="center">
-    <mat-card class="card">
-        <mat-card-header>
-            <mat-card-title color="primary">
-                <h1>Login</h1>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="login()">
-            <div class="row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Username or Email</mat-label>
-                    <input matInput placeholder="Enter Your Username or Email" formControlName="user_name">
-                    <mat-icon matSuffix>supervised_user_circle</mat-icon>
-                  </mat-form-field>
-            </div>
-            <div class="row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Password</mat-label>
-                    <input matInput [type]="hide ? 'password' : 'text'" placeholder="Enter Your Password" formControlName="password">
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </button>
-                  </mat-form-field>
-            </div>
-            <div class="row">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-4">
-                    <button mat-raised-button color="primary" type="submit">Login</button>
+    <div class="auth-container">
+        <mat-card>
+            <mat-card-header class="auth-header">
+                <mat-card-title>
+                    <h1>Welcome Back</h1>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                    <div class="row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Username or Email</mat-label>
+                            <input matInput placeholder="Enter your username or email" formControlName="user_name">
+                            <mat-icon matSuffix>person</mat-icon>
+                            <mat-error *ngIf="loginForm.get('user_name')?.hasError('required')">
+                                Username or Email is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Password</mat-label>
+                            <input matInput [type]="hide ? 'password' : 'text'" placeholder="Enter your password"
+                                formControlName="password">
+                            <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
+                                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                                Password is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row mt-3">
+                        <button mat-raised-button color="primary" type="submit" class="w-100">
+                            Log In
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-links">
+                    <a routerLink="../signup">Don't have an account? Register here</a>
+                    <a routerLink="../forgot-password">Forgot Password?</a>
                 </div>
-                <div class="col-sm-4"></div>
-            </div>
-        </form>
-            <div class="row">
-                <div class="col-sm-4">
-                <a routerLink="../signup"> ohh !!!. Register Here </a>
-                </div>
-                <div class="col-sm-4">
-                </div>
-                <div class="col-sm-4">
-                   <a routerLink="../forgot-password"> Forgot Password ? </a>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+            </mat-card-content>
+        </mat-card>
+    </div>
 </div>

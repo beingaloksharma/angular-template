@@ -1,135 +1,133 @@
-<div *ngIf="loading ;else elseBlock">
+<div *ngIf="loading; else contentBlock">
     <app-spinner></app-spinner>
 </div>
-<ng-template #elseBlock>
-    <div class="center">
-        <mat-card class="card" *ngIf="book">
-            <mat-card-header>
-                <div class="table">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h1 class="text-primary">Book Information</h1>
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div [ngClass]="book.status == 'delete' ? 'col-sm-4' : 'col-sm-2'">
-                            <span>
-                                <button mat-mini-fab color="primary" [routerLink]="['/books/update', book.id]" class="pull-right" aria-label="edit">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </span>
-                        </div>
-                        <div class="col-sm-2" [hidden]="book.status == 'Delete'">
-                            <span>
-                                <button mat-mini-fab color="warn" (click)="deleteBook(book.id)" class="pull-left" aria-label="delete">
-                                    <mat-icon>delete_forever</mat-icon>
-                                </button>
+
+<ng-template #contentBlock>
+    <div class="book-details-container" *ngIf="book">
+        <mat-card>
+            <!-- Header -->
+            <div class="mat-card-header">
+                <div class="header-title-group">
+                    <h1 class="header-title">{{book.name}}</h1>
+                    <span class="header-subtitle">by {{book.author_name}}</span>
+                </div>
+
+                <div class="header-actions">
+                    <button mat-raised-button class="action-btn btn-edit" [routerLink]="['/books/update', book.id]"
+                        *ngIf="book.status !== 'Delete'">
+                        <mat-icon>edit</mat-icon> Edit
+                    </button>
+                    <button mat-raised-button class="action-btn btn-delete" (click)="deleteBook(book.id)"
+                        *ngIf="book.status !== 'Delete'">
+                        <mat-icon>delete</mat-icon> Delete
+                    </button>
+                </div>
+            </div>
+
+            <mat-card-content>
+
+                <!-- General Info Status -->
+                <div class="info-grid mt-4">
+                    <div class="info-item">
+                        <span class="label">Status</span>
+                        <div class="value">
+                            <span class="badge"
+                                [ngClass]="{'badge-status-active': book.status === 'Active', 'badge-status-delete': book.status === 'Delete'}">
+                                {{book.status}}
                             </span>
                         </div>
                     </div>
-                    <mat-divider></mat-divider>
+                    <div class="info-item">
+                        <span class="label">Book ID</span>
+                        <div class="value">#{{book.id}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Tenant ID</span>
+                        <div class="value">{{book.tenant_id}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Category</span>
+                        <div class="value">{{book.category}}</div>
+                    </div>
                 </div>
-            </mat-card-header>
-            <mat-card-content>
+
                 <mat-divider></mat-divider>
-                <mat-accordion>
-                    <mat-expansion-panel [expanded]="true">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Book
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <div class="row">
-                            <div class="col-sm-3">Tenant Id</div>
-                            <div class="col-sm-3"> {{book.tenant_id}}</div>
-                            <div class="col-sm-3"> Book Id</div>
-                            <div class="col-sm-3"> {{book.id}}</div>
+
+                <!-- Publishing Details -->
+                <h3 class="section-title mt-4"><mat-icon class="section-icon">menu_book</mat-icon> Publishing Details
+                </h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Publisher</span>
+                        <div class="value">{{book.publication}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Release Date</span>
+                        <div class="value">{{book.publication_date | date:'mediumDate'}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Edition</span>
+                        <div class="value">{{book.edition}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">ISBN</span>
+                        <div class="value">{{book.isbn_no}}</div>
+                    </div>
+                </div>
+
+                <!-- Physical Specs -->
+                <h3 class="section-title mt-4"><mat-icon class="section-icon">straighten</mat-icon> Specifications</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Pages</span>
+                        <div class="value">{{book.paperback}}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Reading Age</span>
+                        <div class="value">{{book.reading_age}}+ years</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Country</span>
+                        <div class="value">{{book.country_of_origin}}</div>
+                    </div>
+                </div>
+
+                <!-- Meta Data -->
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <span class="label d-block mb-2">Languages</span>
+                        <div class="d-flex flex-wrap">
+                            <span class="badge badge-chip" *ngFor="let lang of book.languages">
+                                {{lang['language']}}
+                            </span>
                         </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3"> Name</div>
-                            <div class="col-sm-3"> {{book.name}}</div>
-                            <div class="col-sm-3">Status</div>
-                            <div class="col-sm-3">
-                                <span *ngIf="book.status == 'Active'">
-                                    <button mat-fab extended>
-                                        <mat-icon>check_circle</mat-icon> {{book.status}}
-                                    </button>
-                                </span>
-                                <span *ngIf="book.status == 'Delete'">
-                                    <button mat-fab extended color="warn">
-                                        <mat-icon>delete</mat-icon> {{book.status}}
-                                    </button>
-                                </span>
-                            </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <span class="label d-block mb-2">Keywords</span>
+                        <div class="d-flex flex-wrap">
+                            <span class="badge badge-chip" *ngFor="let key of book.keywords">
+                                {{key['keyword']}}
+                            </span>
                         </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3">Category</div>
-                            <div class="col-sm-3"> {{book.category}}</div>
-                            <div class="col-sm-3">Country of Orign</div>
-                            <div class="col-sm-3"> {{book.country_of_origin}}</div>
+                    </div>
+                </div>
+
+                <mat-divider class="my-4"></mat-divider>
+
+                <!-- Audit Trail -->
+                <div class="text-muted small">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div>Created: {{book.created_at | date:'medium'}}</div>
+                            <div>By: {{book.created_by}}</div>
                         </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3">ISBN</div>
-                            <div class="col-sm-3">{{book.isbn_no}}</div>
-                            <div class="col-sm-3">Edition</div>
-                            <div class="col-sm-3">{{book.edition }}</div>
+                        <div class="col-md-3">
+                            <div>Updated: {{book.updated_at | date:'medium'}}</div>
+                            <div>By: {{book.updated_by}}</div>
                         </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3"> Publication </div>
-                            <div class="col-sm-3"> {{book.publication}}</div>
-                            <div class="col-sm-3">Publication Date</div>
-                            <div class="col-sm-3">{{book.publication_date | date:'longDate'}}</div>
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3"> Language</div>
-                            <div class="col-sm-3"> 
-                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let lang of book.languages">
-                                    {{lang["language"]}}
-                                </span>
-                            </div>
-                            <div class="col-sm-3">Keywords</div>
-                            <div class="col-sm-3">
-                                <span class="mt-2 badge rounded-pill bg-primary border border-success" *ngFor="let keyword of book.keywords">
-                                    {{keyword["keyword"]}}
-                                </span>
-                            </div>
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3"> Reading Age</div>
-                            <div class="col-sm-3"> {{book.reading_age}}</div>
-                            <div class="col-sm-3">Paperback</div>
-                            <div class="col-sm-3">{{book.paperback }}</div>
-                        </div>
-                    </mat-expansion-panel>
-                </mat-accordion>
-                <mat-divider></mat-divider>
-                <mat-accordion>
-                    <mat-expansion-panel [expanded]="true">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                History
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <div class="row">
-                            <div class="col-sm-3"> Created By</div>
-                            <div class="col-sm-3"> {{book.created_by}}</div>
-                            <div class="col-sm-3">Created At</div>
-                            <div class="col-sm-3">{{book.created_at | dateago}}</div>
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="row">
-                            <div class="col-sm-3">Updated By</div>
-                            <div class="col-sm-3">{{book.updated_by}}</div>
-                            <div class="col-sm-3">Updated At</div>
-                            <div class="col-sm-3">{{book.updated_at | dateago }}</div>
-                        </div>
-                    </mat-expansion-panel>
-                </mat-accordion>
+                    </div>
+                </div>
+
             </mat-card-content>
         </mat-card>
     </div>

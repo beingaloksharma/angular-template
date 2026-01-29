@@ -55,58 +55,52 @@ export class ForgotpasswordComponent {
   }
 
   //forgotPassword
-  forgotPassword(){
-     //check is submit 
-     this.isSubmit = true;
-     //check forgotForm from validation
-     if (this.forgotForm.valid) {
-       this.payload = {
-         user_name: this.forgotForm.value['user_name'],
-         password: this.forgotForm.value['password'],
-         confirm_password: this.forgotForm.value['confirm_password'],
-       }
-       //Call Service 
-       this._commonService.post(this._constants.SERVER_URL + "forgot", this.payload).subscribe((res :any) => {
-         //Promt success message
-         this._toastr.success("Password Updated sucessfully"); 
-         //Set Loader true 
-          this.loading = true;
-          setTimeout(() => {
-            //Set Loader false 
-            this.loading = false;
-            //Reset the form in Initial state 
-            this.onReset();
-            //redirect to home page 
-            this._router.navigate(['auth/login']);
-          }, 1000)
-       },
-       (error: HttpErrorResponse) => {
-         //Print Log
-         console.warn("Error Message :: ", error.message);
-         console.warn("Error StatusText :: ", error.statusText);
-         console.warn("Error URL :: ", error.url);
-         //Check Status Code
-         switch (error.status) {
-           case 400: {
-             this._toastr.error("Bad request");
-             break;
-           }
-           case 500: {
-             this._toastr.error("Internal Server Error");
-             break;
-           }
-           default: {
-             this._toastr.error("Something went wrong");
-             break;
-           }
-         }
-       }
-       )
-     }
+  forgotPassword() {
+    //check is submit 
+    this.isSubmit = true;
+
+    if (this.forgotForm.invalid) {
+      this.forgotForm.markAllAsTouched();
+      return;
+    }
+
+    this.payload = {
+      user_name: this.forgotForm.value['user_name'],
+      password: this.forgotForm.value['password'],
+      confirm_password: this.forgotForm.value['confirm_password'],
+    }
+    //Call Service 
+    this._commonService.post(this._constants.SERVER_URL + "forgot", this.payload).subscribe((res: any) => {
+      //Promt success message
+      this._toastr.success("Password Updated sucessfully");
+      //Set Loader true 
+      this.loading = true;
+      setTimeout(() => {
+        //Set Loader false 
+        this.loading = false;
+        //Reset the form in Initial state 
+        this.onReset();
+        //redirect to home page 
+        this._router.navigate(['auth/login']);
+      }, 1000)
+    },
+      (error: HttpErrorResponse) => {
+        //Print Log
+        console.warn("Error Message :: ", error.message);
+        console.warn("Error StatusText :: ", error.statusText);
+        console.warn("Error URL :: ", error.url);
+        //Check Status Code
+        if (error.error && error.error.error_message) {
+          this._toastr.error(error.error.error_message);
+        } else {
+          this._toastr.error("Something went wrong. Please try again.");
+        }
+      }
+    )
   }
 
-   //Reset Form 
-   onReset(){
+  //Reset Form 
+  onReset() {
     //Clear Singup form 
     this.forgotForm.reset();
   }

@@ -94,45 +94,34 @@ export class BookComponent {
       if (result.isConfirmed) {
         //call delete action
         this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
-          // Update the table with latest data
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            //Navigate to dashboard
-            this._router.navigate(['/books']);
-          }, 1000)
+          //Swal Fire after successfull deletion
+          Swal.fire(
+            'Deleted!',
+            'Your record has been deleted.',
+            'success'
+          ).then(() => {
+            // Update the table with latest data
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              //Navigate to dashboard
+              this._router.navigate(['/books']);
+            }, 1000)
+          });
         },
           (error: HttpErrorResponse) => {
-            switch (error.status) {
-              case 400: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              case 404: {
-                this._toastr.error(error.error.error_message);
-                this.loading = true
-                setTimeout(() => {
-                  this._router.navigate(['/books']);
-                  this.loading = false;
-                }, 3000);
-                break;
-              }
-              case 500: {
-                this._toastr.error(error.error.error_message);
-                break;
-              }
-              default: {
-                this._toastr.error(error.statusText);
-                break;
-              }
+            //Standard error handling 
+            const msg = error.error?.error_message || error.statusText || "Something went wrong";
+            this._toastr.error(msg);
+
+            if (error.status === 404) {
+              this.loading = true
+              setTimeout(() => {
+                this._router.navigate(['/books']);
+                this.loading = false;
+              }, 3000);
             }
           });
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Deleted!',
-          'Your record has been deleted.',
-          'success'
-        )
       }
     })
   }

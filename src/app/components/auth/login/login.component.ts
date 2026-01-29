@@ -32,7 +32,7 @@ export class LoginComponent {
     private _commonService: CommonService,
     private _toastr: ToastrService,
     private _router: Router,
-    private _auth:AuthService
+    private _auth: AuthService
   ) { }
 
   //ngOnInit
@@ -59,60 +59,42 @@ export class LoginComponent {
   login() {
     //check is submit 
     this.isSubmit = true;
-    //check signup from validation
-    if (this.loginForm.valid) {
-      this.payload = {
-        user_name: this.loginForm.value['user_name'],
-        password: this.loginForm.value['password'],
-      }
-      //Call Service 
-      this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
-        //Set Loader true 
-        this.loading = true;
-        setTimeout(() => {
-          //Call Auth Service 
-          this._auth.authLogin(res);
-          //Set Loader false 
-          this.loading = false;
-          //Reset the form in Initial state 
-          this.onReset();
-        }, 1000)
-      },
-        (error: HttpErrorResponse) => {
-          //Print Log
-          console.warn("Error Message :: ", error.message);
-          console.warn("Error StatusText :: ", error.statusText);
-          console.warn("Error URL :: ", error.url);
-          //Check Status Code
-          switch (error.status) {
-            case 400: {
-              this._toastr.error("Bad request");
-              break;
-            }
-            case 404: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            case 500: {
-              this._toastr.error("Internal Server Error");
-              break;
-            }
-            case 600: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            case 601: {
-              this._toastr.error(error.error['error_message']);
-              break;
-            }
-            default: {
-              this._toastr.error("Something went wrong");
-              break;
-            }
-          }
-        }
-      )
+
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
+
+    this.payload = {
+      user_name: this.loginForm.value['user_name'],
+      password: this.loginForm.value['password'],
+    }
+    //Call Service 
+    this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
+      //Set Loader true 
+      this.loading = true;
+      setTimeout(() => {
+        //Call Auth Service 
+        this._auth.authLogin(res);
+        //Set Loader false 
+        this.loading = false;
+        //Reset the form in Initial state 
+        this.onReset();
+      }, 1000)
+    },
+      (error: HttpErrorResponse) => {
+        //Print Log
+        console.warn("Error Message :: ", error.message);
+        console.warn("Error StatusText :: ", error.statusText);
+        console.warn("Error URL :: ", error.url);
+        //Check Status Code
+        if (error.error && error.error.error_message) {
+          this._toastr.error(error.error.error_message);
+        } else {
+          this._toastr.error("Something went wrong. Please try again.");
+        }
+      }
+    )
   }
 
   //Reset Form 

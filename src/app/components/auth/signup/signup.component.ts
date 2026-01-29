@@ -55,81 +55,63 @@ export class SignupComponent {
     });
   }
 
-   //Control Name 
-   get ctrl() {
+  //Control Name 
+  get ctrl() {
     return this.signupForm.controls;
   }
 
   //Signup
-  singup() {
+  signup() {
     //check is submit 
     this.isSubmit = true;
-    //check signup from validation
-    if (this.signupForm.valid) {
-      this.payload = {
-        name: this.signupForm.value['name'],
-        email: this.signupForm.value['email'],
-        moblie: this.signupForm.value['moblie'],
-        user_name: this.signupForm.value['user_name'],
-        password: this.signupForm.value['password'],
-        confirm_password: this.signupForm.value['confirm_password'],
-        terms_and_conditions: this.signupForm.value['terms_and_conditions'],
-        created_by: "app-user",
-      }
-      //Call Service 
-      this._commonService.post(this._constants.SERVER_URL + "signup", this.payload).subscribe((res :any) => {
-        //Promt success message
-        this._toastr.success("User Registered sucessfully"); 
-        //Set Loader true 
-         this.loading = true;
-         setTimeout(() => {
-           //Set Loader false 
-           this.loading = false;
-           //Reset the form in Initial state 
-           this.onReset();
-           //redirect to home page 
-           this._router.navigate(['auth/login']);
-         }, 1000)
-      },
+
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      return;
+    }
+
+    this.payload = {
+      name: this.signupForm.value['name'],
+      email: this.signupForm.value['email'],
+      moblie: this.signupForm.value['moblie'],
+      user_name: this.signupForm.value['user_name'],
+      password: this.signupForm.value['password'],
+      confirm_password: this.signupForm.value['confirm_password'],
+      terms_and_conditions: this.signupForm.value['terms_and_conditions'],
+      created_by: "app-user",
+    }
+    //Call Service 
+    this._commonService.post(this._constants.SERVER_URL + "signup", this.payload).subscribe((res: any) => {
+      //Promt success message
+      this._toastr.success("User Registered sucessfully");
+      //Set Loader true 
+      this.loading = true;
+      setTimeout(() => {
+        //Set Loader false 
+        this.loading = false;
+        //Reset the form in Initial state 
+        this.onReset();
+        //redirect to home page 
+        this._router.navigate(['auth/login']);
+      }, 1000)
+    },
       (error: HttpErrorResponse) => {
         //Print Log
         console.warn("Error Message :: ", error.message);
         console.warn("Error StatusText :: ", error.statusText);
         console.warn("Error URL :: ", error.url);
         //Check Status Code
-        switch (error.status) {
-          case 400: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 404: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 409: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 500: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 600: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          default: {
-            this._toastr.error("Something went wrong");
-            break;
-          }
+        if (error.error && error.error.error_message) {
+          this._toastr.error(error.error.error_message);
+        } else {
+          this._toastr.error("Something went wrong. Please try again.");
         }
       }
-      )
-    }
+    )
   }
 
   //Reset Form 
-  onReset(){
+  onReset() {
     //Clear Singup form 
     this.signupForm.reset();
   }

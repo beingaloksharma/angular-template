@@ -1,22 +1,135 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles */
 @import "~@ng-select/ng-select/themes/material.theme.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-/* You can add global styles to this file, and also import other style files */
-.zoom {
-    transition: transform .2s;
-    margin: 0 auto;
+:root {
+  --primary-color: #6200ea;
+  /* Deep Purple */
+  --accent-color: #00bfa5;
+  /* Teal */
+  --bg-color: #f3f4f6;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --border-radius: 12px;
 }
 
-.zoom:hover {
-    -ms-transform: scale(1.5);
-    /* IE 9 */
-    -webkit-transform: scale(1.5);
-    /* Safari 3-8 */
-    transform: scale(1.5);
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  color: var(--text-primary);
 }
 
-.toast-top-center {
-    top: 20px;
-    margin: 5% 40% 6px;
-    text-align: center;
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+/* Material Overrides */
+.mat-mdc-card,
+.mat-card {
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--card-shadow) !important;
+  background: var(--glass-bg) !important;
+  padding: 1rem !important;
+  width: 100%;
+}
+
+.mat-mdc-form-field,
+.mat-form-field {
+  width: 100%;
+}
+
+/* Buttons */
+.mat-mdc-raised-button.mat-primary,
+.mat-raised-button.mat-primary {
+  background-color: var(--primary-color) !important;
+  border-radius: 8px !important;
+  padding: 0 2rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Utilities */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  /* Adjust based on navbar if any */
+  padding: 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 450px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-links a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.auth-links a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.width,
+.w-100 {
+  width: 100%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .mat-card {
+    padding: 0.5rem !important;
+  }
 }

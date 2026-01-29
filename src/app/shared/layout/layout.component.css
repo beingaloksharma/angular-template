@@ -1,14 +1,75 @@
-.fa {
-    cursor: pointer;
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-footer {
-    text-align: center;
-    padding: 3px;
-    background-color: DarkSalmon;
+.main-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #6200ea 0%, #7c4dff 100%);
     color: white;
 }
 
-ul.nav.justify-content-end.mt-2 {
-    margin-right: 9%;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}
+
+.logo-icon {
+    font-size: 24px;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.welcome-msg {
+    margin-right: 20px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--bg-color);
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.app-footer {
+    background-color: #ffffff;
+    padding: 15px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.app-footer p {
+    margin: 0;
+}
+
+/* Material Button Overrides for Toolbar */
+.mat-toolbar .mat-icon-button {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.mat-toolbar .mat-icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+    .welcome-msg {
+        display: inline-block;
+    }
 }

@@ -1,21 +1,39 @@
-<ul class="nav justify-content-end mt-2" style="margin-top:2%;">
-    <li class="nav-item p-1 float-start">
-        <b>Welcome :: {{name}}</b>
-    </li>
-    <li class="nav-item p-1 float-start">
-        <button mat-mini-fab color="primary" aria-label="Home" [routerLink]="['/books']">
+<div class="app-container">
+    <mat-toolbar color="primary" class="main-toolbar">
+        <span class="logo" [routerLink]="['/books']">
+            <mat-icon class="logo-icon">library_books</mat-icon>
+            Library App
+        </span>
+
+        <span class="spacer"></span>
+
+        <span class="welcome-msg">
+            Welcome, <strong>{{name}}</strong>
+        </span>
+
+        <!-- Home -->
+        <button mat-icon-button aria-label="Home" [routerLink]="['/books']" matTooltip="Home">
             <mat-icon>home</mat-icon>
         </button>
-    </li>
-    <li class="nav-item p-1">
-        <button type="button" class="btn btn-outline-primary"  (click)="userDetails()">User Profile</button>
-    </li>
-    <li class="nav-item p-1">
-        <button type="button" class="btn btn-outline-primary" (click)="logout()">Logout</button>
-    </li>
-</ul>
-<router-outlet></router-outlet>
-<footer>
-    <p> <i class="fa fa-copyright"></i> Angular Template 2023<br>
-    </p>
-</footer>
+
+        <!-- Profile -->
+        <button mat-icon-button aria-label="Profile" (click)="userDetails()" matTooltip="My Profile">
+            <mat-icon>account_circle</mat-icon>
+        </button>
+
+        <!-- Logout -->
+        <button mat-icon-button aria-label="Logout" (click)="logout()" matTooltip="Logout">
+            <mat-icon>power_settings_new</mat-icon>
+        </button>
+    </mat-toolbar>
+
+    <main class="content-wrapper">
+        <router-outlet></router-outlet>
+    </main>
+
+    <footer class="app-footer">
+        <p>
+            &copy; 2023 Angular Template. All rights reserved.
+        </p>
+    </footer>
+</div>

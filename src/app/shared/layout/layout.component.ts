@@ -9,20 +9,20 @@ import Swal from 'sweetalert2';
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
-   name:string = "";
+  name: string = "";
   //Constructor 
   constructor(
-    private _auth:AuthService,
-    private _router:Router
-  ){
+    private _auth: AuthService,
+    private _router: Router
+  ) {
     //To Store Name
-    this.name = JSON.parse(localStorage.getItem('userdetails')).name ;
+    this.name = JSON.parse(localStorage.getItem('userdetails')).name;
   }
 
   //Logout 
-  logout(){
-     //swal Alert
-     Swal.fire({
+  logout() {
+    //swal Alert
+    Swal.fire({
       title: 'Are you sure?',
       text: "You want to logout",
       icon: 'warning',
@@ -32,11 +32,11 @@ export class LayoutComponent {
       confirmButtonText: 'Yes, Logout Me !!!'
     }).then((result) => {
       if (result.isConfirmed) {
-       this._auth.logout()
+        this._auth.logout()
         //Swal Fire after successfull deletion
         Swal.fire(
-          'Logout!',
-          'You are redirect to login page.',
+          'Logged Out!',
+          'You have been redirected to the login page.',
           'success'
         )
       }
@@ -46,7 +46,7 @@ export class LayoutComponent {
   //navigate To userDetails 
   userDetails() {
     //Route path 
-    this._router.navigate(['/user/profile'], {queryParams : {'user_name' : JSON.parse(localStorage["userdetails"])["user_name"]}});
+    this._router.navigate(['/user/profile'], { queryParams: { 'user_name': JSON.parse(localStorage["userdetails"])["user_name"] } });
   }
 
 }

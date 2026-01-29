@@ -130,6 +130,12 @@ export class CreateBookComponent implements OnInit {
   SaveAndUpdateBook() {
     //submission is true 
     this.isSubmit = true
+
+    if (this.bookForm.invalid) {
+      this.bookForm.markAllAsTouched();
+      return;
+    }
+
     if (this.bookForm.valid) {
       //check button action
       switch (this.dbOps) {
@@ -292,6 +298,11 @@ export class CreateBookComponent implements OnInit {
         }
       }
     )
+  }
+
+  //Format Slider Label
+  formatLabel(value: number): string {
+    return `${value}`;
   }
 
 }
