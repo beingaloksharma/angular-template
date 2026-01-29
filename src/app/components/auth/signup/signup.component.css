@@ -1,16 +1,16 @@
-.card {
-    background-color: #fff;
-    border-radius: 5px;
-    color: rgba(0, 0, 0, .87);
-    width: 50%;
-    overflow: hidden;
-    position: relative;
-    margin-top: 1%;
-    box-shadow: 10px 10px 15px darksalmon;
+/* Local overrides for Signup */
+.row {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.center {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
+/* Ensure inputs take full width of their container */
+.mat-mdc-form-field {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .col-sm-6 {
+        margin-bottom: 1rem;
+    }
 }

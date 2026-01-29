@@ -1,6 +1,7 @@
 /* Global Styles */
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "./swal-custom.css";
 
 :root {
   --primary-color: #6200ea;
@@ -64,49 +65,148 @@ h6 {
 }
 
 /* Utilities */
+/* Auth & Utilities */
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 64px);
-  /* Adjust based on navbar if any */
+  min-height: 100vh;
   padding: 20px;
+  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+  perspective: 1000px;
+  /* Enable 3D space */
+  overflow: hidden;
 }
 
 .auth-container {
-  width: 100%;
-  max-width: 450px;
-  animation: fadeIn 0.5s ease-out;
+  width: 50%;
+  min-width: 320px;
+  /* Ensure it doesn't get too small on very narrow screens */
+  animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-style: preserve-3d;
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+/* 3D Card Effect */
+.mat-mdc-card,
+.mat-card {
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  transform-style: preserve-3d;
 }
 
+.mat-card:hover {
+  transform: translateY(-5px) rotateX(2deg) !important;
+  box-shadow:
+    0 25px 45px rgba(98, 0, 234, 0.15),
+    0 10px 20px rgba(98, 0, 234, 0.1) !important;
+}
+
+/* Typography in Card */
 .auth-header h1 {
-  font-size: 2rem;
-  color: var(--primary-color);
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  transform: translateZ(20px);
+  /* 3D pop */
 }
 
+/* Inputs 3D Interaction */
+.mat-mdc-form-field,
+.mat-form-field {
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.mat-mdc-form-field:focus-within {
+  transform: translateZ(15px);
+}
+
+/* Buttons 3D */
+.mat-mdc-raised-button.mat-primary,
+.mat-raised-button.mat-primary {
+  height: 48px;
+  font-size: 1.1rem !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #7c4dff 100%) !important;
+  box-shadow:
+    0 4px 6px rgba(98, 0, 234, 0.2),
+    0 1px 3px rgba(98, 0, 234, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: translateZ(10px);
+}
+
+.mat-mdc-raised-button.mat-primary:hover,
+.mat-raised-button.mat-primary:hover {
+  box-shadow:
+    0 10px 20px rgba(98, 0, 234, 0.3),
+    0 6px 6px rgba(98, 0, 234, 0.2) !important;
+  transform: translateY(-2px) translateZ(15px);
+}
+
+.mat-mdc-raised-button.mat-primary:active,
+.mat-raised-button.mat-primary:active {
+  transform: translateY(1px) translateZ(5px);
+}
+
+/* Auth Links */
 .auth-links {
   margin-top: 1.5rem;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
+  /* Increased gap for better touch targets/separation */
+  align-items: center;
+  transform-style: preserve-3d;
 }
 
 .auth-links a {
-  text-decoration: none;
-  color: var(--primary-color);
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 50px;
+  /* Pill shape */
+  background: rgba(255, 255, 255, 0.5);
+  /* Slight glass background */
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--text-primary);
   font-weight: 500;
-  transition: color 0.2s;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+  /* Inner depth */
+  transform: translateZ(5px);
+  cursor: pointer;
 }
 
 .auth-links a:hover {
-  color: var(--accent-color);
-  text-decoration: underline;
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-3px) translateZ(20px) scale(1.05);
+  /* Pop out 3D effect */
+  box-shadow:
+    0 10px 20px rgba(98, 0, 234, 0.2),
+    0 6px 6px rgba(98, 0, 234, 0.15);
+}
+
+.auth-links a:active {
+  transform: translateY(1px) translateZ(5px) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .width,
@@ -115,6 +215,18 @@ h6 {
 }
 
 /* Animations */
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: rotateX(-30deg) translateY(50px) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotateX(0) translateY(0) scale(1);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -128,8 +240,69 @@ h6 {
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .auth-container {
+    width: 90%;
+  }
+
+  .mat-card {
+    padding: 1.5rem !important;
+    /* Increase padding even on mobile for better look */
+  }
+}
+
 @media (max-width: 600px) {
   .mat-card {
-    padding: 0.5rem !important;
+    padding: 1rem !important;
   }
+
+  .auth-header h1 {
+    font-size: 2rem;
+  }
+
+}
+
+/* Global Icon Styling */
+.mat-icon {
+  font-family: 'Material Icons' !important;
+  /* Use gradient for icons to match 3D theme */
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Fallback color if gradient fails */
+  color: var(--primary-color);
+
+  /* 3D Depth */
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible !important;
+  /* Allow filter/shadow to show */
+  vertical-align: middle;
+}
+
+/* Hover effect */
+button:hover .mat-icon,
+a:hover .mat-icon,
+.mat-icon:hover {
+  transform: scale(1.1) translateZ(5px);
+  filter: drop-shadow(2px 4px 6px rgba(98, 0, 234, 0.3));
+}
+
+/* Inside Buttons (e.g. Toolbar) */
+.mat-mdc-icon-button .mat-icon,
+.mat-icon-button .mat-icon {
+  line-height: 24px;
+  /* Ensure vertical centering */
+}
+
+/* Within Input Fields */
+.mat-mdc-form-field .mat-icon {
+  /* Slightly smaller or adjusted for inputs */
+  transform: scale(0.9);
+}
+
+.mat-mdc-form-field-icon-suffix .mat-icon {
+  /* If used as suffix/prefix */
+  margin-left: 5px;
 }

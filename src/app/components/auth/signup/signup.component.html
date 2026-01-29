@@ -89,6 +89,9 @@
                                 <mat-error *ngIf="signupForm.get('confirm_password')?.hasError('required')">
                                     Confirm Password is required
                                 </mat-error>
+                                <mat-error *ngIf="signupForm.get('confirm_password')?.hasError('mismatch')">
+                                    Passwords do not match
+                                </mat-error>
                             </mat-form-field>
                         </div>
 

@@ -46,13 +46,32 @@ export class SignupComponent {
     //signupForm
     this.signupForm = this._fb.group({
       name: ["", Validators.compose([Validators.required])],
-      email: ["", Validators.compose([Validators.required])],
+      email: ["", Validators.compose([Validators.required, Validators.email])],
       moblie: ["", Validators.compose([Validators.required])],
-      password: ["", Validators.compose([Validators.required])],
+      password: ["", Validators.compose([Validators.required, Validators.minLength(6)])],
       confirm_password: ["", Validators.compose([Validators.required])],
       terms_and_conditions: [true, Validators.compose([Validators.requiredTrue])],
       user_name: ["", Validators.compose([Validators.required])],
+    }, {
+      validator: this.passwordMatchValidator
     });
+  }
+
+  // Password match validator
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirm_password');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ mismatch: true });
+    } else {
+      // Clear mismatch error if it exists, but keep other errors
+      if (confirmPassword?.hasError('mismatch')) {
+        const errors = confirmPassword.errors;
+        delete errors['mismatch'];
+        confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
   }
 
   //Control Name 

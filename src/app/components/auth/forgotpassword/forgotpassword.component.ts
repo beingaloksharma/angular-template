@@ -43,10 +43,29 @@ export class ForgotpasswordComponent {
   setInitiaState(): void {
     //forgotForm
     this.forgotForm = this._fb.group({
-      password: ["", Validators.compose([Validators.required])],
+      password: ["", Validators.compose([Validators.required, Validators.minLength(6)])],
       confirm_password: ["", Validators.compose([Validators.required])],
       user_name: ["", Validators.compose([Validators.required])],
+    }, {
+      validator: this.passwordMatchValidator
     });
+  }
+
+  // Password match validator
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirm_password');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ mismatch: true });
+    } else {
+      // Clear mismatch error if it exists, but keep other errors
+      if (confirmPassword?.hasError('mismatch')) {
+        const errors = confirmPassword.errors;
+        delete errors['mismatch'];
+        confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
   }
 
   //Control Name 
