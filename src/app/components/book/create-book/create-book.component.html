@@ -3,161 +3,236 @@
 </div>
 
 <ng-template #formBlock>
-    <div class="book-form-container">
-        <mat-card>
-            <div class="mat-card-header">
-                <div class="mat-card-title">
-                    <mat-icon>menu_book</mat-icon>
-                    {{ btnText === 'Update' ? 'Update Book Details' : 'Add New Book' }}
+    <div class="create-book-wrapper">
+        <!-- Page Header -->
+        <div class="page-header-bar">
+            <div class="header-left">
+                <a routerLink="/books" class="back-link">
+                    <mat-icon>arrow_back</mat-icon>
+                    <span>Back to Books</span>
+                </a>
+                <div class="header-titles">
+                    <h1 class="page-title">
+                        {{ btnText === 'Update' ? 'Update Book' : 'Add New Book' }}
+                    </h1>
+                    <p class="page-subtitle">
+                        {{ btnText === 'Update' ? 'Modify the book specifications and metadata' : 'Fill in the information below to add a book to the catalog' }}
+                    </p>
                 </div>
             </div>
+            <div class="header-actions-top">
+                <span class="status-tag" [class.update-mode]="btnText === 'Update'">
+                    <mat-icon>{{ btnText === 'Update' ? 'edit' : 'add_circle' }}</mat-icon>
+                    {{ btnText === 'Update' ? 'Editing Mode' : 'New Entry' }}
+                </span>
+            </div>
+        </div>
 
-            <mat-card-content class="p-4">
-                <form [formGroup]="bookForm" (ngSubmit)="SaveAndUpdateBook()">
-
-                    <!-- Basic Information -->
-                    <div class="form-grid">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Book Name</mat-label>
-                            <input matInput placeholder="Enter book title" formControlName="name">
-                            <mat-icon matSuffix>book</mat-icon>
-                            <mat-error *ngIf="ctrl['name'].hasError('required')">Name is required</mat-error>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Author Name</mat-label>
-                            <input matInput placeholder="Enter author name" formControlName="author_name">
-                            <mat-icon matSuffix>person</mat-icon>
-                            <mat-error *ngIf="ctrl['author_name'].hasError('required')">Author is required</mat-error>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Category</mat-label>
-                            <mat-select formControlName="category" placeholder="Select category">
-                                <mat-option *ngFor="let cat of categories" [value]="cat">
-                                    {{cat}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix>category</mat-icon>
-                            <mat-error *ngIf="ctrl['category'].hasError('required')">Category is required</mat-error>
-                        </mat-form-field>
+        <form [formGroup]="bookForm" (ngSubmit)="SaveAndUpdateBook()" class="modern-book-form">
+            <!-- Section 1: Basic Information -->
+            <section class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-badge primary">
+                        <mat-icon>menu_book</mat-icon>
                     </div>
+                    <div>
+                        <h2 class="section-heading">Basic Information</h2>
+                        <p class="section-caption">Core title, author credentials, and book classification</p>
+                    </div>
+                </div>
 
-                    <div class="section-divider"></div>
+                <div class="form-grid-3">
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>Book Title</mat-label>
+                        <input matInput placeholder="e.g. Design Patterns in Go" formControlName="name">
+                        <mat-icon matSuffix>book</mat-icon>
+                        <mat-error *ngIf="ctrl['name'].hasError('required')">Book name is required</mat-error>
+                        <mat-error *ngIf="ctrl['name'].hasError('minlength')">Minimum 3 characters required</mat-error>
+                    </mat-form-field>
 
-                    <!-- Publishing Details -->
-                    <div class="form-grid">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Edition</mat-label>
-                            <mat-select formControlName="edition" placeholder="Select edition">
-                                <mat-option *ngFor="let edition of editions" [value]="edition">
-                                    {{edition}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix>layers</mat-icon>
-                            <mat-error *ngIf="ctrl['edition'].hasError('required')">Edition is required</mat-error>
-                        </mat-form-field>
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>Author Name</mat-label>
+                        <input matInput placeholder="e.g. Martin Fowler" formControlName="author_name">
+                        <mat-icon matSuffix>person</mat-icon>
+                        <mat-error *ngIf="ctrl['author_name'].hasError('required')">Author name is required</mat-error>
+                        <mat-error *ngIf="ctrl['author_name'].hasError('pattern')">Only letters, dots and spaces allowed</mat-error>
+                    </mat-form-field>
 
-                        <mat-form-field appearance="outline">
-                            <mat-label>ISBN Number</mat-label>
-                            <input matInput placeholder="Enter ISBN" formControlName="isbn_no">
-                            <mat-icon matSuffix>qr_code</mat-icon>
-                            <mat-error *ngIf="ctrl['isbn_no'].hasError('required')">ISBN is required</mat-error>
-                        </mat-form-field>
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>Category</mat-label>
+                        <mat-select formControlName="category" placeholder="Select category">
+                            <mat-option *ngFor="let cat of categories" [value]="cat">
+                                {{cat}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix>category</mat-icon>
+                        <mat-error *ngIf="ctrl['category'].hasError('required')">Category is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </section>
 
-                        <div class="slider-container">
-                            <label class="custom-label">Reading Age: {{agevalue.value}} years</label>
-                            <mat-slider [max]="60" [min]="14" [step]="1" [discrete]="true" [displayWith]="formatLabel">
-                                <input matSliderThumb #agevalue formControlName="reading_age">
-                            </mat-slider>
+            <!-- Section 2: Publication & Specifications -->
+            <section class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-badge info">
+                        <mat-icon>auto_stories</mat-icon>
+                    </div>
+                    <div>
+                        <h2 class="section-heading">Publication & Specifications</h2>
+                        <p class="section-caption">Edition number, international standard book numbers, and physical dimensions</p>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>Edition</mat-label>
+                        <mat-select formControlName="edition" placeholder="Select edition">
+                            <mat-option *ngFor="let ed of editions" [value]="ed">
+                                {{ed}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix>layers</mat-icon>
+                        <mat-error *ngIf="ctrl['edition'].hasError('required')">Edition is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>ISBN Number</mat-label>
+                        <input matInput placeholder="e.g. 978-0132350884" formControlName="isbn_no">
+                        <mat-icon matSuffix>qr_code_2</mat-icon>
+                        <mat-error *ngIf="ctrl['isbn_no'].hasError('required')">ISBN is required</mat-error>
+                        <mat-error *ngIf="ctrl['isbn_no'].hasError('pattern')">Numbers and dashes only</mat-error>
+                        <mat-error *ngIf="ctrl['isbn_no'].hasError('minlength')">Minimum 10 digits required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field-item">
+                        <mat-label>Paperback (Total Pages)</mat-label>
+                        <input matInput type="number" placeholder="e.g. 464" formControlName="paperback">
+                        <mat-icon matSuffix>numbers</mat-icon>
+                        <mat-error *ngIf="ctrl['paperback'].hasError('pattern')">Must be a valid page count</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="slider-spec-box mt-3">
+                    <div class="slider-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <mat-icon class="text-primary">tune</mat-icon>
+                            <span class="spec-label">Recommended Target Reading Age</span>
+                        </div>
+                        <span class="age-pill-value">{{ agevalue.value || '14' }} Years +</span>
+                    </div>
+                    <div class="slider-inner">
+                        <span class="slider-bound">14 yrs</span>
+                        <mat-slider [max]="60" [min]="14" [step]="1" [discrete]="true" [displayWith]="formatLabel" class="modern-slider">
+                            <input matSliderThumb #agevalue formControlName="reading_age">
+                        </mat-slider>
+                        <span class="slider-bound">60+ yrs</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Publishing Details & Taxonomy -->
+            <section class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-badge warning">
+                        <mat-icon>public</mat-icon>
+                    </div>
+                    <div>
+                        <h2 class="section-heading">Distribution & Taxonomy</h2>
+                        <p class="section-caption">Country of origin, publisher brand, release date, and searchable keywords</p>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="custom-select-field">
+                        <label class="custom-input-label">Country of Origin <span class="req-star">*</span></label>
+                        <ng-select
+                            class="custom-modern-select"
+                            [items]="countries"
+                            formControlName="country_of_origin"
+                            [addTag]="true"
+                            placeholder="Select or type country">
+                        </ng-select>
+                        <div *ngIf="isSubmit && ctrl['country_of_origin'].invalid" class="field-error-text">
+                            Country is required
                         </div>
                     </div>
 
-                    <div class="section-divider"></div>
-
-                    <!-- Origin & Dates -->
-                    <div class="form-grid">
-                        <div class="custom-select-wrapper">
-                            <label class="custom-label">Country of Origin <span class="text-danger">*</span></label>
-                            <ng-select appearance="outline" class="mat-style" [items]="countries"
-                                formControlName="country_of_origin" [addTag]="true"
-                                placeholder="Select or type country">
-                            </ng-select>
-                            <mat-error *ngIf="isSubmit && ctrl['country_of_origin'].invalid"
-                                class="small text-danger mt-1">
-                                Country is required
-                            </mat-error>
+                    <div class="custom-select-field">
+                        <label class="custom-input-label">Publisher / House <span class="req-star">*</span></label>
+                        <ng-select
+                            class="custom-modern-select"
+                            [items]="publications"
+                            formControlName="publication"
+                            [addTag]="true"
+                            placeholder="Select or type publisher">
+                        </ng-select>
+                        <div *ngIf="isSubmit && ctrl['publication'].invalid" class="field-error-text">
+                            Publication house is required
                         </div>
-
-                        <div class="custom-select-wrapper">
-                            <label class="custom-label">Publication <span class="text-danger">*</span></label>
-                            <ng-select appearance="outline" class="mat-style" [items]="publications"
-                                formControlName="publication" [addTag]="true" placeholder="Select or type publication">
-                            </ng-select>
-                            <mat-error *ngIf="isSubmit && ctrl['publication'].invalid" class="small text-danger mt-1">
-                                Publication is required
-                            </mat-error>
-                        </div>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Publication Date</mat-label>
-                            <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate"
-                                formControlName="publication_date" placeholder="Choose a date">
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                            <mat-error *ngIf="ctrl['publication_date'].hasError('required')">Date is
-                                required</mat-error>
-                        </mat-form-field>
                     </div>
 
-                    <div class="section-divider"></div>
+                    <mat-form-field appearance="outline" class="field-item date-field-fix">
+                        <mat-label>Publication Date</mat-label>
+                        <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate"
+                            formControlName="publication_date" placeholder="Choose publication date">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="ctrl['publication_date'].hasError('required')">Publication date is required</mat-error>
+                    </mat-form-field>
+                </div>
 
-                    <!-- Meta Data -->
-                    <div class="form-grid">
-                        <div class="custom-select-wrapper">
-                            <label class="custom-label">Languages <span class="text-danger">*</span></label>
-                            <ng-select appearance="outline" class="mat-style" [items]="languages" [multiple]="true"
-                                [addTag]="addLanguagesFn" bindLabel="language" formControlName="languages"
-                                placeholder="Select languages">
-                            </ng-select>
-                            <mat-error *ngIf="isSubmit && ctrl['languages'].invalid" class="small text-danger mt-1">
-                                At least one language is required
-                            </mat-error>
+                <div class="form-grid-2 mt-3">
+                    <div class="custom-select-field">
+                        <label class="custom-input-label">Available Languages <span class="req-star">*</span></label>
+                        <ng-select
+                            class="custom-modern-select"
+                            [items]="languages"
+                            [multiple]="true"
+                            [addTag]="addLanguagesFn"
+                            bindLabel="language"
+                            formControlName="languages"
+                            placeholder="Select or type languages">
+                        </ng-select>
+                        <div *ngIf="isSubmit && ctrl['languages'].invalid" class="field-error-text">
+                            At least one language is required
                         </div>
-
-                        <div class="custom-select-wrapper">
-                            <label class="custom-label">Keywords <span class="text-danger">*</span></label>
-                            <ng-select appearance="outline" class="mat-style" [items]="keywords" [multiple]="true"
-                                [addTag]="addKeywordsFn" bindLabel="keyword" formControlName="keywords"
-                                placeholder="Select keywords">
-                            </ng-select>
-                            <mat-error *ngIf="isSubmit && ctrl['keywords'].invalid" class="small text-danger mt-1">
-                                At least one keyword is required
-                            </mat-error>
-                        </div>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Paperback (Pages)</mat-label>
-                            <input matInput type="number" placeholder="Number of pages" formControlName="paperback">
-                            <mat-icon matSuffix>pages</mat-icon>
-                        </mat-form-field>
                     </div>
 
-                    <!-- Actions -->
-                    <div class="form-actions">
-                        <button mat-raised-button class="action-btn btn-save" type="submit">
-                            <mat-icon>save</mat-icon>
-                            {{btnText}}
-                        </button>
-
-                        <button mat-raised-button class="action-btn btn-cancel" type="button" (click)="onReset()">
-                            <mat-icon>close</mat-icon>
-                            Cancel
-                        </button>
+                    <div class="custom-select-field">
+                        <label class="custom-input-label">Search Keywords & Tags <span class="req-star">*</span></label>
+                        <ng-select
+                            class="custom-modern-select"
+                            [items]="keywords"
+                            [multiple]="true"
+                            [addTag]="addKeywordsFn"
+                            bindLabel="keyword"
+                            formControlName="keywords"
+                            placeholder="Select or type keywords">
+                        </ng-select>
+                        <div *ngIf="isSubmit && ctrl['keywords'].invalid" class="field-error-text">
+                            At least one keyword is required
+                        </div>
                     </div>
+                </div>
+            </section>
 
-                </form>
-            </mat-card-content>
-        </mat-card>
+            <!-- Actions Bar -->
+            <div class="form-actions-bar">
+                <button mat-button type="button" class="btn-cancel-modern" (click)="onReset()">
+                    <mat-icon>clear_all</mat-icon>
+                    <span>Reset Form</span>
+                </button>
+
+                <div class="actions-right">
+                    <a routerLink="/books" class="btn-secondary-modern">
+                        Cancel
+                    </a>
+                    <button mat-raised-button type="submit" class="btn-submit-modern">
+                        <mat-icon>{{ btnText === 'Update' ? 'update' : 'cloud_upload' }}</mat-icon>
+                        <span>{{ btnText === 'Update' ? 'Save Changes' : 'Publish Book' }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </ng-template>

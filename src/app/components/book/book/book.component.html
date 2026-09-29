@@ -3,132 +3,184 @@
 </div>
 
 <ng-template #contentBlock>
-    <div class="book-details-container" *ngIf="book">
-        <mat-card>
-            <!-- Header -->
-            <div class="mat-card-header">
-                <div class="header-title-group">
-                    <h1 class="header-title">{{book.name | titlecase}}</h1>
-                    <span class="header-subtitle">by {{book.author_name | titlecase}}</span>
-                </div>
+    <div class="book-details-wrapper" *ngIf="book">
+        <!-- Navigation Header -->
+        <div class="detail-nav-bar">
+            <a routerLink="/books" class="back-link">
+                <mat-icon>arrow_back</mat-icon>
+                <span>Back to Books Catalog</span>
+            </a>
+            <div class="breadcrumbs">
+                <span>Catalog</span>
+                <span class="separator">/</span>
+                <span>{{book.category || 'General'}}</span>
+                <span class="separator">/</span>
+                <span class="current">#{{book.id}}</span>
+            </div>
+        </div>
 
-                <div class="header-actions">
-                    <button mat-raised-button class="action-btn btn-edit" [routerLink]="['/books/update', book.id]"
-                        *ngIf="book.status !== 'Delete'">
-                        <mat-icon>edit</mat-icon> Edit
-                    </button>
-                    <button mat-raised-button class="action-btn btn-delete" (click)="deleteBook(book.id)"
-                        *ngIf="book.status !== 'Delete'">
-                        <mat-icon>delete</mat-icon> Delete
-                    </button>
+        <!-- Book Hero Card -->
+        <div class="book-hero-card">
+            <div class="hero-main">
+                <div class="book-cover-placeholder">
+                    <mat-icon>auto_stories</mat-icon>
+                </div>
+                <div class="hero-info">
+                    <div class="hero-badges">
+                        <span class="status-pill" [ngClass]="{'status-active': book.status === 'Active', 'status-archived': book.status === 'Delete'}">
+                            <span class="status-indicator-dot"></span>
+                            {{book.status === 'Active' ? 'Active' : 'Archived'}}
+                        </span>
+                        <span class="meta-tag">#{{book.id}}</span>
+                        <span class="meta-tag category-tag">{{book.category | titlecase}}</span>
+                    </div>
+                    <h1 class="book-title">{{book.name | titlecase}}</h1>
+                    <p class="book-author">
+                        <mat-icon>person</mat-icon>
+                        <span>Authored by <strong>{{book.author_name | titlecase}}</strong></span>
+                    </p>
                 </div>
             </div>
 
-            <mat-card-content>
+            <div class="hero-actions" *ngIf="book.status !== 'Delete'">
+                <button mat-flat-button class="btn-hero-edit" [routerLink]="['/books/update', book.id]">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit Book</span>
+                </button>
+                <button mat-button class="btn-hero-delete" (click)="deleteBook(book.id)">
+                    <mat-icon>delete_outline</mat-icon>
+                    <span>Archive</span>
+                </button>
+            </div>
+        </div>
 
-                <!-- General Info Status -->
-                <div class="info-grid mt-4">
-                    <div class="info-item">
-                        <span class="label">Status</span>
-                        <div class="value">
-                            <span class="badge"
-                                [ngClass]="{'badge-status-active': book.status === 'Active', 'badge-status-delete': book.status === 'Delete'}">
-                                {{book.status | titlecase}}
-                            </span>
-                        </div>
+        <!-- Details Grid -->
+        <div class="detail-grid-layout">
+            <!-- Card 1: Publishing & Specifications -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-icon-pill primary">
+                        <mat-icon>library_books</mat-icon>
                     </div>
-                    <div class="info-item">
-                        <span class="label">Book ID</span>
-                        <div class="value">#{{book.id}}</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Tenant ID</span>
-                        <div class="value">{{book.tenant_id}}</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Category</span>
-                        <div class="value">{{book.category | titlecase}}</div>
+                    <div>
+                        <h3 class="card-title">Publication & Specifications</h3>
+                        <p class="card-subtitle">Publisher metadata and edition records</p>
                     </div>
                 </div>
 
-                <mat-divider></mat-divider>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">Publisher</span>
+                        <span class="spec-val">{{book.publication | titlecase}}</span>
+                    </div>
 
-                <!-- Publishing Details -->
-                <h3 class="section-title mt-4"><mat-icon class="section-icon">menu_book</mat-icon> Publishing Details
-                </h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">Publisher</span>
-                        <div class="value">{{book.publication | titlecase}}</div>
+                    <div class="spec-item">
+                        <span class="spec-label">Release Date</span>
+                        <span class="spec-val">{{book.publication_date | date:'mediumDate'}}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="label">Release Date</span>
-                        <div class="value">{{book.publication_date | date:'mediumDate'}}</div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">Edition</span>
+                        <span class="spec-val">{{book.edition | titlecase}}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="label">Edition</span>
-                        <div class="value">{{book.edition | titlecase}}</div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">ISBN Number</span>
+                        <span class="spec-val font-mono">{{book.isbn_no}}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="label">ISBN</span>
-                        <div class="value">{{book.isbn_no}}</div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">Total Pages</span>
+                        <span class="spec-val">{{book.paperback || 'N/A'}}</span>
+                    </div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">Target Age</span>
+                        <span class="spec-val">{{book.reading_age}}+ years</span>
+                    </div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">Country of Origin</span>
+                        <span class="spec-val">{{book.country_of_origin | titlecase}}</span>
+                    </div>
+
+                    <div class="spec-item">
+                        <span class="spec-label">Tenant Scope</span>
+                        <span class="spec-val">Tenant #{{book.tenant_id}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Taxonomy, Languages & Keywords -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="card-icon-pill info">
+                        <mat-icon>sell</mat-icon>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Taxonomy & Metadata</h3>
+                        <p class="card-subtitle">Language availability and search tags</p>
                     </div>
                 </div>
 
-                <!-- Physical Specs -->
-                <h3 class="section-title mt-4"><mat-icon class="section-icon">straighten</mat-icon> Specifications</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">Pages</span>
-                        <div class="value">{{book.paperback}}</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Reading Age</span>
-                        <div class="value">{{book.reading_age}}+ years</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Country</span>
-                        <div class="value">{{book.country_of_origin | titlecase}}</div>
-                    </div>
-                </div>
-
-                <!-- Meta Data -->
-                <div class="row mt-4">
-                    <div class="col-md-6 mb-3">
-                        <span class="label d-block mb-2">Languages</span>
-                        <div class="d-flex flex-wrap">
-                            <span class="badge badge-chip" *ngFor="let lang of book.languages">
-                                {{lang['language'] | titlecase}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <span class="label d-block mb-2">Keywords</span>
-                        <div class="d-flex flex-wrap">
-                            <span class="badge badge-chip" *ngFor="let key of book.keywords">
-                                {{key['keyword'] | titlecase}}
-                            </span>
-                        </div>
+                <div class="tag-section mb-4">
+                    <span class="tag-section-title">
+                        <mat-icon>translate</mat-icon>
+                        Languages
+                    </span>
+                    <div class="tag-list">
+                        <span class="lang-chip" *ngFor="let lang of book.languages">
+                            <mat-icon>language</mat-icon>
+                            {{lang['language'] | titlecase}}
+                        </span>
+                        <span class="empty-text" *ngIf="!book.languages || book.languages.length === 0">
+                            No languages specified
+                        </span>
                     </div>
                 </div>
 
-                <mat-divider class="my-4"></mat-divider>
-
-                <!-- Audit Trail -->
-                <div class="text-muted small">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div>Created: {{book.created_at | date:'medium'}}</div>
-                            <div>By: {{book.created_by | titlecase}}</div>
-                        </div>
-                        <div class="col-md-3">
-                            <div>Updated: {{book.updated_at | date:'medium'}}</div>
-                            <div>By: {{book.updated_by | titlecase}}</div>
-                        </div>
+                <div class="tag-section">
+                    <span class="tag-section-title">
+                        <mat-icon>tag</mat-icon>
+                        Keywords & Topics
+                    </span>
+                    <div class="tag-list">
+                        <span class="keyword-chip" *ngFor="let key of book.keywords">
+                            #{{key['keyword']}}
+                        </span>
+                        <span class="empty-text" *ngIf="!book.keywords || book.keywords.length === 0">
+                            No keywords associated
+                        </span>
                     </div>
                 </div>
+            </div>
+        </div>
 
-            </mat-card-content>
-        </mat-card>
+        <!-- Audit Trail Card -->
+        <div class="audit-trail-card">
+            <div class="audit-col">
+                <div class="audit-icon-wrap">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </div>
+                <div>
+                    <span class="audit-title">Created By</span>
+                    <span class="audit-user">{{book.created_by | titlecase}}</span>
+                    <span class="audit-time">{{book.created_at | date:'medium'}}</span>
+                </div>
+            </div>
+
+            <div class="audit-col-divider"></div>
+
+            <div class="audit-col">
+                <div class="audit-icon-wrap">
+                    <mat-icon>history</mat-icon>
+                </div>
+                <div>
+                    <span class="audit-title">Last Modified By</span>
+                    <span class="audit-user">{{book.updated_by ? (book.updated_by | titlecase) : 'Not modified'}}</span>
+                    <span class="audit-time">{{book.updated_at ? (book.updated_at | date:'medium') : '—'}}</span>
+                </div>
+            </div>
+        </div>
     </div>
 </ng-template>

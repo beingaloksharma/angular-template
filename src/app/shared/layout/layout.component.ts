@@ -9,44 +9,46 @@ import Swal from 'sweetalert2';
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
-  name: string = "";
-  //Constructor 
+  name: string = 'User';
+  userName: string = '';
+  tenantId: string | number = '';
+
   constructor(
     private _auth: AuthService,
     private _router: Router
   ) {
-    //To Store Name
-    this.name = JSON.parse(localStorage.getItem('userdetails')).name;
+    try {
+      const user = JSON.parse(localStorage.getItem('userdetails') || '{}');
+      this.name = user.name || 'User';
+      this.userName = user.user_name || '';
+      this.tenantId = user.tenant_id || user.id || '1';
+    } catch (e) {
+      this.name = 'User';
+    }
   }
 
-  //Logout 
   logout() {
-    //swal Alert
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You want to logout",
-      icon: 'warning',
+      title: 'Sign Out?',
+      text: 'Are you sure you want to end your session?',
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Logout Me !!!'
+      confirmButtonColor: '#4f46e5',
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: 'Yes, Sign Out'
     }).then((result) => {
       if (result.isConfirmed) {
-        this._auth.logout()
-        //Swal Fire after successfull deletion
-        Swal.fire(
-          'Logged Out!',
-          'You have been redirected to the login page.',
-          'success'
-        )
+        this._auth.logout();
       }
-    })
+    });
   }
 
-  //navigate To userDetails 
   userDetails() {
-    //Route path 
-    this._router.navigate(['/user/profile'], { queryParams: { 'user_name': JSON.parse(localStorage["userdetails"])["user_name"] } });
+    try {
+      const user = JSON.parse(localStorage.getItem('userdetails') || '{}');
+      this._router.navigate(['/user/profile'], { queryParams: { 'user_name': user.user_name || '' } });
+    } catch (e) {
+      this._router.navigate(['/user/profile']);
+    }
   }
-
 }

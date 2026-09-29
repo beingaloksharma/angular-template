@@ -28,6 +28,10 @@ export class BooksComponent implements OnInit {
   // ********************** Mat Paginator Input ******************** //
   pageIndex: number = 0;
   totalBooks: number;
+  activeBooks: number = 0;
+  deletedBooks: number = 0;
+  totalAuthors: number = 0;
+  filterStatus: string = 'all';
   limit: number = 5;
   // ********************** Mat Paginator ******************** //
 
@@ -54,9 +58,11 @@ export class BooksComponent implements OnInit {
   ngAfterViewInit() {
   }
 
-  pageChanged(event: PageEvent) {
-    this.pageIndex = event.pageIndex
-    this.limit = event.pageSize
+  pageChanged(event?: PageEvent) {
+    if (event) {
+      this.pageIndex = event.pageIndex;
+      this.limit = event.pageSize;
+    }
     this.getAllBooks();
   }
 
@@ -67,7 +73,11 @@ export class BooksComponent implements OnInit {
       setTimeout(() => {
         this.loading = false;
         this.dataSource = new MatTableDataSource(res["books"]);
-        this.totalBooks = res["total"]
+        this.totalBooks = res["total"];
+        const books = res["books"] || [];
+        this.activeBooks = books.filter(b => b.status === 'Active').length;
+        this.deletedBooks = books.filter(b => b.status === 'Delete').length;
+        this.totalAuthors = new Set(books.map(b => b.author_name)).size;
         this.dataSource.paginator = this.paginator;
       }, 1000)
     },
@@ -94,9 +104,25 @@ export class BooksComponent implements OnInit {
   }
 
   //Filter On Table
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  setFilter(status: string) {
+    this.filterStatus = status;
+    if (status === 'all') {
+      this.dataSource.filter = '';
+    } else {
+      this.dataSource.filter = status.trim().toLowerCase();
+    }
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  applyFilter(event?: Event) {
+    if (event) {
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    } else {
+      this.dataSource.filter = '';
+    }
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
