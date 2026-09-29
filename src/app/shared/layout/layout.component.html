@@ -1,39 +1,64 @@
 <div class="app-container">
-    <mat-toolbar color="primary" class="main-toolbar">
-        <span class="logo" [routerLink]="['/books']">
-            <mat-icon class="logo-icon">library_books</mat-icon>
-            Library App
-        </span>
+  <!-- Header / Navbar -->
+  <header class="navbar-glass">
+    <div class="navbar-content">
+      <div class="brand-area" [routerLink]="['/books']">
+        <div class="brand-icon">
+          <mat-icon>auto_stories</mat-icon>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">WebStarter</span>
+          <span class="brand-subtitle">Microservice Platform</span>
+        </div>
+      </div>
 
-        <span class="spacer"></span>
+      <nav class="nav-links">
+        <a class="nav-item" [routerLink]="['/books']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" [routerLink]="['/books/create']" routerLinkActive="active">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>New Book</span>
+        </a>
+      </nav>
 
-        <span class="welcome-msg">
-            Welcome, <strong>{{name}}</strong>
-        </span>
+      <div class="navbar-spacer"></div>
 
-        <!-- Home -->
-        <button mat-icon-button aria-label="Home" [routerLink]="['/books']" matTooltip="Home">
-            <mat-icon>home</mat-icon>
+      <div class="nav-actions">
+        <!-- Tenant Badge -->
+        <div class="tenant-pill" matTooltip="Active PostgreSQL Tenant Schema" matTooltipPosition="below">
+          <span class="tenant-dot"></span>
+          <span class="tenant-label">Tenant #{{tenantId}}</span>
+        </div>
+
+        <!-- User Profile Pill -->
+        <div class="user-pill" (click)="userDetails()" matTooltip="View Profile" matTooltipPosition="below">
+          <div class="avatar-badge">
+            {{name.charAt(0).toUpperCase()}}
+          </div>
+          <span class="user-name">{{name}}</span>
+        </div>
+
+        <!-- Logout Button -->
+        <button mat-icon-button class="btn-logout" (click)="logout()" matTooltip="Logout" aria-label="Sign Out">
+          <mat-icon>logout</mat-icon>
         </button>
+      </div>
+    </div>
+  </header>
 
-        <!-- Profile -->
-        <button mat-icon-button aria-label="Profile" (click)="userDetails()" matTooltip="My Profile">
-            <mat-icon>account_circle</mat-icon>
-        </button>
+  <!-- Main View -->
+  <main class="main-body">
+    <div class="container-xl">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 
-        <!-- Logout -->
-        <button mat-icon-button aria-label="Logout" (click)="logout()" matTooltip="Logout">
-            <mat-icon>power_settings_new</mat-icon>
-        </button>
-    </mat-toolbar>
-
-    <main class="content-wrapper">
-        <router-outlet></router-outlet>
-    </main>
-
-    <footer class="app-footer">
-        <p>
-            &copy; 2023 Angular Template. All rights reserved.
-        </p>
-    </footer>
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>&copy; 2026 WebStarter Multi-Tenant Application. Designed with Angular &amp; Go.</p>
+    </div>
+  </footer>
 </div>

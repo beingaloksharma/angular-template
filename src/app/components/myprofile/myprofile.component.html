@@ -3,72 +3,124 @@
 </div>
 
 <ng-template #profileBlock>
-    <div class="container mt-4" *ngIf="userProfile">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <!-- Profile Header Card -->
-                <mat-card class="mb-4 profile-card">
-                    <div class="profile-header">
-                        <div class="avatar-container">
-                            <mat-icon class="avatar-icon">account_circle</mat-icon>
-                        </div>
-                        <div class="profile-title">
-                            <h1>{{userProfile.name | titlecase}}</h1>
-                            <p class="subtitle">@{{userProfile.user_name}}</p>
-                            <span class="status-badge" [class.active]="userProfile.status === 'Active'"
-                                [class.inactive]="userProfile.status !== 'Active'">
-                                {{userProfile.status | titlecase}}
-                            </span>
-                        </div>
+    <div class="profile-wrapper" *ngIf="userProfile">
+        <!-- Navigation Header -->
+        <div class="detail-nav-bar">
+            <a routerLink="/books" class="back-link">
+                <mat-icon>arrow_back</mat-icon>
+                <span>Back to Dashboard</span>
+            </a>
+            <div class="breadcrumbs">
+                <span>System</span>
+                <span class="separator">/</span>
+                <span>User Profile</span>
+                <span class="separator">/</span>
+                <span class="current">@{{userProfile.user_name}}</span>
+            </div>
+        </div>
+
+        <!-- Profile Hero Header Card -->
+        <div class="profile-hero-card">
+            <div class="hero-banner"></div>
+            <div class="hero-body">
+                <div class="hero-avatar-wrap">
+                    <div class="avatar-circle">
+                        {{ (userProfile.name ? userProfile.name.charAt(0) : 'U') | uppercase }}
                     </div>
-                </mat-card>
+                </div>
+                <div class="hero-meta-group">
+                    <div class="hero-titles">
+                        <h1 class="profile-name">{{userProfile.name | titlecase}}</h1>
+                        <span class="profile-handle">@{{userProfile.user_name}}</span>
+                    </div>
+                    <div class="hero-tags">
+                        <span class="status-pill" [ngClass]="{'status-active': userProfile.status === 'Active', 'status-inactive': userProfile.status !== 'Active'}">
+                            <span class="status-indicator-dot"></span>
+                            {{userProfile.status | titlecase}}
+                        </span>
+                        <span class="tenant-pill">Tenant #{{userProfile.id}}</span>
+                        <span class="role-pill">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <!-- Details Card -->
-                <mat-card class="mb-4">
-                    <mat-card-header>
-                        <mat-card-title>Account Details</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="label">Email Address</span>
-                                <span class="value">{{userProfile.email}}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">User ID</span>
-                                <span class="value">#{{userProfile.id}}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Mobile</span>
-                                <span class="value">{{userProfile.moblie}}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Member Since</span>
-                                <span class="value">{{userProfile.created_at | date:'mediumDate'}}</span>
-                            </div>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
+        <!-- Account Information Grid -->
+        <div class="section-card mb-4">
+            <div class="section-header">
+                <div class="section-icon-badge primary">
+                    <mat-icon>person_outline</mat-icon>
+                </div>
+                <div>
+                    <h2 class="section-title">Account Information</h2>
+                    <p class="section-subtitle">Personal credentials and registered tenancy details</p>
+                </div>
+            </div>
 
-                <!-- Danger Zone -->
-                <mat-card class="danger-zone">
-                    <mat-card-header>
-                        <mat-card-title class="text-danger">Danger Zone</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4>Deactivate Account</h4>
-                                <p class="text-muted">Once you deactivate your account, there is no going back. Please
-                                    be certain.</p>
-                            </div>
-                            <button mat-flat-button color="warn"
-                                (click)="deactivateTenant(userProfile.status == 'Active' ? 'Delete' : 'Active')">
-                                Deactivate Account
-                            </button>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
+            <div class="profile-details-grid">
+                <div class="detail-tile">
+                    <div class="detail-tile-icon">
+                        <mat-icon>mail_outline</mat-icon>
+                    </div>
+                    <div class="detail-tile-content">
+                        <span class="detail-label">Email Address</span>
+                        <span class="detail-val">{{userProfile.email}}</span>
+                    </div>
+                </div>
+
+                <div class="detail-tile">
+                    <div class="detail-tile-icon">
+                        <mat-icon>phone_iphone</mat-icon>
+                    </div>
+                    <div class="detail-tile-content">
+                        <span class="detail-label">Mobile Number</span>
+                        <span class="detail-val">{{userProfile.moblie || 'Not provided'}}</span>
+                    </div>
+                </div>
+
+                <div class="detail-tile">
+                    <div class="detail-tile-icon">
+                        <mat-icon>fingerprint</mat-icon>
+                    </div>
+                    <div class="detail-tile-content">
+                        <span class="detail-label">Unique User ID</span>
+                        <span class="detail-val font-mono">#{{userProfile.id}}</span>
+                    </div>
+                </div>
+
+                <div class="detail-tile">
+                    <div class="detail-tile-icon">
+                        <mat-icon>calendar_today</mat-icon>
+                    </div>
+                    <div class="detail-tile-content">
+                        <span class="detail-label">Member Since</span>
+                        <span class="detail-val">{{userProfile.created_at | date:'mediumDate'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone Card -->
+        <div class="danger-zone-card">
+            <div class="danger-header">
+                <div class="danger-icon-badge">
+                    <mat-icon>warning_amber</mat-icon>
+                </div>
+                <div>
+                    <h3 class="danger-title">Danger Zone</h3>
+                    <p class="danger-subtitle">Destructive operations related to this tenant profile</p>
+                </div>
+            </div>
+
+            <div class="danger-body">
+                <div class="danger-text">
+                    <h4>Deactivate Account & Tenant</h4>
+                    <p>Once you deactivate your account, all active sessions and access to catalog services for this tenant will be suspended. Please proceed with caution.</p>
+                </div>
+                <button mat-raised-button class="btn-danger-action" (click)="deactivateTenant(userProfile.status == 'Active' ? 'Delete' : 'Active')">
+                    <mat-icon>delete_forever</mat-icon>
+                    <span>{{ userProfile.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account' }}</span>
+                </button>
             </div>
         </div>
     </div>
