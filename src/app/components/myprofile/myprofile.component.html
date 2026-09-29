@@ -21,14 +21,38 @@
     </div>
 
     <!-- Hero Profile Header Banner -->
-    <div class="profile-hero-card">
-      <div class="hero-cover-gradient">
+    <div class="profile-hero-card" [class.cover-collapsed]="!isCoverOpen">
+      <!-- High-End Panoramic Cover Banner -->
+      <div class="hero-cover-banner" [class.collapsed]="!isCoverOpen">
         <div class="hero-cover-pattern"></div>
+        <div class="cover-glass-overlay"></div>
+        
+        <!-- Cover Top Utilities Bar (High-Contrast Frosted Elements on Cover) -->
+        <div class="cover-top-bar">
+          <div class="cover-tenant-chip">
+            <mat-icon>dns</mat-icon>
+            <span class="font-mono">TENANT #{{userProfile.id}}</span>
+            <span class="chip-divider">/</span>
+            <span>SCHEMA: tenant_{{userProfile.id}}</span>
+          </div>
+
+          <div class="cover-actions-bar">
+            <button class="btn-cover-pill" (click)="toggleCover()" matTooltip="Collapse cover banner">
+              <mat-icon>expand_less</mat-icon>
+              <span>Close Cover</span>
+            </button>
+            <a routerLink="/books" class="btn-cover-pill">
+              <mat-icon>dashboard</mat-icon>
+              <span>Catalog Dashboard</span>
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div class="hero-content-row">
-        <!-- Avatar with Active Ring -->
-        <div class="hero-avatar-container">
+      <!-- Hero Card Body (Crisp white surface with zero color clashing) -->
+      <div class="hero-card-body">
+        <!-- Floating Avatar Bridge -->
+        <div class="hero-avatar-bridge" [class.no-cover]="!isCoverOpen">
           <div class="hero-avatar-circle">
             {{ (userProfile.name ? userProfile.name.charAt(0) : 'U') | uppercase }}
           </div>
@@ -37,48 +61,61 @@
           </span>
         </div>
 
-        <!-- Identity & Metadata -->
-        <div class="hero-identity-group">
-          <div class="hero-title-line">
-            <h1 class="hero-fullname">{{userProfile.name | titlecase}}</h1>
-            <mat-icon class="verified-icon" matTooltip="Verified Tenant Admin">verified</mat-icon>
+        <!-- Identity Details -->
+        <div class="hero-profile-details">
+          <div class="details-header-row">
+            <div class="details-name-group">
+              <div class="name-title-wrap">
+                <h1 class="hero-fullname">{{userProfile.name | titlecase}}</h1>
+                <mat-icon class="verified-icon" matTooltip="Verified Tenant Administrator">verified</mat-icon>
+              </div>
+              <div class="hero-handle-meta">
+                <span class="hero-username font-mono">@{{userProfile.user_name}}</span>
+                <button class="btn-copy-tag" (click)="copyToClipboard('@' + userProfile.user_name, 'Username')" matTooltip="Copy username">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <span class="dot-sep">•</span>
+                <span class="hero-email-text">{{userProfile.email}}</span>
+              </div>
+            </div>
+
+            <!-- Header Quick Action Buttons -->
+            <div class="details-action-buttons">
+              <button mat-button class="btn-detail-action btn-cover-toggle" (click)="toggleCover()"
+                [matTooltip]="isCoverOpen ? 'Collapse cover banner' : 'Expand cover banner'">
+                <mat-icon>{{ isCoverOpen ? 'visibility_off' : 'wallpaper' }}</mat-icon>
+                <span>{{ isCoverOpen ? 'Close Cover' : 'Open Cover' }}</span>
+              </button>
+              <button mat-button class="btn-detail-action" (click)="copyToClipboard(userProfile.id, 'Tenant ID')" matTooltip="Copy Tenant ID">
+                <mat-icon>fingerprint</mat-icon>
+                <span>ID: #{{userProfile.id}}</span>
+              </button>
+              <button mat-button class="btn-detail-action" (click)="copyToClipboard(userProfile.email, 'Email Address')" matTooltip="Copy Email">
+                <mat-icon>mail_outline</mat-icon>
+                <span>Copy Email</span>
+              </button>
+            </div>
           </div>
 
-          <div class="hero-handle-row">
-            <span class="hero-username">@{{userProfile.user_name}}</span>
-            <button class="btn-copy-tag" (click)="copyToClipboard('@' + userProfile.user_name, 'Username')" matTooltip="Copy username">
-              <mat-icon>content_copy</mat-icon>
-            </button>
-            <span class="dot-sep">•</span>
-            <span class="hero-email-text">{{userProfile.email}}</span>
-          </div>
-
-          <div class="hero-badges-row">
+          <!-- Profile Badges Row -->
+          <div class="details-badges-row">
             <span class="badge-status" [ngClass]="{'status-active': userProfile.status === 'Active', 'status-inactive': userProfile.status !== 'Active'}">
               <span class="pulse-indicator-dot"></span>
               {{userProfile.status | titlecase}} Account
             </span>
-            <span class="badge-tenant" (click)="copyToClipboard(userProfile.id, 'Tenant ID')" matTooltip="Click to copy Tenant ID">
-              <mat-icon>dns</mat-icon>
-              <span>Tenant #{{userProfile.id}}</span>
-            </span>
-            <span class="badge-role">
+            <span class="badge-pill badge-indigo">
               <mat-icon>admin_panel_settings</mat-icon>
-              <span>Administrator</span>
+              <span>Tenant Admin</span>
+            </span>
+            <span class="badge-pill badge-slate font-mono">
+              <mat-icon>token</mat-icon>
+              <span>JWT Bearer</span>
+            </span>
+            <span class="badge-pill badge-emerald">
+              <mat-icon>check_circle</mat-icon>
+              <span>Email Verified</span>
             </span>
           </div>
-        </div>
-
-        <!-- Hero Actions -->
-        <div class="hero-actions-group">
-          <button mat-button class="btn-hero-copy" (click)="copyToClipboard(userProfile.id, 'User ID')">
-            <mat-icon>fingerprint</mat-icon>
-            <span>ID: #{{userProfile.id}}</span>
-          </button>
-          <a routerLink="/books" class="btn-hero-dashboard">
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </a>
         </div>
       </div>
     </div>

@@ -20,6 +20,8 @@ export class MyprofileComponent {
   user_name: string = "";
   //To Store Loading Infromation
   loading: boolean;
+  //Cover open/close toggle state
+  isCoverOpen: boolean = true;
 
   //Constructor 
   constructor(
@@ -39,7 +41,23 @@ export class MyprofileComponent {
 
   //Life Cycle 
   ngOnInit() {
+    try {
+      const saved = localStorage.getItem('profile_cover_open');
+      if (saved !== null) {
+        this.isCoverOpen = saved === 'true';
+      }
+    } catch (e) {
+      // default open
+    }
     this.getUserDetails(this.user_name);
+  }
+
+  // Toggle Cover Banner Open / Close
+  toggleCover() {
+    this.isCoverOpen = !this.isCoverOpen;
+    try {
+      localStorage.setItem('profile_cover_open', this.isCoverOpen.toString());
+    } catch (e) {}
   }
 
   //Get user Details 
