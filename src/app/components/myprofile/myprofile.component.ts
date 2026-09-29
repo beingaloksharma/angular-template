@@ -80,44 +80,53 @@ export class MyprofileComponent {
       });
   }
 
-  //Deactivate Tenant 
+  // Deactivate or Reactivate Tenant 
   deactivateTenant(status: string) {
-    //swal Alert
+    const isDeactivate = status === 'Delete';
     Swal.fire({
-      title: 'Are you sure?',
-      text: "Want to delete your tenant ",
+      title: isDeactivate ? 'Deactivate Tenant Workspace?' : 'Reactivate Tenant Workspace?',
+      text: isDeactivate
+        ? 'Are you sure you want to deactivate your workspace? Active sessions will be suspended.'
+        : 'Do you want to reactivate your tenant workspace?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it !',
+      confirmButtonColor: isDeactivate ? '#ef4444' : '#4f46e5',
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: isDeactivate ? 'Yes, Deactivate' : 'Yes, Reactivate',
+      cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Decalre model for update status 
-        var deactiateTenant: DeactivateTenant = { status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
-        //Deactivate Tenant 
+        let updatedBy = 'System';
+        try {
+          const userDetails = JSON.parse(localStorage.getItem('userdetails') || '{}');
+          if (userDetails && userDetails.name) {
+            updatedBy = userDetails.name;
+          }
+        } catch (e) {
+          // fallback
+        }
+
+        var deactiateTenant: DeactivateTenant = { status: status, updated_by: updatedBy };
         this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe((res: any) => {
-          //Swal Fire after successfull deletion
-          Swal.fire(
-            'Deleted!',
-            'Your tenant has been deleted.',
-            'success'
-          ).then(() => {
-            // Update the table with latest data
+          Swal.fire({
+            title: isDeactivate ? 'Deactivated!' : 'Reactivated!',
+            text: isDeactivate
+              ? 'Your tenant workspace has been deactivated successfully.'
+              : 'Your tenant workspace is now active.',
+            icon: 'success',
+            confirmButtonColor: '#4f46e5'
+          }).then(() => {
             this.loading = true;
             setTimeout(() => {
               this.loading = false;
-              //redirect to login page 
               this._router.navigate(['auth/login']);
-            }, 1000)
+            }, 1000);
           });
         },
           (error: HttpErrorResponse) => {
-            // Check based on backend error format
             const msg = error.error?.error_message || error.statusText || "Something went wrong";
             this._toastr.error(msg);
 
-            // Handle specific navigation for 404 if needed
             if (error.status === 404) {
               setTimeout(() => {
                 this._router.navigate(['auth/login']);
@@ -125,7 +134,17 @@ export class MyprofileComponent {
             }
           });
       }
-    })
+    });
+  }
+
+  // Copy text to clipboard helper
+  copyToClipboard(text: string | number, label: string) {
+    if (!text) return;
+    navigator.clipboard.writeText(text.toString()).then(() => {
+      this._toastr.info(`${label} copied to clipboard!`);
+    }).catch(() => {
+      this._toastr.success(`${label} copied!`);
+    });
   }
 
 }

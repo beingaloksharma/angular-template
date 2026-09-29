@@ -1,263 +1,202 @@
-/* SweetAlert2 3D Animation Customization */
+/* ==========================================================================
+   SweetAlert2 Custom Styling & Modern Theme
+   ========================================================================== */
 
-/* 3D Popup Animation */
+/* Backdrop */
+.swal2-container {
+  backdrop-filter: blur(6px) !important;
+  background-color: rgba(15, 23, 42, 0.5) !important;
+  z-index: 10000 !important;
+}
+
+/* Modal Popup */
 .swal2-popup {
-    border-radius: 16px !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-    pointer-events: auto !important;
-    z-index: 10001 !important;
+  font-family: var(--font-primary, 'Plus Jakarta Sans', -apple-system, sans-serif) !important;
+  border-radius: 18px !important;
+  padding: 2rem 2.25rem !important;
+  background: #ffffff !important;
+  border: 1px solid var(--slate-200, #e2e8f0) !important;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
 }
 
 .swal2-popup.swal2-show {
-    animation: swal2-3d-show 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+  animation: swalModernShow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-@keyframes swal2-3d-show {
-    0% {
-        transform: scale(0.7) rotateX(-30deg) rotateY(30deg);
-        opacity: 0;
-    }
-
-    50% {
-        transform: scale(1.05) rotateX(10deg) rotateY(-10deg);
-    }
-
-    100% {
-        transform: scale(1) rotateX(0) rotateY(0);
-        opacity: 1;
-    }
+@keyframes swalModernShow {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-/* Icon 3D Animation */
+/* Icon Modernization */
 .swal2-icon {
-    transform-style: preserve-3d;
+  margin: 0.5rem auto 1.25rem !important;
+  border-width: 3px !important;
+  transform: scale(1);
+  transition: transform 0.2s ease;
 }
 
-.swal2-popup.swal2-show .swal2-icon {
-    animation: swal2-icon-3d 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+.swal2-icon.swal2-question {
+  border-color: #6366f1 !important;
+  color: #4f46e5 !important;
 }
 
-@keyframes swal2-icon-3d {
-    0% {
-        transform: scale(0) rotateY(180deg);
-        opacity: 0;
-    }
-
-    50% {
-        transform: scale(1.2) rotateY(90deg);
-    }
-
-    100% {
-        transform: scale(1) rotateY(0deg);
-        opacity: 1;
-    }
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #d97706 !important;
 }
 
-/* Success Icon Enhancement */
-.swal2-success {
-    border-color: #a5dc86 !important;
+.swal2-icon.swal2-success {
+  border-color: #10b981 !important;
+  color: #059669 !important;
 }
 
-.swal2-success [class^='swal2-success-line'] {
-    background-color: #a5dc86 !important;
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #10b981 !important;
 }
 
-.swal2-success-ring {
-    border-color: rgba(165, 220, 134, 0.3) !important;
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: rgba(16, 185, 129, 0.3) !important;
 }
 
-/* Error Icon Enhancement */
-.swal2-error {
-    border-color: #f27474 !important;
+.swal2-icon.swal2-error {
+  border-color: #ef4444 !important;
+  color: #dc2626 !important;
 }
 
-.swal2-x-mark {
-    animation: swal2-x-mark-3d 0.5s ease-in-out !important;
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: #ef4444 !important;
 }
 
-@keyframes swal2-x-mark-3d {
-    0% {
-        transform: scale(0) rotate(-45deg);
-    }
-
-    50% {
-        transform: scale(1.2) rotate(10deg);
-    }
-
-    100% {
-        transform: scale(1) rotate(0deg);
-    }
-}
-
-/* Warning Icon Enhancement */
-.swal2-warning {
-    border-color: #facea8 !important;
-}
-
-.swal2-popup.swal2-show .swal2-warning {
-    animation: swal2-warning-pulse 1.5s infinite !important;
-}
-
-@keyframes swal2-warning-pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(250, 206, 168, 0.7);
-    }
-
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 10px rgba(250, 206, 168, 0);
-    }
-}
-
-/* Title 3D Effect */
+/* Typography */
 .swal2-title {
-    font-family: 'Poppins', sans-serif !important;
-    font-weight: 600 !important;
-    color: #2d3748 !important;
+  font-family: var(--font-primary, 'Plus Jakarta Sans', -apple-system, sans-serif) !important;
+  font-size: 1.45rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: #0f172a !important;
+  padding: 0 0 0.5rem !important;
+  margin: 0 !important;
 }
 
-.swal2-popup.swal2-show .swal2-title {
-    animation: swal2-title-slide 0.6s ease-out !important;
-}
-
-@keyframes swal2-title-slide {
-    0% {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Content Text */
 .swal2-html-container {
-    font-family: 'Poppins', sans-serif !important;
-    color: #4a5568 !important;
+  font-family: var(--font-primary, 'Plus Jakarta Sans', -apple-system, sans-serif) !important;
+  font-size: 0.95rem !important;
+  color: #475569 !important;
+  line-height: 1.55 !important;
+  margin: 0.5rem 0 1.5rem !important;
+  padding: 0 !important;
 }
 
-.swal2-popup.swal2-show .swal2-html-container {
-    animation: swal2-content-fade 0.7s ease-out !important;
+/* Buttons Area */
+.swal2-actions {
+  display: flex !important;
+  gap: 0.85rem !important;
+  margin-top: 1.25rem !important;
+  width: 100% !important;
+  justify-content: center !important;
 }
 
-@keyframes swal2-content-fade {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Buttons 3D Enhancement */
 .swal2-confirm,
 .swal2-cancel {
-    border-radius: 8px !important;
-    font-family: 'Poppins', sans-serif !important;
-    font-weight: 500 !important;
-    padding: 10px 24px !important;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
+  font-family: var(--font-primary, 'Plus Jakarta Sans', -apple-system, sans-serif) !important;
+  font-size: 0.925rem !important;
+  font-weight: 700 !important;
+  padding: 0.75rem 1.6rem !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
+/* Primary Confirm Button */
 .swal2-confirm {
-    background-color: #6200ea !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important;
 }
 
 .swal2-confirm:hover {
-    transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 6px 12px rgba(98, 0, 234, 0.3) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45) !important;
 }
 
+.swal2-confirm:active {
+  transform: translateY(0) !important;
+}
+
+/* Destructive / Danger Confirm Button */
+.swal2-confirm.btn-swal-danger,
+.swal2-confirm[style*="rgb(239, 68, 68)"],
+.swal2-confirm[style*="rgb(220, 38, 38)"],
+.swal2-confirm[style*="rgb(221, 51, 51)"],
+.swal2-confirm[style*="#ef4444"],
+.swal2-confirm[style*="#dc2626"],
+.swal2-confirm[style*="#d33"] {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  background-color: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35) !important;
+}
+
+.swal2-confirm.btn-swal-danger:hover,
+.swal2-confirm[style*="rgb(239, 68, 68)"]:hover,
+.swal2-confirm[style*="rgb(220, 38, 38)"]:hover,
+.swal2-confirm[style*="rgb(221, 51, 51)"]:hover,
+.swal2-confirm[style*="#ef4444"]:hover,
+.swal2-confirm[style*="#dc2626"]:hover,
+.swal2-confirm[style*="#d33"]:hover {
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.45) !important;
+}
+
+/* Success Confirm Button */
+.swal2-confirm.btn-swal-success,
+.swal2-confirm[style*="rgb(16, 185, 129)"],
+.swal2-confirm[style*="rgb(5, 150, 105)"],
+.swal2-confirm[style*="#10b981"],
+.swal2-confirm[style*="#059669"] {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background-color: #059669 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+}
+
+.swal2-confirm.btn-swal-success:hover,
+.swal2-confirm[style*="rgb(16, 185, 129)"]:hover,
+.swal2-confirm[style*="rgb(5, 150, 105)"]:hover,
+.swal2-confirm[style*="#10b981"]:hover,
+.swal2-confirm[style*="#059669"]:hover {
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45) !important;
+}
+
+/* Cancel Button */
 .swal2-cancel {
-    background-color: #e0e0e0 !important;
-    color: #333 !important;
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
 .swal2-cancel:hover {
-    transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
-    background-color: #d0d0d0 !important;
-}
-
-/* Backdrop 3D Effect */
-.swal2-container {
-    backdrop-filter: blur(5px) !important;
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    z-index: 10000 !important;
-    pointer-events: auto !important;
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
 }
 
 /* Close Button */
 .swal2-close {
-    transition: all 0.3s ease !important;
+  color: #94a3b8 !important;
+  font-size: 1.75rem !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
 }
 
 .swal2-close:hover {
-    transform: rotate(90deg) scale(1.2) !important;
-    color: #f27474 !important;
-}
-
-/* Progress Steps */
-.swal2-progress-steps .swal2-progress-step {
-    background: #6200ea !important;
-}
-
-.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step {
-    background: #7c4dff !important;
-    transform: scale(1.2) !important;
-}
-
-/* Input Fields */
-.swal2-input,
-.swal2-textarea {
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    font-family: 'Poppins', sans-serif !important;
-    transition: all 0.3s ease !important;
-}
-
-.swal2-input:focus,
-.swal2-textarea:focus {
-    border-color: #6200ea !important;
-    box-shadow: 0 0 0 3px rgba(98, 0, 234, 0.1) !important;
-    transform: scale(1.02) !important;
-}
-
-/* Loading Animation */
-.swal2-loader {
-    border-color: #6200ea transparent #6200ea transparent !important;
-    animation: swal2-rotate-3d 1s linear infinite !important;
-}
-
-@keyframes swal2-rotate-3d {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-
-    50% {
-        transform: rotate(180deg) scale(1.1);
-    }
-
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-/* Timer Progress Bar */
-.swal2-timer-progress-bar {
-    background: linear-gradient(90deg, #6200ea 0%, #7c4dff 100%) !important;
+  color: #0f172a !important;
 }

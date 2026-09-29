@@ -1,6 +1,6 @@
 import { ConstantsService } from './../../../shared/services/constants.service';
 import { CommonService } from './../../../shared/services/common.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   templateUrl: './books.component.html',
   styleUrls: ['./books.component.css']
 })
-export class BooksComponent implements OnInit {
+export class BooksComponent implements OnInit, OnDestroy {
 
   //Column Names for Table
   displayedColumns: string[] = ['id', 'name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
@@ -27,7 +27,7 @@ export class BooksComponent implements OnInit {
 
   // ********************** Mat Paginator Input ******************** //
   pageIndex: number = 0;
-  totalBooks: number;
+  totalBooks: number = 0;
   activeBooks: number = 0;
   deletedBooks: number = 0;
   totalAuthors: number = 0;
@@ -39,6 +39,14 @@ export class BooksComponent implements OnInit {
   loading: boolean;
   //Check Status
   status: boolean;
+
+  // ********************** Total Record Carousel State ******************** //
+  carouselIndex: number = 0;
+  totalSlides: number = 4;
+  isAutoPlay: boolean = true;
+  private autoPlayTimer: any;
+  carouselMode: 'carousel' | 'grid' = 'carousel';
+  isOpen: boolean = false;
 
   //Constructor 
   constructor(
@@ -52,6 +60,68 @@ export class BooksComponent implements OnInit {
   ngOnInit() {
     //Load All Books
     this.getAllBooks();
+    if (this.isOpen) {
+      this.startAutoPlay();
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopAutoPlay();
+  }
+
+  startAutoPlay() {
+    this.stopAutoPlay();
+    this.autoPlayTimer = setInterval(() => {
+      if (this.isAutoPlay && this.carouselMode === 'carousel') {
+        this.nextSlide();
+      }
+    }, 4500);
+  }
+
+  stopAutoPlay() {
+    if (this.autoPlayTimer) {
+      clearInterval(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
+  }
+
+  toggleOpenClose() {
+    this.isOpen = !this.isOpen;
+    if (!this.isOpen) {
+      this.stopAutoPlay();
+    } else if (this.isAutoPlay) {
+      this.startAutoPlay();
+    }
+  }
+
+  toggleAutoPlay() {
+    this.isAutoPlay = !this.isAutoPlay;
+  }
+
+  toggleViewMode() {
+    this.carouselMode = this.carouselMode === 'carousel' ? 'grid' : 'carousel';
+  }
+
+  nextSlide() {
+    this.carouselIndex = (this.carouselIndex + 1) % this.totalSlides;
+  }
+
+  prevSlide() {
+    this.carouselIndex = (this.carouselIndex - 1 + this.totalSlides) % this.totalSlides;
+  }
+
+  setSlide(index: number) {
+    this.carouselIndex = index;
+  }
+
+  getActivePercentage(): number {
+    if (!this.totalBooks) return 0;
+    return Math.round((this.activeBooks / this.totalBooks) * 100);
+  }
+
+  getArchivedPercentage(): number {
+    if (!this.totalBooks) return 0;
+    return Math.round((this.deletedBooks / this.totalBooks) * 100);
   }
 
   //ngAfterViewInit()
@@ -129,45 +199,55 @@ export class BooksComponent implements OnInit {
     }
   }
 
-  //UpdateBookStatus
+  // Update Book Status (Archive or Restore)
   UpdateBookStatus(id: number, status: string) {
-    //swal Alert
+    const isArchive = status === 'Delete';
     Swal.fire({
-      title: 'Are you sure?',
-      text: "Want to update status as " + status,
-      icon: 'warning',
+      title: isArchive ? 'Archive Book?' : 'Restore Book?',
+      text: isArchive
+        ? 'Are you sure you want to archive this book? It can be restored later.'
+        : 'Do you want to restore this book to the active catalog?',
+      icon: isArchive ? 'warning' : 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, update it !',
+      confirmButtonColor: isArchive ? '#ef4444' : '#10b981',
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: isArchive ? 'Yes, archive it' : 'Yes, restore it',
+      cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Decalre model for update status 
-        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: JSON.parse(localStorage.getItem('userdetails')).name };
-        //update status 
+        let updatedBy = 'System';
+        try {
+          const userDetails = JSON.parse(localStorage.getItem('userdetails') || '{}');
+          if (userDetails && userDetails.name) {
+            updatedBy = userDetails.name;
+          }
+        } catch (e) {
+          // fallback
+        }
+
+        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: updatedBy };
         this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
-          //Swal Fire after successfull deletion
-          Swal.fire(
-            'Updated!',
-            'Your record has been updated.',
-            'success'
-          ).then(() => {
-            // Update the table with latest data
+          Swal.fire({
+            title: isArchive ? 'Archived!' : 'Restored!',
+            text: isArchive
+              ? 'The book has been archived successfully.'
+              : 'The book has been restored to the active catalog.',
+            icon: 'success',
+            confirmButtonColor: '#4f46e5'
+          }).then(() => {
             this.loading = true;
             setTimeout(() => {
               this.loading = false;
-              //Reload the page 
               this.getAllBooks();
-            }, 1000)
+            }, 1000);
           });
         },
           (error: HttpErrorResponse) => {
-            //Standard error handling
             const msg = error.error?.error_message || error.statusText || "Something went wrong";
             this._toastr.error(msg);
 
             if (error.status === 404) {
-              this.loading = true
+              this.loading = true;
               setTimeout(() => {
                 this._router.navigate(['/books']);
                 this.loading = false;
@@ -175,7 +255,7 @@ export class BooksComponent implements OnInit {
             }
           });
       }
-    })
+    });
   }
 
 }

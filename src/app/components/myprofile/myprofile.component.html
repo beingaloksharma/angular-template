@@ -1,127 +1,351 @@
 <div *ngIf="loading; else profileBlock">
-    <app-spinner></app-spinner>
+  <app-spinner></app-spinner>
 </div>
 
 <ng-template #profileBlock>
-    <div class="profile-wrapper" *ngIf="userProfile">
-        <!-- Navigation Header -->
-        <div class="detail-nav-bar">
-            <a routerLink="/books" class="back-link">
-                <mat-icon>arrow_back</mat-icon>
-                <span>Back to Dashboard</span>
-            </a>
-            <div class="breadcrumbs">
-                <span>System</span>
-                <span class="separator">/</span>
-                <span>User Profile</span>
-                <span class="separator">/</span>
-                <span class="current">@{{userProfile.user_name}}</span>
-            </div>
+  <div class="profile-container" *ngIf="userProfile">
+    
+    <!-- Top Navigation & Breadcrumbs -->
+    <div class="profile-nav-bar">
+      <a routerLink="/books" class="nav-back-link">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Back to Books</span>
+      </a>
+      <div class="nav-breadcrumbs">
+        <span>Workspace</span>
+        <mat-icon class="bc-sep">chevron_right</mat-icon>
+        <span>Team</span>
+        <mat-icon class="bc-sep">chevron_right</mat-icon>
+        <span class="bc-current">@{{userProfile.user_name}}</span>
+      </div>
+    </div>
+
+    <!-- Hero Profile Header Banner -->
+    <div class="profile-hero-card">
+      <div class="hero-cover-gradient">
+        <div class="hero-cover-pattern"></div>
+      </div>
+
+      <div class="hero-content-row">
+        <!-- Avatar with Active Ring -->
+        <div class="hero-avatar-container">
+          <div class="hero-avatar-circle">
+            {{ (userProfile.name ? userProfile.name.charAt(0) : 'U') | uppercase }}
+          </div>
+          <span class="avatar-online-dot" [class.inactive]="userProfile.status !== 'Active'" 
+            [matTooltip]="userProfile.status === 'Active' ? 'Active Account' : 'Inactive Account'">
+          </span>
         </div>
 
-        <!-- Profile Hero Header Card -->
-        <div class="profile-hero-card">
-            <div class="hero-banner"></div>
-            <div class="hero-body">
-                <div class="hero-avatar-wrap">
-                    <div class="avatar-circle">
-                        {{ (userProfile.name ? userProfile.name.charAt(0) : 'U') | uppercase }}
-                    </div>
-                </div>
-                <div class="hero-meta-group">
-                    <div class="hero-titles">
-                        <h1 class="profile-name">{{userProfile.name | titlecase}}</h1>
-                        <span class="profile-handle">@{{userProfile.user_name}}</span>
-                    </div>
-                    <div class="hero-tags">
-                        <span class="status-pill" [ngClass]="{'status-active': userProfile.status === 'Active', 'status-inactive': userProfile.status !== 'Active'}">
-                            <span class="status-indicator-dot"></span>
-                            {{userProfile.status | titlecase}}
-                        </span>
-                        <span class="tenant-pill">Tenant #{{userProfile.id}}</span>
-                        <span class="role-pill">Administrator</span>
-                    </div>
-                </div>
-            </div>
+        <!-- Identity & Metadata -->
+        <div class="hero-identity-group">
+          <div class="hero-title-line">
+            <h1 class="hero-fullname">{{userProfile.name | titlecase}}</h1>
+            <mat-icon class="verified-icon" matTooltip="Verified Tenant Admin">verified</mat-icon>
+          </div>
+
+          <div class="hero-handle-row">
+            <span class="hero-username">@{{userProfile.user_name}}</span>
+            <button class="btn-copy-tag" (click)="copyToClipboard('@' + userProfile.user_name, 'Username')" matTooltip="Copy username">
+              <mat-icon>content_copy</mat-icon>
+            </button>
+            <span class="dot-sep">•</span>
+            <span class="hero-email-text">{{userProfile.email}}</span>
+          </div>
+
+          <div class="hero-badges-row">
+            <span class="badge-status" [ngClass]="{'status-active': userProfile.status === 'Active', 'status-inactive': userProfile.status !== 'Active'}">
+              <span class="pulse-indicator-dot"></span>
+              {{userProfile.status | titlecase}} Account
+            </span>
+            <span class="badge-tenant" (click)="copyToClipboard(userProfile.id, 'Tenant ID')" matTooltip="Click to copy Tenant ID">
+              <mat-icon>dns</mat-icon>
+              <span>Tenant #{{userProfile.id}}</span>
+            </span>
+            <span class="badge-role">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>Administrator</span>
+            </span>
+          </div>
         </div>
 
-        <!-- Account Information Grid -->
-        <div class="section-card mb-4">
-            <div class="section-header">
-                <div class="section-icon-badge primary">
-                    <mat-icon>person_outline</mat-icon>
-                </div>
-                <div>
-                    <h2 class="section-title">Account Information</h2>
-                    <p class="section-subtitle">Personal credentials and registered tenancy details</p>
-                </div>
+        <!-- Hero Actions -->
+        <div class="hero-actions-group">
+          <button mat-button class="btn-hero-copy" (click)="copyToClipboard(userProfile.id, 'User ID')">
+            <mat-icon>fingerprint</mat-icon>
+            <span>ID: #{{userProfile.id}}</span>
+          </button>
+          <a routerLink="/books" class="btn-hero-dashboard">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Metric Ribbon -->
+    <div class="profile-stats-ribbon">
+      <div class="stat-ribbon-item">
+        <div class="ribbon-icon primary">
+          <mat-icon>fingerprint</mat-icon>
+        </div>
+        <div class="ribbon-data">
+          <span class="ribbon-label">Tenant ID</span>
+          <span class="ribbon-val font-mono">#{{userProfile.id}}</span>
+        </div>
+      </div>
+
+      <div class="stat-ribbon-item">
+        <div class="ribbon-icon success">
+          <mat-icon>verified_user</mat-icon>
+        </div>
+        <div class="ribbon-data">
+          <span class="ribbon-label">Account Status</span>
+          <span class="ribbon-val text-success">{{userProfile.status | titlecase}}</span>
+        </div>
+      </div>
+
+      <div class="stat-ribbon-item">
+        <div class="ribbon-icon accent">
+          <mat-icon>shield</mat-icon>
+        </div>
+        <div class="ribbon-data">
+          <span class="ribbon-label">Security Role</span>
+          <span class="ribbon-val">Tenant Admin</span>
+        </div>
+      </div>
+
+      <div class="stat-ribbon-item">
+        <div class="ribbon-icon warning">
+          <mat-icon>event_available</mat-icon>
+        </div>
+        <div class="ribbon-data">
+          <span class="ribbon-label">Joined On</span>
+          <span class="ribbon-val">{{userProfile.created_at | date:'mediumDate'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content 2-Column Grid -->
+    <div class="profile-grid-2">
+
+      <!-- Left Column: Personal Info & Security -->
+      <div class="grid-column">
+
+        <!-- Personal Credentials Card -->
+        <div class="modern-card">
+          <div class="card-title-bar">
+            <div class="card-icon-badge primary-bg">
+              <mat-icon>person</mat-icon>
+            </div>
+            <div>
+              <h2 class="card-heading">Personal Details</h2>
+              <p class="card-subheading">Contact identity and communication channels</p>
+            </div>
+          </div>
+
+          <div class="detail-rows-list">
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">badge</mat-icon>
+                <span class="field-name">Full Name</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value font-medium">{{userProfile.name | titlecase}}</span>
+              </div>
             </div>
 
-            <div class="profile-details-grid">
-                <div class="detail-tile">
-                    <div class="detail-tile-icon">
-                        <mat-icon>mail_outline</mat-icon>
-                    </div>
-                    <div class="detail-tile-content">
-                        <span class="detail-label">Email Address</span>
-                        <span class="detail-val">{{userProfile.email}}</span>
-                    </div>
-                </div>
-
-                <div class="detail-tile">
-                    <div class="detail-tile-icon">
-                        <mat-icon>phone_iphone</mat-icon>
-                    </div>
-                    <div class="detail-tile-content">
-                        <span class="detail-label">Mobile Number</span>
-                        <span class="detail-val">{{userProfile.moblie || 'Not provided'}}</span>
-                    </div>
-                </div>
-
-                <div class="detail-tile">
-                    <div class="detail-tile-icon">
-                        <mat-icon>fingerprint</mat-icon>
-                    </div>
-                    <div class="detail-tile-content">
-                        <span class="detail-label">Unique User ID</span>
-                        <span class="detail-val font-mono">#{{userProfile.id}}</span>
-                    </div>
-                </div>
-
-                <div class="detail-tile">
-                    <div class="detail-tile-icon">
-                        <mat-icon>calendar_today</mat-icon>
-                    </div>
-                    <div class="detail-tile-content">
-                        <span class="detail-label">Member Since</span>
-                        <span class="detail-val">{{userProfile.created_at | date:'mediumDate'}}</span>
-                    </div>
-                </div>
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">alternate_email</mat-icon>
+                <span class="field-name">Username</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value font-mono">@{{userProfile.user_name}}</span>
+                <button class="btn-inline-copy" (click)="copyToClipboard(userProfile.user_name, 'Username')" matTooltip="Copy username">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
             </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">email</mat-icon>
+                <span class="field-name">Email Address</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value">{{userProfile.email}}</span>
+                <span class="field-badge verified-badge">
+                  <mat-icon>check</mat-icon>
+                  <span>Verified</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">phone_android</mat-icon>
+                <span class="field-name">Phone / Mobile</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value" [class.text-muted]="!userProfile.moblie">
+                  {{userProfile.moblie || 'Not provided'}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Permissions & Security Card -->
+        <div class="modern-card">
+          <div class="card-title-bar">
+            <div class="card-icon-badge accent-bg">
+              <mat-icon>lock_outline</mat-icon>
+            </div>
+            <div>
+              <h2 class="card-heading">Security &amp; Permissions</h2>
+              <p class="card-subheading">Authentication protocol and tenant privileges</p>
+            </div>
+          </div>
+
+          <div class="detail-rows-list">
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">key</mat-icon>
+                <span class="field-name">Authentication</span>
+              </div>
+              <div class="field-right">
+                <span class="field-badge security-badge">Bearer JWT Token</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">security</mat-icon>
+                <span class="field-name">Tenant Role</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value font-medium">Workspace SuperAdmin</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">rule</mat-icon>
+                <span class="field-name">Database Access</span>
+              </div>
+              <div class="field-right">
+                <span class="field-badge write-badge">Read &amp; Write Access</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Tenancy Details & Danger Zone -->
+      <div class="grid-column">
+
+        <!-- Tenancy Architecture Card -->
+        <div class="modern-card">
+          <div class="card-title-bar">
+            <div class="card-icon-badge info-bg">
+              <mat-icon>hub</mat-icon>
+            </div>
+            <div>
+              <h2 class="card-heading">Tenancy &amp; System Metadata</h2>
+              <p class="card-subheading">PostgreSQL multi-tenant schema isolation info</p>
+            </div>
+          </div>
+
+          <div class="detail-rows-list">
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">account_tree</mat-icon>
+                <span class="field-name">Tenant Schema</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value font-mono">tenant_{{userProfile.id}}</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">storage</mat-icon>
+                <span class="field-name">X-Tenant Header</span>
+              </div>
+              <div class="field-right">
+                <span class="field-badge mono-badge">X-Tenant-Id: {{userProfile.id}}</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">calendar_today</mat-icon>
+                <span class="field-name">Created Date</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value">{{userProfile.created_at | date:'medium'}}</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">person_outline</mat-icon>
+                <span class="field-name">Created By</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value">{{userProfile.created_by || 'Self Registered'}}</span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">update</mat-icon>
+                <span class="field-name">Last Modified</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value">{{(userProfile.updated_at | date:'medium') || 'Never modified'}}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Danger Zone Card -->
-        <div class="danger-zone-card">
-            <div class="danger-header">
-                <div class="danger-icon-badge">
-                    <mat-icon>warning_amber</mat-icon>
-                </div>
-                <div>
-                    <h3 class="danger-title">Danger Zone</h3>
-                    <p class="danger-subtitle">Destructive operations related to this tenant profile</p>
-                </div>
+        <div class="danger-card">
+          <div class="danger-card-header">
+            <div class="danger-icon-pill">
+              <mat-icon>warning</mat-icon>
+            </div>
+            <div>
+              <h3 class="danger-title">Danger Zone</h3>
+              <p class="danger-caption">Destructive tenant lifecycle operations</p>
+            </div>
+          </div>
+
+          <div class="danger-card-body">
+            <div class="danger-info-block">
+              <h4 class="danger-action-name">
+                {{ userProfile.status === 'Active' ? 'Deactivate Tenant Workspace' : 'Reactivate Tenant Workspace' }}
+              </h4>
+              <p class="danger-action-desc">
+                {{ userProfile.status === 'Active' 
+                  ? 'Deactivating your tenant will immediately suspend all active user sessions and book catalog operations for this tenant partition. Data is retained safely.'
+                  : 'Reactivating your tenant will restore access for your books and users.' }}
+              </p>
             </div>
 
-            <div class="danger-body">
-                <div class="danger-text">
-                    <h4>Deactivate Account & Tenant</h4>
-                    <p>Once you deactivate your account, all active sessions and access to catalog services for this tenant will be suspended. Please proceed with caution.</p>
-                </div>
-                <button mat-raised-button class="btn-danger-action" (click)="deactivateTenant(userProfile.status == 'Active' ? 'Delete' : 'Active')">
-                    <mat-icon>delete_forever</mat-icon>
-                    <span>{{ userProfile.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account' }}</span>
-                </button>
-            </div>
+            <button mat-raised-button class="btn-danger-execute" 
+              (click)="deactivateTenant(userProfile.status === 'Active' ? 'Delete' : 'Active')">
+              <mat-icon>{{ userProfile.status === 'Active' ? 'power_settings_new' : 'restore' }}</mat-icon>
+              <span>{{ userProfile.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account' }}</span>
+            </button>
+          </div>
         </div>
+
+      </div>
+
     </div>
+
+  </div>
 </ng-template>

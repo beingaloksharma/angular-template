@@ -18,46 +18,231 @@
       </div>
     </div>
 
-    <!-- KPI Metric Cards Grid -->
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-icon-wrap primary-icon">
-          <mat-icon>menu_book</mat-icon>
+    <!-- Total Record Carousel & Metrics Section -->
+    <div class="carousel-section-wrap" [class.section-collapsed]="!isOpen">
+      <!-- Carousel Top Bar -->
+      <div class="carousel-nav-header">
+        <div class="carousel-title-group">
+          <div class="carousel-pill-badge clickable" (click)="toggleOpenClose()" role="button" tabindex="0" [matTooltip]="isOpen ? 'Click to Collapse' : 'Click to Expand'">
+            <mat-icon>analytics</mat-icon>
+            <span>Total Records Overview</span>
+            <mat-icon class="badge-caret">{{ isOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </div>
+
+          <!-- Quick summary visible when collapsed -->
+          <div class="mini-summary-pills" *ngIf="!isOpen" (click)="toggleOpenClose()" role="button">
+            <span class="mini-pill">Total: <strong>{{ totalBooks || 0 }}</strong></span>
+            <span class="mini-pill success">Active: <strong>{{ activeBooks || 0 }}</strong></span>
+            <span class="mini-pill danger">Archived: <strong>{{ deletedBooks || 0 }}</strong></span>
+            <span class="mini-pill accent">Authors: <strong>{{ totalAuthors || 0 }}</strong></span>
+          </div>
         </div>
-        <div class="metric-details">
-          <span class="metric-label">Total Catalog</span>
-          <span class="metric-val">{{totalBooks || 0}}</span>
+
+        <div class="carousel-action-controls">
+          <!-- Autoplay toggle (only when open & in carousel mode) -->
+          <button mat-icon-button type="button" class="btn-ctrl" (click)="toggleAutoPlay()" 
+            [matTooltip]="isAutoPlay ? 'Pause Carousel Autoplay' : 'Play Carousel Autoplay'"
+            *ngIf="isOpen && carouselMode === 'carousel'">
+            <mat-icon>{{ isAutoPlay ? 'pause_circle_outline' : 'play_circle_outline' }}</mat-icon>
+          </button>
+
+          <!-- Mode Switcher (only when open) -->
+          <button mat-button type="button" class="btn-mode-toggle" (click)="toggleViewMode()" *ngIf="isOpen">
+            <mat-icon>{{ carouselMode === 'carousel' ? 'grid_view' : 'view_carousel' }}</mat-icon>
+            <span>{{ carouselMode === 'carousel' ? 'Grid View' : 'Carousel View' }}</span>
+          </button>
+
+          <!-- Prev / Next Controls (only when open & in carousel mode) -->
+          <div class="carousel-arrows" *ngIf="isOpen && carouselMode === 'carousel'">
+            <button mat-icon-button type="button" class="btn-arrow" (click)="prevSlide()" aria-label="Previous Slide">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <span class="slide-count-badge">{{ carouselIndex + 1 }} / {{ totalSlides }}</span>
+            <button mat-icon-button type="button" class="btn-arrow" (click)="nextSlide()" aria-label="Next Slide">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+
+          <!-- Open / Close Toggle Button -->
+          <button mat-button type="button" class="btn-toggle-open" (click)="toggleOpenClose()"
+            [matTooltip]="isOpen ? 'Collapse Overview' : 'Expand Overview'">
+            <mat-icon>{{ isOpen ? 'unfold_less' : 'unfold_more' }}</mat-icon>
+            <span>{{ isOpen ? 'Close' : 'Open' }}</span>
+          </button>
         </div>
       </div>
 
-      <div class="metric-card">
-        <div class="metric-icon-wrap success-icon">
-          <mat-icon>check_circle</mat-icon>
+      <!-- Collapsible Body Container -->
+      <div class="carousel-collapsible-body" *ngIf="isOpen">
+
+      <!-- CAROUSEL VIEW -->
+      <div class="carousel-viewport" *ngIf="carouselMode === 'carousel'">
+        <div class="carousel-track" [style.transform]="'translateX(-' + (carouselIndex * 100) + '%)'">
+          
+          <!-- Slide 0: Total Catalog -->
+          <div class="carousel-slide">
+            <div class="record-slide-card primary-slide" (click)="setFilter('all')">
+              <div class="slide-card-glow"></div>
+              <div class="slide-card-main">
+                <div class="slide-icon-wrap primary-theme">
+                  <mat-icon>menu_book</mat-icon>
+                </div>
+                <div class="slide-content">
+                  <span class="slide-badge">Total Catalog Records</span>
+                  <div class="slide-val-row">
+                    <span class="slide-metric-val">{{ totalBooks || 0 }}</span>
+                    <span class="slide-metric-unit">Titles in Library</span>
+                  </div>
+                  <p class="slide-desc">All books registered across tenant catalog and database partitions.</p>
+                </div>
+              </div>
+              <div class="slide-card-footer">
+                <span class="slide-tag">100% Catalog Capacity</span>
+                <span class="slide-action-link">
+                  <span>Show All Records</span>
+                  <mat-icon>arrow_forward</mat-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 1: Active Books -->
+          <div class="carousel-slide">
+            <div class="record-slide-card success-slide" (click)="setFilter('Active')">
+              <div class="slide-card-glow"></div>
+              <div class="slide-card-main">
+                <div class="slide-icon-wrap success-theme">
+                  <mat-icon>check_circle</mat-icon>
+                </div>
+                <div class="slide-content">
+                  <span class="slide-badge">Active Publications</span>
+                  <div class="slide-val-row">
+                    <span class="slide-metric-val">{{ activeBooks || 0 }}</span>
+                    <span class="slide-metric-unit">Live Entries</span>
+                  </div>
+                  <p class="slide-desc">Published and currently available for catalog search, borrowing, and view.</p>
+                </div>
+              </div>
+              <div class="slide-card-footer">
+                <span class="slide-tag success-tag">{{ getActivePercentage() }}% of Catalog Active</span>
+                <span class="slide-action-link">
+                  <span>Filter Active</span>
+                  <mat-icon>arrow_forward</mat-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Archived Records -->
+          <div class="carousel-slide">
+            <div class="record-slide-card danger-slide" (click)="setFilter('Delete')">
+              <div class="slide-card-glow"></div>
+              <div class="slide-card-main">
+                <div class="slide-icon-wrap danger-theme">
+                  <mat-icon>delete_sweep</mat-icon>
+                </div>
+                <div class="slide-content">
+                  <span class="slide-badge">Archived Records</span>
+                  <div class="slide-val-row">
+                    <span class="slide-metric-val">{{ deletedBooks || 0 }}</span>
+                    <span class="slide-metric-unit">Archived</span>
+                  </div>
+                  <p class="slide-desc">Soft-deleted items maintained securely for audit logs and historical restoration.</p>
+                </div>
+              </div>
+              <div class="slide-card-footer">
+                <span class="slide-tag danger-tag">{{ getArchivedPercentage() }}% Archived</span>
+                <span class="slide-action-link">
+                  <span>Filter Archived</span>
+                  <mat-icon>arrow_forward</mat-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: Authors -->
+          <div class="carousel-slide">
+            <div class="record-slide-card accent-slide">
+              <div class="slide-card-glow"></div>
+              <div class="slide-card-main">
+                <div class="slide-icon-wrap accent-theme">
+                  <mat-icon>group</mat-icon>
+                </div>
+                <div class="slide-content">
+                  <span class="slide-badge">Registered Authors</span>
+                  <div class="slide-val-row">
+                    <span class="slide-metric-val">{{ totalAuthors || 0 }}</span>
+                    <span class="slide-metric-unit">Contributors</span>
+                  </div>
+                  <p class="slide-desc">Unique authors and writers who have publications published in your catalog.</p>
+                </div>
+              </div>
+              <div class="slide-card-footer">
+                <span class="slide-tag accent-tag">Verified Authors</span>
+                <span class="slide-action-link">
+                  <span>Catalog Authors</span>
+                  <mat-icon>arrow_forward</mat-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="metric-details">
-          <span class="metric-label">Active Books</span>
-          <span class="metric-val">{{activeBooks || 0}}</span>
+
+        <!-- Carousel Pagination Dots -->
+        <div class="carousel-pagination-dots">
+          <button *ngFor="let dot of [0, 1, 2, 3]; let i = index" 
+            type="button" 
+            class="dot-pill" 
+            [class.active]="carouselIndex === i"
+            (click)="setSlide(i)"
+            [attr.aria-label]="'Go to slide ' + (i + 1)">
+          </button>
         </div>
       </div>
 
-      <div class="metric-card">
-        <div class="metric-icon-wrap danger-icon">
-          <mat-icon>delete_sweep</mat-icon>
+      <!-- GRID VIEW (Alternate Display) -->
+      <div class="metrics-grid" *ngIf="carouselMode === 'grid'">
+        <div class="metric-card" (click)="setFilter('all')">
+          <div class="metric-icon-wrap primary-icon">
+            <mat-icon>menu_book</mat-icon>
+          </div>
+          <div class="metric-details">
+            <span class="metric-label">Total Catalog</span>
+            <span class="metric-val">{{totalBooks || 0}}</span>
+          </div>
         </div>
-        <div class="metric-details">
-          <span class="metric-label">Archived</span>
-          <span class="metric-val">{{deletedBooks || 0}}</span>
+
+        <div class="metric-card" (click)="setFilter('Active')">
+          <div class="metric-icon-wrap success-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="metric-details">
+            <span class="metric-label">Active Books</span>
+            <span class="metric-val">{{activeBooks || 0}}</span>
+          </div>
+        </div>
+
+        <div class="metric-card" (click)="setFilter('Delete')">
+          <div class="metric-icon-wrap danger-icon">
+            <mat-icon>delete_sweep</mat-icon>
+          </div>
+          <div class="metric-details">
+            <span class="metric-label">Archived</span>
+            <span class="metric-val">{{deletedBooks || 0}}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-wrap accent-icon">
+            <mat-icon>group</mat-icon>
+          </div>
+          <div class="metric-details">
+            <span class="metric-label">Authors</span>
+            <span class="metric-val">{{totalAuthors || 0}}</span>
+          </div>
         </div>
       </div>
-
-      <div class="metric-card">
-        <div class="metric-icon-wrap accent-icon">
-          <mat-icon>group</mat-icon>
-        </div>
-        <div class="metric-details">
-          <span class="metric-label">Authors</span>
-          <span class="metric-val">{{totalAuthors || 0}}</span>
-        </div>
       </div>
     </div>
 

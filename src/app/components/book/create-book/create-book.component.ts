@@ -258,6 +258,22 @@ export class CreateBookComponent implements OnInit {
     return this.bookForm.controls;
   }
 
+  //Form Completion Percentage for visual feedback
+  get formCompletionPercentage(): number {
+    if (!this.bookForm) return 0;
+    const requiredFields = ['name', 'author_name', 'category', 'edition', 'isbn_no', 'publication', 'publication_date', 'country_of_origin', 'languages', 'keywords'];
+    let filled = 0;
+    for (const field of requiredFields) {
+      const val = this.bookForm.get(field)?.value;
+      if (Array.isArray(val) && val.length > 0) {
+        filled++;
+      } else if (val !== null && val !== undefined && val !== '') {
+        filled++;
+      }
+    }
+    return Math.round((filled / requiredFields.length) * 100);
+  }
+
   //Reset the Book form 
   onReset() {
     this.btnText = "Save";

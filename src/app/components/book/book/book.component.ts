@@ -79,43 +79,39 @@ export class BookComponent {
       });
   }
 
-  //deleteBook
+  // deleteBook
   deleteBook(id: number) {
-    //swal Alert
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Delete Book Permanently?',
+      text: 'This action cannot be undone. Are you sure you want to remove this book from the catalog?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: 'Yes, delete permanently',
+      cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        //call delete action
         this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
-          //Swal Fire after successfull deletion
-          Swal.fire(
-            'Deleted!',
-            'Your record has been deleted.',
-            'success'
-          ).then(() => {
-            // Update the table with latest data
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The book has been permanently deleted.',
+            icon: 'success',
+            confirmButtonColor: '#4f46e5'
+          }).then(() => {
             this.loading = true;
             setTimeout(() => {
               this.loading = false;
-              //Navigate to dashboard
               this._router.navigate(['/books']);
-            }, 1000)
+            }, 1000);
           });
         },
           (error: HttpErrorResponse) => {
-            //Standard error handling 
             const msg = error.error?.error_message || error.statusText || "Something went wrong";
             this._toastr.error(msg);
 
             if (error.status === 404) {
-              this.loading = true
+              this.loading = true;
               setTimeout(() => {
                 this._router.navigate(['/books']);
                 this.loading = false;
@@ -123,7 +119,7 @@ export class BookComponent {
             }
           });
       }
-    })
+    });
   }
 
 }
