@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { RbacService } from 'src/app/shared/services/rbac.service';
+import { RbacPromptService } from 'src/app/shared/services/rbac-prompt.service';
 
 @Component({
   selector: 'app-books',
@@ -17,11 +19,11 @@ import Swal from 'sweetalert2';
 })
 export class BooksComponent implements OnInit, OnDestroy {
 
-  //Column Names for Table
+  // Column Names for Table
   displayedColumns: string[] = ['id', 'name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
-  //Table Datasource
+  // Table Datasource
   dataSource: MatTableDataSource<Book>;
-  //Get HTML element from componet
+  // Get HTML element from component
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -35,9 +37,9 @@ export class BooksComponent implements OnInit, OnDestroy {
   limit: number = 5;
   // ********************** Mat Paginator ******************** //
 
-  //To Store Loading Infromation
+  // To Store Loading Information
   loading: boolean;
-  //Check Status
+  // Check Status
   status: boolean;
 
   // ********************** Total Record Carousel State ******************** //
@@ -48,17 +50,18 @@ export class BooksComponent implements OnInit, OnDestroy {
   carouselMode: 'carousel' | 'grid' = 'carousel';
   isOpen: boolean = false;
 
-  //Constructor 
+  // Constructor 
   constructor(
     private _common: CommonService,
     private _constants: ConstantsService,
     private _toastr: ToastrService,
     private _router: Router,
+    public rbacService: RbacService,
+    private rbacPrompt: RbacPromptService
   ) { }
 
-  //ng Life Cycle 
+  // ng Life Cycle 
   ngOnInit() {
-    //Load All Books
     this.getAllBooks();
     if (this.isOpen) {
       this.startAutoPlay();
@@ -124,10 +127,6 @@ export class BooksComponent implements OnInit, OnDestroy {
     return Math.round((this.deletedBooks / this.totalBooks) * 100);
   }
 
-  //ngAfterViewInit()
-  ngAfterViewInit() {
-  }
-
   pageChanged(event?: PageEvent) {
     if (event) {
       this.pageIndex = event.pageIndex;
@@ -136,33 +135,29 @@ export class BooksComponent implements OnInit, OnDestroy {
     this.getAllBooks();
   }
 
-  //Get All Books
+  // Get All Books
   getAllBooks() {
-    this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe((res: Book[]) => {
-      this.loading = true;
-      setTimeout(() => {
+    this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe({
+      next: (res: any) => {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          this.dataSource = new MatTableDataSource(res["books"]);
+          this.totalBooks = res["total"];
+          const books = res["books"] || [];
+          this.activeBooks = books.filter((b: any) => b.status === 'Active').length;
+          this.deletedBooks = books.filter((b: any) => b.status === 'Delete').length;
+          this.totalAuthors = new Set(books.map((b: any) => b.author_name)).size;
+          this.dataSource.paginator = this.paginator;
+        }, 800);
+      },
+      error: (error: HttpErrorResponse) => {
         this.loading = false;
-        this.dataSource = new MatTableDataSource(res["books"]);
-        this.totalBooks = res["total"];
-        const books = res["books"] || [];
-        this.activeBooks = books.filter(b => b.status === 'Active').length;
-        this.deletedBooks = books.filter(b => b.status === 'Delete').length;
-        this.totalAuthors = new Set(books.map(b => b.author_name)).size;
-        this.dataSource.paginator = this.paginator;
-      }, 1000)
-    },
-      (error: HttpErrorResponse) => {
         switch (error.status) {
-          case 400: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 404: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
+          case 400:
+          case 404:
           case 500: {
-            this._toastr.error(error.error.error_message);
+            this._toastr.error(error.error?.error_message || error.statusText);
             break;
           }
           default: {
@@ -170,10 +165,11 @@ export class BooksComponent implements OnInit, OnDestroy {
             break;
           }
         }
-      });
+      }
+    });
   }
 
-  //Filter On Table
+  // Filter On Table
   setFilter(status: string) {
     this.filterStatus = status;
     if (status === 'all') {
@@ -199,8 +195,55 @@ export class BooksComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Update Book Status (Archive or Restore)
+  /**
+   * Role-Aware Create Book Handler
+   */
+  onCreateBook(): void {
+    if (!this.rbacService.hasRole('admin')) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'admin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: 'POST /webstarter/book or /webstarter/admin/books',
+        actionName: 'Create New Book',
+        message: 'Under the Swagger RBAC specification, standard Users have Read-Only permissions. Creating a book requires Workspace Admin (Tier 2) or Super Admin privileges.'
+      });
+      return;
+    }
+    this._router.navigate(['/books/create']);
+  }
+
+  /**
+   * Role-Aware Edit Book Handler
+   */
+  onEditBook(id: number): void {
+    if (!this.rbacService.hasRole('admin')) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'admin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: `PUT /webstarter/book (ID: #${id})`,
+        actionName: 'Edit Book Details',
+        message: 'Standard Users have Read-Only permissions. Updating book records requires Workspace Admin (Tier 2) or Super Admin privileges.'
+      });
+      return;
+    }
+    this._router.navigate(['/books/update', id]);
+  }
+
+  /**
+   * Role-Aware Update Book Status (Archive or Restore)
+   */
   UpdateBookStatus(id: number, status: string) {
+    if (!this.rbacService.hasRole('admin')) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'admin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: 'POST /webstarter/book/status',
+        actionName: status === 'Delete' ? 'Archive Book' : 'Restore Book',
+        message: 'Standard Users have Read-Only permissions. Modifying book publication status requires Workspace Admin (Tier 2) or Super Admin privileges.'
+      });
+      return;
+    }
+
     const isArchive = status === 'Delete';
     Swal.fire({
       title: isArchive ? 'Archive Book?' : 'Restore Book?',
@@ -225,35 +268,29 @@ export class BooksComponent implements OnInit, OnDestroy {
           // fallback
         }
 
-        var updateStatus: UpdateStatus = { id: id, status: status, updated_by: updatedBy };
-        this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe((res: any) => {
-          Swal.fire({
-            title: isArchive ? 'Archived!' : 'Restored!',
-            text: isArchive
-              ? 'The book has been archived successfully.'
-              : 'The book has been restored to the active catalog.',
-            icon: 'success',
-            confirmButtonColor: '#4f46e5'
-          }).then(() => {
-            this.loading = true;
-            setTimeout(() => {
-              this.loading = false;
-              this.getAllBooks();
-            }, 1000);
-          });
-        },
-          (error: HttpErrorResponse) => {
-            const msg = error.error?.error_message || error.statusText || "Something went wrong";
-            this._toastr.error(msg);
-
-            if (error.status === 404) {
+        const updateStatus: UpdateStatus = { id: id, status: status, updated_by: updatedBy };
+        this._common.post(this._constants.SERVER_URL + 'book/status', updateStatus).subscribe({
+          next: () => {
+            Swal.fire({
+              title: isArchive ? 'Archived!' : 'Restored!',
+              text: isArchive
+                ? 'The book has been archived successfully.'
+                : 'The book has been restored to the active catalog.',
+              icon: 'success',
+              confirmButtonColor: '#4f46e5'
+            }).then(() => {
               this.loading = true;
               setTimeout(() => {
-                this._router.navigate(['/books']);
                 this.loading = false;
-              }, 3000);
-            }
-          });
+                this.getAllBooks();
+              }, 800);
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            const msg = error.error?.error_message || error.statusText || "Something went wrong";
+            this._toastr.error(msg);
+          }
+        });
       }
     });
   }

@@ -7,6 +7,8 @@ import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RbacService } from 'src/app/shared/services/rbac.service';
+import { RbacPromptService } from 'src/app/shared/services/rbac-prompt.service';
 
 @Component({
   selector: 'app-create-book',
@@ -43,14 +45,15 @@ export class CreateBookComponent implements OnInit {
   //maximum date
   maxDate = new Date();
 
-  //Constructor 
   constructor(
     private _fb: FormBuilder,
     private _constants: ConstantsService,
     private _commonService: CommonService,
     private _toastr: ToastrService,
     private _router: Router,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
+    public rbacService: RbacService,
+    private rbacPrompt: RbacPromptService
   ) {
 
     //To Get param value 
@@ -88,6 +91,17 @@ export class CreateBookComponent implements OnInit {
 
   //ngOnInit
   ngOnInit(): void {
+    if (!this.rbacService.hasRole('admin')) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'admin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: 'Book Authoring Page',
+        actionName: 'Access Create/Edit Book Form',
+        message: 'Under the Swagger RBAC specification, standard Users cannot create or update books. Please sign in as an Admin.'
+      });
+      this._router.navigate(['/books']);
+      return;
+    }
     //Initialize Book
     this.setInitiaState();
   }

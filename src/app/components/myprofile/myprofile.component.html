@@ -259,10 +259,33 @@
             <div class="detail-field-row">
               <div class="field-left">
                 <mat-icon class="field-icon">security</mat-icon>
-                <span class="field-name">Tenant Role</span>
+                <span class="field-name">RBAC Role Tier</span>
               </div>
               <div class="field-right">
-                <span class="field-value font-medium">Workspace SuperAdmin</span>
+                <span class="field-badge" [ngClass]="'badge-' + rbacService.getCurrentRole()">
+                  {{ rbacService.getCurrentRole() | uppercase }}
+                  <span *ngIf="rbacService.isSuperAdmin()"> (Tier 3 - Full Platform Governance)</span>
+                  <span *ngIf="rbacService.isAdmin() && !rbacService.isSuperAdmin()"> (Tier 2 - Tenant Workspace Admin)</span>
+                  <span *ngIf="rbacService.isUser()"> (Tier 1 - Read-Only Catalog User)</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-field-row">
+              <div class="field-left">
+                <mat-icon class="field-icon">verified_user</mat-icon>
+                <span class="field-name">Acting Capabilities</span>
+              </div>
+              <div class="field-right">
+                <span class="field-value font-medium" *ngIf="rbacService.getPrimaryRole() === 'superadmin'" style="color: #059669;">
+                  👑 SuperAdmin, 🛡️ Admin &amp; 👤 User
+                </span>
+                <span class="field-value font-medium" *ngIf="rbacService.getPrimaryRole() === 'admin'" style="color: #4f46e5;">
+                  🛡️ Admin &amp; 👤 User
+                </span>
+                <span class="field-value font-medium" *ngIf="rbacService.getPrimaryRole() === 'user'" style="color: #64748b;">
+                  👤 User Only
+                </span>
               </div>
             </div>
 
@@ -373,9 +396,10 @@
             </div>
 
             <button mat-raised-button class="btn-danger-execute" 
-              (click)="deactivateTenant(userProfile.status === 'Active' ? 'Delete' : 'Active')">
-              <mat-icon>{{ userProfile.status === 'Active' ? 'power_settings_new' : 'restore' }}</mat-icon>
-              <span>{{ userProfile.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account' }}</span>
+              (click)="deactivateTenant(userProfile.status === 'Active' ? 'Delete' : 'Active')"
+              [matTooltip]="!rbacService.isSuperAdmin() ? 'Restricted to Super Admin (Click to test RBAC prompt)' : 'Trigger workspace lifecycle'">
+              <mat-icon>{{ !rbacService.isSuperAdmin() ? 'lock' : (userProfile.status === 'Active' ? 'power_settings_new' : 'restore') }}</mat-icon>
+              <span>{{ !rbacService.isSuperAdmin() ? 'Deactivate (Super Admin Only)' : (userProfile.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account') }}</span>
             </button>
           </div>
         </div>

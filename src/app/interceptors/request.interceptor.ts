@@ -13,27 +13,43 @@ export class RequestInterceptor implements HttpInterceptor {
   constructor() { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    //To Manipulate Request 
-    let reqHeader: any;
-    let x_tenant_id: string
-    let token: string
+    let x_tenant_id = '0';
+    let token = '';
 
-    //check localstorage 
-    if (localStorage.length === 0) {
+    try {
+      token = localStorage.getItem('token') || '';
+      const userStr = localStorage.getItem('userdetails');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        // Tenant ID mapping: priority to tenant_id from claims
+        const role = (user.role || '').toLowerCase();
+        if (role === 'superadmin') {
+          x_tenant_id = '0';
+        } else if (user.tenant_id) {
+          x_tenant_id = user.tenant_id.toString();
+        } else if (user.id) {
+          x_tenant_id = user.id.toString();
+        }
+      }
+    } catch (e) {
       x_tenant_id = '0';
-      token = "";
-    } else {
-      x_tenant_id = JSON.parse(localStorage.getItem('userdetails')).id.toString();
-      token = localStorage.getItem('token');
+      token = '';
     }
 
-    //Add Header in request
-    reqHeader = request.clone({
-      setHeaders: {
-        'Content-Type': 'application/json',
-        'X-Tenant-Id': x_tenant_id,
-        'Authorization' : "Bearer " + token,
-      }
+    const headersConfig: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+
+    if (token) {
+      headersConfig['Authorization'] = 'Bearer ' + token;
+    }
+
+    if (!request.headers.has('X-Tenant-Id')) {
+      headersConfig['X-Tenant-Id'] = x_tenant_id;
+    }
+
+    const reqHeader = request.clone({
+      setHeaders: headersConfig
     });
 
     return next.handle(reqHeader);

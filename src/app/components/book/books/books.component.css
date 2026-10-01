@@ -12,6 +12,42 @@
   gap: 1rem;
 }
 
+.catalog-tier-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.775rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.catalog-tier-banner .tier-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.catalog-tier-banner.tier-user {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.catalog-tier-banner.tier-admin {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.catalog-tier-banner.tier-superadmin {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
 .page-title {
   font-size: 1.75rem;
   font-weight: 800;

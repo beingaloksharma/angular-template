@@ -18,20 +18,31 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-  constructor(private _router: Router,private jwtService:JwtService) { }
+  constructor(
+    private _router: Router,
+    private jwtService: JwtService
+  ) {
+    // Restore session on page reload if token exists
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.currentUser.next(token);
+      this.loggedIn.next(true);
+    }
+  }
 
   authLogin(res: any) {
     if (res["status_code"] != "success-200") {
       localStorage.clear();
       this.currentUser.next(null);
       this.loggedIn.next(false);
-
     } else {
-      localStorage.setItem("token", res["status_message"]);
-      localStorage.setItem("userdetails", JSON.stringify(this.jwtService.DecodeToken(res["status_message"])));
-      this.currentUser.next(res["status_message"]);
+      const token = res["status_message"];
+      localStorage.setItem("token", token);
+      const decoded = this.jwtService.DecodeToken(token);
+      localStorage.setItem("userdetails", JSON.stringify(decoded));
+      this.currentUser.next(token);
       this.loggedIn.next(true);
-      //redirect to home page 
+      // redirect to home page 
       this._router.navigate(['/books']);
     }
   }

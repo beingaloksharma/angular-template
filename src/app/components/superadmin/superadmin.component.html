@@ -1,0 +1,312 @@
+<div class="superadmin-page animate-fade">
+  <!-- Page Header -->
+  <div class="superadmin-header">
+    <div class="header-left">
+      <div class="badge-role-tier tier-superadmin">
+        <mat-icon class="tier-icon">military_tech</mat-icon>
+        <span>Super Administrator Console (Tier 3)</span>
+      </div>
+      <h1 class="page-title">Platform &amp; RBAC Control Center</h1>
+      <p class="page-subtitle">Cross-tenant partition management, global user directory, and security role policies.</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="accent" class="btn-create-tenant" (click)="openWorkspaceModal()">
+        <mat-icon>domain_add</mat-icon>
+        <span>Provision Tenant Workspace</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs Bar -->
+  <div class="console-tabs-bar">
+    <button class="tab-btn" [class.active]="activeTab === 'workspaces'" (click)="setTab('workspaces')">
+      <mat-icon>dashboard</mat-icon>
+      <span>Tenant Workspaces</span>
+      <span class="tab-count" *ngIf="totalTenants">{{ totalTenants }}</span>
+    </button>
+
+    <button class="tab-btn" [class.active]="activeTab === 'users'" (click)="setTab('users')">
+      <mat-icon>people</mat-icon>
+      <span>Platform Users</span>
+      <span class="tab-count" *ngIf="totalPlatformUsers">{{ totalPlatformUsers }}</span>
+    </button>
+
+    <button class="tab-btn" [class.active]="activeTab === 'books'" (click)="setTab('books')">
+      <mat-icon>auto_stories</mat-icon>
+      <span>Global Catalog</span>
+      <span class="tab-count" *ngIf="totalGlobalBooks">{{ totalGlobalBooks }}</span>
+    </button>
+
+    <button class="tab-btn" [class.active]="activeTab === 'rbac'" (click)="setTab('rbac')">
+      <mat-icon>shield</mat-icon>
+      <span>RBAC Security Rules</span>
+      <span class="tab-count" *ngIf="roles.length">{{ roles.length }}</span>
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <app-spinner></app-spinner>
+  </div>
+
+  <!-- Content Section -->
+  <div *ngIf="!loading">
+
+    <!-- TAB 1: WORKSPACES -->
+    <div *ngIf="activeTab === 'workspaces'">
+      <div class="workspaces-grid">
+        <div class="workspace-card" *ngFor="let t of tenants">
+          <div class="ws-header">
+            <div class="ws-avatar">
+              <mat-icon>apartment</mat-icon>
+            </div>
+            <div class="ws-title-box">
+              <h3>{{ t.name || t.user_name }}</h3>
+              <span class="font-mono text-muted">Schema: {{ t.schema_name }}</span>
+            </div>
+            <span class="status-badge" [ngClass]="{'status-active': t.status === 'Active', 'status-deleted': t.status !== 'Active'}">
+              {{ t.status }}
+            </span>
+          </div>
+
+          <div class="ws-details-list">
+            <div class="ws-row">
+              <span class="ws-label">Tenant ID:</span>
+              <span class="font-bold">#{{ t.tenant_id }}</span>
+            </div>
+            <div class="ws-row">
+              <span class="ws-label">Admin Username:</span>
+              <span class="font-mono">@{{ t.user_name }}</span>
+            </div>
+            <div class="ws-row">
+              <span class="ws-label">Admin Email:</span>
+              <span>{{ t.email }}</span>
+            </div>
+            <div class="ws-row">
+              <span class="ws-label">Active Members:</span>
+              <span class="members-pill">{{ t.users ? t.users.length : 1 }} Users</span>
+            </div>
+          </div>
+
+          <div class="ws-footer" *ngIf="t.users && t.users.length > 0">
+            <span class="ws-users-label">Workspace Members:</span>
+            <div class="ws-members-tags">
+              <span class="member-tag" *ngFor="let u of t.users">
+                <span class="role-dot" [ngClass]="u.role === 'admin' ? 'dot-admin' : 'dot-user'"></span>
+                {{ u.user_name }} ({{ u.role }})
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PLATFORM USERS -->
+    <div *ngIf="activeTab === 'users'">
+      <mat-card class="console-card">
+        <div class="card-header-clean">
+          <h2>All Platform Users (Across All Tenant Workspaces)</h2>
+          <span class="count-pill">{{ totalPlatformUsers }} Total Accounts</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Tenant ID</th>
+                <th>Schema</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of allUsers">
+                <td class="font-mono">#{{ u.id }}</td>
+                <td class="font-bold font-mono">@{{ u.user_name }}</td>
+                <td>{{ u.name | titlecase }}</td>
+                <td class="text-muted">{{ u.email }}</td>
+                <td>
+                  <span class="role-pill" [ngClass]="u.role === 'superadmin' ? 'role-pill-super' : (u.role === 'admin' ? 'role-pill-admin' : 'role-pill-user')">
+                    {{ u.role | uppercase }}
+                  </span>
+                </td>
+                <td class="font-mono">#{{ u.tenant_id }}</td>
+                <td class="font-mono text-muted">{{ u.schema_name }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{'status-active': u.status === 'Active', 'status-deleted': u.status !== 'Active'}">
+                    {{ u.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- TAB 3: GLOBAL BOOKS -->
+    <div *ngIf="activeTab === 'books'">
+      <mat-card class="console-card">
+        <div class="card-header-clean">
+          <h2>Global Catalog (All Tenant Partitions)</h2>
+          <span class="count-pill">{{ totalGlobalBooks }} Total Books</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Edition</th>
+                <th>Tenant ID</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of globalBooks">
+                <td class="font-mono">#{{ b.id }}</td>
+                <td class="font-bold">{{ b.name }}</td>
+                <td>{{ b.author_name }}</td>
+                <td>{{ b.publication }}</td>
+                <td><span class="edition-badge">{{ b.edition }}</span></td>
+                <td class="font-mono">#{{ b.tenant_id }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{'status-active': b.status === 'Active', 'status-deleted': b.status !== 'Active'}">
+                    {{ b.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- TAB 4: RBAC RULES -->
+    <div *ngIf="activeTab === 'rbac'">
+      <div class="rbac-grid">
+        <!-- Roles Card -->
+        <mat-card class="console-card">
+          <div class="card-header-clean">
+            <h3>System Roles Hierarchy</h3>
+          </div>
+          <div class="role-list-box">
+            <div class="role-item-card" *ngFor="let r of roles">
+              <div class="role-header-row">
+                <span class="role-name-badge" [ngClass]="'badge-' + r.name">{{ r.name | uppercase }}</span>
+                <span class="status-badge status-active">{{ r.status }}</span>
+              </div>
+              <p class="role-desc">{{ r.description }}</p>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Role Mappings Card -->
+        <mat-card class="console-card">
+          <div class="card-header-clean">
+            <h3>Assigned User Role Mappings</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Username</th>
+                  <th>Assigned Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rm of roleMappings">
+                  <td class="font-mono">#{{ rm.user_id }}</td>
+                  <td class="font-mono font-bold">@{{ rm.user_name }}</td>
+                  <td>
+                    <span class="role-pill" [ngClass]="rm.role_name === 'superadmin' ? 'role-pill-super' : (rm.role_name === 'admin' ? 'role-pill-admin' : 'role-pill-user')">
+                      {{ rm.role_name | uppercase }}
+                    </span>
+                  </td>
+                  <td><span class="status-badge status-active">{{ rm.status }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Provision Tenant Workspace -->
+<div class="modal-backdrop" *ngIf="showWorkspaceModal">
+  <div class="modal-dialog-custom">
+    <div class="modal-header-custom">
+      <div class="modal-title-wrap">
+        <mat-icon class="modal-title-icon">domain_add</mat-icon>
+        <div>
+          <h3>Provision New Workspace</h3>
+          <p>Create an isolated PostgreSQL database schema and tenant administrator</p>
+        </div>
+      </div>
+      <button mat-icon-button (click)="closeWorkspaceModal()" aria-label="Close modal">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form (ngSubmit)="submitCreateWorkspace()" #wsForm="ngForm">
+      <div class="modal-body-custom">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Workspace Name</mat-label>
+              <input matInput [(ngModel)]="newWorkspace.name" name="name" required placeholder="e.g. Acme Corporation">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Tenant Admin Username</mat-label>
+              <input matInput [(ngModel)]="newWorkspace.user_name" name="user_name" required placeholder="e.g. acmeadmin">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Admin Email</mat-label>
+              <input matInput [(ngModel)]="newWorkspace.email" name="email" type="email" required placeholder="admin@acme.com">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Admin Phone</mat-label>
+              <input matInput [(ngModel)]="newWorkspace.moblie" name="moblie" placeholder="9100000000">
+            </mat-form-field>
+          </div>
+
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Initial Admin Password</mat-label>
+              <input matInput [(ngModel)]="newWorkspace.password" name="password" type="password" required placeholder="Secure admin password">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button mat-button type="button" (click)="closeWorkspaceModal()" class="btn-cancel">Cancel</button>
+        <button mat-raised-button color="accent" type="submit" [disabled]="creatingWorkspace" class="btn-submit">
+          <mat-spinner diameter="20" *ngIf="creatingWorkspace"></mat-spinner>
+          <span *ngIf="!creatingWorkspace">Provision Schema &amp; Admin</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

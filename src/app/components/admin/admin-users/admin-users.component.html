@@ -1,0 +1,274 @@
+<div *ngIf="loading" class="text-center py-5">
+  <app-spinner></app-spinner>
+</div>
+
+<div class="admin-page animate-fade" *ngIf="!loading">
+  <!-- Page Header -->
+  <div class="page-header-row">
+    <div>
+      <div class="badge-role-tier">
+        <mat-icon class="tier-icon">admin_panel_settings</mat-icon>
+        <span>Workspace Admin Tier</span>
+      </div>
+      <h1 class="page-title">Tenant User Directory</h1>
+      <p class="page-subtitle">Manage workspace members, administrators, and credentials for your tenant partition.</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" class="btn-create" (click)="openCreateModal()">
+        <mat-icon>person_add</mat-icon>
+        <span>Add New Member</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Overview Cards -->
+  <div class="metrics-grid">
+    <div class="metric-card" (click)="setRoleFilter('all')" [class.active-card]="filterRole === 'all'">
+      <div class="metric-icon-wrap primary-icon">
+        <mat-icon>group</mat-icon>
+      </div>
+      <div class="metric-details">
+        <span class="metric-label">Total Members</span>
+        <span class="metric-val">{{ totalUsers }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card" (click)="setRoleFilter('admin')" [class.active-card]="filterRole === 'admin'">
+      <div class="metric-icon-wrap indigo-icon">
+        <mat-icon>security</mat-icon>
+      </div>
+      <div class="metric-details">
+        <span class="metric-label">Admins</span>
+        <span class="metric-val">{{ adminCount }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card" (click)="setRoleFilter('user')" [class.active-card]="filterRole === 'user'">
+      <div class="metric-icon-wrap teal-icon">
+        <mat-icon>badge</mat-icon>
+      </div>
+      <div class="metric-details">
+        <span class="metric-label">Standard Users</span>
+        <span class="metric-val">{{ standardUserCount }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap success-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="metric-details">
+        <span class="metric-label">Active Accounts</span>
+        <span class="metric-val">{{ activeCount }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Catalog Table Card -->
+  <mat-card class="catalog-card">
+    <div class="catalog-controls">
+      <!-- Search Input -->
+      <div class="search-box">
+        <mat-form-field appearance="outline" class="w-100 search-field">
+          <mat-icon matPrefix class="text-muted">search</mat-icon>
+          <mat-label>Search member by name, username, email...</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter..." #input>
+          <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Clear" (click)="input.value = ''; dataSource.filter = ''">
+            <mat-icon class="text-muted">close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-chips">
+        <button class="filter-btn" [class.active]="filterRole === 'all'" (click)="setRoleFilter('all')">
+          All ({{ totalUsers }})
+        </button>
+        <button class="filter-btn" [class.active]="filterRole === 'admin'" (click)="setRoleFilter('admin')">
+          Admins ({{ adminCount }})
+        </button>
+        <button class="filter-btn" [class.active]="filterRole === 'user'" (click)="setRoleFilter('user')">
+          Users ({{ standardUserCount }})
+        </button>
+      </div>
+    </div>
+
+    <!-- Table Responsive -->
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let row" class="id-cell"> #{{ row.id }} </td>
+        </ng-container>
+
+        <!-- Username Column -->
+        <ng-container matColumnDef="user_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Member Identity </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="user-cell-wrap">
+              <div class="avatar-circle" [ngClass]="{'avatar-admin': row.role === 'admin'}">
+                {{ (row.name || row.user_name).charAt(0).toUpperCase() }}
+              </div>
+              <div class="user-meta">
+                <span class="user-title font-mono">@{{ row.user_name }}</span>
+                <span class="user-sub">{{ row.schema_name || 'workspace' }}</span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Full Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Full Name </th>
+          <td mat-cell *matCellDef="let row" class="font-medium"> {{ row.name | titlecase }} </td>
+        </ng-container>
+
+        <!-- Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email Address </th>
+          <td mat-cell *matCellDef="let row" class="text-muted"> {{ row.email }} </td>
+        </ng-container>
+
+        <!-- Mobile -->
+        <ng-container matColumnDef="moblie">
+          <th mat-header-cell *matHeaderCellDef> Phone </th>
+          <td mat-cell *matCellDef="let row"> {{ row.moblie || '—' }} </td>
+        </ng-container>
+
+        <!-- Role Badge -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> RBAC Role </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="role-pill" [ngClass]="row.role === 'admin' ? 'role-pill-admin' : 'role-pill-user'">
+              <mat-icon class="pill-icon">{{ row.role === 'admin' ? 'security' : 'person' }}</mat-icon>
+              <span>{{ row.role | uppercase }}</span>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-badge" [ngClass]="{'status-active': row.status === 'Active', 'status-deleted': row.status === 'Delete'}">
+              {{ row.status | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="created_at">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Joined </th>
+          <td mat-cell *matCellDef="let row" class="date-cell"> {{ row.created_at | date:'mediumDate' }} </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-end"> Action </th>
+          <td mat-cell *matCellDef="let row" class="text-end">
+            <button mat-icon-button class="btn-action btn-delete" 
+              (click)="deleteUser(row)" 
+              [disabled]="row.user_name === currentUser.user_name"
+              [matTooltip]="row.user_name === currentUser.user_name ? 'Cannot delete self' : 'Soft-delete member'">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="catalog-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-5" colspan="9">
+            <div class="empty-state">
+              <mat-icon class="empty-icon">person_search</mat-icon>
+              <h3>No members match your criteria</h3>
+              <p>Try searching for a different keyword or reset active filters.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [length]="totalUsers" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" class="custom-paginator"></mat-paginator>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Modal: Create New Tenant User -->
+<div class="modal-backdrop" *ngIf="showCreateModal">
+  <div class="modal-dialog-custom">
+    <div class="modal-header-custom">
+      <div class="modal-title-wrap">
+        <mat-icon class="modal-title-icon">person_add</mat-icon>
+        <div>
+          <h3>Create Tenant Member</h3>
+          <p>Provision credentials and RBAC access for this workspace</p>
+        </div>
+      </div>
+      <button mat-icon-button (click)="closeCreateModal()" aria-label="Close modal">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form (ngSubmit)="submitCreateUser()" #userForm="ngForm">
+      <div class="modal-body-custom">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Full Name</mat-label>
+              <input matInput [(ngModel)]="newUser.name" name="name" required placeholder="e.g. Jane Doe">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Username</mat-label>
+              <input matInput [(ngModel)]="newUser.user_name" name="user_name" required placeholder="e.g. janedoe">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email Address</mat-label>
+              <input matInput [(ngModel)]="newUser.email" name="email" type="email" required placeholder="jane@example.com">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Phone Number</mat-label>
+              <input matInput [(ngModel)]="newUser.moblie" name="moblie" required placeholder="9100000000">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Password</mat-label>
+              <input matInput [(ngModel)]="newUser.password" name="password" type="password" required placeholder="Strong password">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Assign Role</mat-label>
+              <mat-select [(ngModel)]="newUser.role" name="role" required>
+                <mat-option value="user">User (Standard Access)</mat-option>
+                <mat-option value="admin">Admin (Workspace Administrator)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button mat-button type="button" (click)="closeCreateModal()" class="btn-cancel">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="submitting" class="btn-submit">
+          <mat-spinner diameter="20" *ngIf="submitting"></mat-spinner>
+          <span *ngIf="!submitting">Create Account</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

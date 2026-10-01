@@ -6,6 +6,8 @@ import { DeactivateTenant, UserProfile } from 'src/app/shared/models/book';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
 import Swal from 'sweetalert2';
+import { RbacService } from 'src/app/shared/services/rbac.service';
+import { RbacPromptService } from 'src/app/shared/services/rbac-prompt.service';
 
 @Component({
   selector: 'app-myprofile',
@@ -29,7 +31,9 @@ export class MyprofileComponent {
     private _constants: ConstantsService,
     private _toastr: ToastrService,
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
+    public rbacService: RbacService,
+    private rbacPrompt: RbacPromptService
   ) {
     //Get Query param value 
     this._route.queryParams.subscribe(params => {
@@ -100,6 +104,17 @@ export class MyprofileComponent {
 
   // Deactivate or Reactivate Tenant 
   deactivateTenant(status: string) {
+    if (!this.rbacService.isSuperAdmin()) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'superadmin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: 'POST /webstarter/deactivate',
+        actionName: status === 'Delete' ? 'Workspace Deactivation' : 'Workspace Reactivation',
+        message: 'Under the Swagger RBAC architecture, destructive workspace lifecycle operations are restricted exclusively to Super Administrators (Tier 3).'
+      });
+      return;
+    }
+
     const isDeactivate = status === 'Delete';
     Swal.fire({
       title: isDeactivate ? 'Deactivate Tenant Workspace?' : 'Reactivate Tenant Workspace?',

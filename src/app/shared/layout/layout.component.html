@@ -2,6 +2,7 @@
   <!-- Header / Navbar -->
   <header class="navbar-glass">
     <div class="navbar-content">
+      <!-- Brand Area -->
       <div class="brand-area" [routerLink]="['/books']">
         <div class="brand-icon">
           <mat-icon>auto_stories</mat-icon>
@@ -12,28 +13,120 @@
         </div>
       </div>
 
+      <!-- Navigation Links based on Active Acting Role -->
       <nav class="nav-links">
         <a class="nav-item" [routerLink]="['/books']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
+          <mat-icon>menu_book</mat-icon>
+          <span>Catalog</span>
+        </a>
+
+        <!-- Admin Scope Link (Visible when acting as Admin or SuperAdmin) -->
+        <a class="nav-item" *ngIf="rbacService.isAdmin()" [routerLink]="['/admin/users']" routerLinkActive="active">
+          <mat-icon>badge</mat-icon>
+          <span>Tenant Members</span>
+        </a>
+
+        <!-- Super Admin Scope Link (Visible when acting as SuperAdmin) -->
+        <a class="nav-item" *ngIf="rbacService.isSuperAdmin()" [routerLink]="['/superadmin']" routerLinkActive="active">
+          <mat-icon>military_tech</mat-icon>
+          <span>Super Admin Console</span>
         </a>
       </nav>
 
       <div class="navbar-spacer"></div>
 
+      <!-- Right Header Actions -->
       <div class="nav-actions">
+
+        <!-- ======================================================== -->
+        <!-- HIERARCHICAL ACTING ROLE SELECTOR                        -->
+        <!-- Superadmin: acts as superadmin, admin, user             -->
+        <!-- Admin: acts as admin, user                               -->
+        <!-- User: acts ONLY as user                                  -->
+        <!-- ======================================================== -->
+        <div class="acting-role-container">
+          <span class="acting-label">Acting As:</span>
+
+          <!-- If Super Admin: Can act as Superadmin, Admin, and User -->
+          <div class="role-scope-pills" *ngIf="primaryRole === 'superadmin'">
+            <button type="button" class="btn-scope-pill super-pill"
+              [class.active]="actingRole === 'superadmin'"
+              (click)="selectActingRole('superadmin')"
+              matTooltip="Act as Super Administrator (Tier 3)">
+              👑 SuperAdmin
+            </button>
+            <button type="button" class="btn-scope-pill admin-pill"
+              [class.active]="actingRole === 'admin'"
+              (click)="selectActingRole('admin')"
+              matTooltip="Act as Workspace Administrator (Tier 2)">
+              🛡️ Admin
+            </button>
+            <button type="button" class="btn-scope-pill user-pill-btn"
+              [class.active]="actingRole === 'user'"
+              (click)="selectActingRole('user')"
+              matTooltip="Act as Standard User (Tier 1)">
+              👤 User
+            </button>
+          </div>
+
+          <!-- If Admin: Can act as Admin and User -->
+          <div class="role-scope-pills" *ngIf="primaryRole === 'admin'">
+            <button type="button" class="btn-scope-pill admin-pill"
+              [class.active]="actingRole === 'admin'"
+              (click)="selectActingRole('admin')"
+              matTooltip="Act as Workspace Administrator (Tier 2)">
+              🛡️ Admin
+            </button>
+            <button type="button" class="btn-scope-pill user-pill-btn"
+              [class.active]="actingRole === 'user'"
+              (click)="selectActingRole('user')"
+              matTooltip="Act as Standard User (Tier 1)">
+              👤 User
+            </button>
+            <button type="button" class="btn-scope-pill disabled-pill"
+              (click)="testRestrictedAction()"
+              matTooltip="Super Admin role not permitted for Admin account (Click to see error prompt)">
+              🔒 SuperAdmin
+            </button>
+          </div>
+
+          <!-- If User: Acts ONLY as User -->
+          <div class="single-user-badge" *ngIf="primaryRole === 'user'"
+            matTooltip="Standard User account — Only User role permitted" matTooltipPosition="below">
+            <span class="user-lock-dot"></span>
+            <span>👤 Standard User (Only Role)</span>
+          </div>
+        </div>
+
+        <!-- Account Switcher Dropdown (user1, admin1, superadmin) -->
+        <div class="account-switcher-box" matTooltip="Switch Authenticated Account" matTooltipPosition="below">
+          <span class="acc-label">Account:</span>
+          <div class="acc-buttons">
+            <button type="button" class="acc-btn" [class.active]="primaryRole === 'user'" [disabled]="switchingRole" (click)="switchAccount('user')">user1</button>
+            <button type="button" class="acc-btn" [class.active]="primaryRole === 'admin'" [disabled]="switchingRole" (click)="switchAccount('admin')">admin1</button>
+            <button type="button" class="acc-btn" [class.active]="primaryRole === 'superadmin'" [disabled]="switchingRole" (click)="switchAccount('superadmin')">superadmin</button>
+          </div>
+        </div>
+
+        <!-- Simulate Unauthorized Action Test Button -->
+        <button mat-stroked-button class="btn-test-rbac" (click)="testRestrictedAction()" 
+          matTooltip="Trigger RBAC Error Window" matTooltipPosition="below">
+          <mat-icon class="test-icon">shield</mat-icon>
+          <span>Test Error</span>
+        </button>
+
         <!-- Tenant Badge -->
-        <div class="tenant-pill" matTooltip="Active PostgreSQL Tenant Schema" matTooltipPosition="below">
+        <div class="tenant-pill" matTooltip="Active PostgreSQL Tenant Partition" matTooltipPosition="below">
           <span class="tenant-dot"></span>
-          <span class="tenant-label">Tenant #{{tenantId}}</span>
+          <span class="tenant-label">Tenant #{{ tenantId }}</span>
         </div>
 
         <!-- User Profile Pill -->
         <div class="user-pill" (click)="userDetails()" matTooltip="View Profile" matTooltipPosition="below">
           <div class="avatar-badge">
-            {{name.charAt(0).toUpperCase()}}
+            {{ name.charAt(0).toUpperCase() }}
           </div>
-          <span class="user-name">{{name}}</span>
+          <span class="user-name">{{ name }}</span>
         </div>
 
         <!-- Logout Button -->
@@ -54,7 +147,7 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-content">
-      <p>&copy; 2026 WebStarter Multi-Tenant Application. Designed with Angular &amp; Go.</p>
+      <p>&copy; 2026 WebStarter Multi-Tenant Application. Enforcing Role Hierarchy: SuperAdmin (all 3 roles), Admin (admin &amp; user), User (only user).</p>
     </div>
   </footer>
 </div>

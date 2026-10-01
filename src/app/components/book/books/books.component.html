@@ -5,15 +5,24 @@
 <ng-template #tableBlock>
   <div class="books-page">
     <!-- Page Header & Action -->
+    <!-- Page Header & Action -->
     <div class="page-header-row">
       <div>
+        <!-- Role Tier Context Badge -->
+        <div class="catalog-tier-banner" [ngClass]="'tier-' + rbacService.getCurrentRole()">
+          <mat-icon class="tier-icon">{{ rbacService.isAdmin() ? 'verified_user' : 'lock_clock' }}</mat-icon>
+          <span *ngIf="rbacService.isSuperAdmin()">Super Admin Mode: Platform-wide catalog access &amp; governance</span>
+          <span *ngIf="rbacService.isAdmin() && !rbacService.isSuperAdmin()">Workspace Admin Mode: Full authoring &amp; catalog management active</span>
+          <span *ngIf="rbacService.isUser()">Read-Only Viewer Mode (Standard User): Catalog browsing enabled</span>
+        </div>
         <h1 class="page-title">Book Management</h1>
         <p class="page-subtitle">Manage your tenant catalog, book editions, and publication status</p>
       </div>
-      <div>
-        <button mat-raised-button color="primary" [routerLink]="['/books/create']" class="btn-create">
-          <mat-icon>add</mat-icon>
-          <span>Create Book</span>
+      <div class="header-action-group">
+        <button mat-raised-button color="primary" (click)="onCreateBook()" class="btn-create" 
+          [matTooltip]="!rbacService.isAdmin() ? 'Requires Workspace Admin privileges (Click to test RBAC prompt)' : 'Add new book to tenant catalog'">
+          <mat-icon>{{ rbacService.isAdmin() ? 'add' : 'lock' }}</mat-icon>
+          <span>{{ rbacService.isAdmin() ? 'Create Book' : 'Create Book (Admin Only)' }}</span>
         </button>
       </div>
     </div>
@@ -352,19 +361,27 @@
                   <mat-icon>visibility</mat-icon>
                 </button>
 
-                <!-- Edit -->
-                <button mat-icon-button class="btn-action btn-edit" [hidden]="row.status === 'Delete'" [routerLink]="['/books/update', row.id]" matTooltip="Edit Book">
-                  <mat-icon>edit</mat-icon>
+                <!-- Edit (RBAC Enforced) -->
+                <button mat-icon-button class="btn-action btn-edit" [hidden]="row.status === 'Delete'" 
+                  (click)="onEditBook(row.id)" 
+                  [matTooltip]="rbacService.isAdmin() ? 'Edit Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
+                  <mat-icon>{{ rbacService.isAdmin() ? 'edit' : 'lock' }}</mat-icon>
                 </button>
 
-                <!-- Delete -->
-                <button mat-icon-button class="btn-action btn-delete" (click)="UpdateBookStatus(row.id, 'Delete')" [hidden]="row.status === 'Delete'" matTooltip="Archive Book">
-                  <mat-icon>delete_outline</mat-icon>
+                <!-- Delete / Archive (RBAC Enforced) -->
+                <button mat-icon-button class="btn-action btn-delete" 
+                  (click)="UpdateBookStatus(row.id, 'Delete')" 
+                  [hidden]="row.status === 'Delete'" 
+                  [matTooltip]="rbacService.isAdmin() ? 'Archive Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
+                  <mat-icon>{{ rbacService.isAdmin() ? 'delete_outline' : 'lock' }}</mat-icon>
                 </button>
 
-                <!-- Restore -->
-                <button mat-icon-button class="btn-action btn-restore" (click)="UpdateBookStatus(row.id, 'Active')" [hidden]="row.status !== 'Delete'" matTooltip="Restore Book">
-                  <mat-icon>restore_from_trash</mat-icon>
+                <!-- Restore (RBAC Enforced) -->
+                <button mat-icon-button class="btn-action btn-restore" 
+                  (click)="UpdateBookStatus(row.id, 'Active')" 
+                  [hidden]="row.status !== 'Delete'" 
+                  [matTooltip]="rbacService.isAdmin() ? 'Restore Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
+                  <mat-icon>{{ rbacService.isAdmin() ? 'restore_from_trash' : 'lock' }}</mat-icon>
                 </button>
               </div>
             </td>
