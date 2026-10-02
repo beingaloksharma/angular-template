@@ -58,14 +58,10 @@ export class CreateBookComponent implements OnInit {
 
     //To Get param value 
     this._route.params.subscribe((res: any) => {
-      //check param id value 
-      if (res['id'] === undefined) {
-        this._router.navigate(['/books/create']);
-      } else {
-        //Load in browser
+      if (res['id']) {
         this.getBookDetailsForUpdate(res['id']);
       }
-    })
+    });
 
     //Get Languages 
     this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {

@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="hero-actions" *ngIf="book.status !== 'Delete'">
+            <div class="hero-actions" *ngIf="book.status !== 'Delete' && rbacService.isAdmin()">
                 <button mat-flat-button class="btn-hero-edit" [routerLink]="['/books/update', book.id]">
                     <mat-icon>edit</mat-icon>
                     <span>Edit Book</span>

@@ -86,64 +86,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     this.rbacService.setActingRole(role);
     this.toastr.info(`Now acting as ${role.toUpperCase()} mode`, 'Role Scope Changed');
-  }
 
-  /**
-   * Quick live login switch between the 3 documented seed accounts
-   */
-  switchAccount(targetAccount: UserRole): void {
-    if (this.primaryRole === targetAccount && this.actingRole === targetAccount) {
-      return;
-    }
-
-    this.switchingRole = true;
-    this.rbacService.switchRoleLive(targetAccount).subscribe({
-      next: (res: any) => {
-        this.switchingRole = false;
-        if (res.status_code === 'success-200') {
-          const user = this.rbacService.setSession(res.status_message);
-          this.toastr.success(`Logged in as @${user.user_name} (${targetAccount.toUpperCase()})`, 'Account Switched');
-          this._router.navigate(['/books']).then(() => {
-            window.location.reload();
-          });
-        } else {
-          this.toastr.error('Account switch failed: ' + (res.status_message || ''));
-        }
-      },
-      error: () => {
-        this.switchingRole = false;
-        this.toastr.error('Account switch failed. Ensure backend microservice is running.');
-      }
-    });
-  }
-
-  /**
-   * Test restricted access prompt
-   */
-  testRestrictedAction(): void {
-    if (this.actingRole === 'user' || this.primaryRole === 'user') {
-      this.rbacPrompt.showAccessDenied({
-        requiredRole: 'admin',
-        currentRole: this.actingRole,
-        resourceName: 'Tenant Workspace Administration & User Management',
-        actionName: 'Restricted Action Trigger',
-        message: 'Standard Users can act ONLY as User. Administrative features require Admin or Super Admin role.'
-      });
-    } else if (this.actingRole === 'admin' || this.primaryRole === 'admin') {
-      this.rbacPrompt.showAccessDenied({
-        requiredRole: 'superadmin',
-        currentRole: this.actingRole,
-        resourceName: 'Platform Multi-Tenant Provisioning Console',
-        actionName: 'Cross-Tenant Schema Modification',
-        message: 'Admins can act as Admin and User, but CANNOT act as Super Admin.'
-      });
-    } else {
-      Swal.fire({
-        icon: 'info',
-        title: 'Super Admin Access',
-        text: 'Superadmin acts as Super Admin, Admin, and User! Use the "Acting As" mode switcher in the navbar to test how the UI adapts to Admin and User perspectives.',
-        confirmButtonColor: '#4f46e5'
-      });
+    // Route safety check: redirect away from restricted pages if persona no longer has required permissions
+    const currentUrl = this._router.url;
+    if (currentUrl.includes('/superadmin') && role !== 'superadmin') {
+      this._router.navigate(['/books']);
+      this.toastr.warning('Redirected to Catalog: Super Admin Console requires SuperAdmin role', 'Access Scoped');
+    } else if (currentUrl.includes('/admin') && role === 'user') {
+      this._router.navigate(['/books']);
+      this.toastr.warning('Redirected to Catalog: Tenant Administration requires Admin role', 'Access Scoped');
+    } else if ((currentUrl.includes('/books/create') || currentUrl.includes('/books/update')) && role === 'user') {
+      this._router.navigate(['/books']);
+      this.toastr.warning('Redirected to Catalog: Book authoring requires Admin role', 'Access Scoped');
     }
   }
 

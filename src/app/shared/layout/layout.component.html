@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <!-- Navigation Links based on Active Acting Role -->
+      <!-- Navigation Links based on Active Role -->
       <nav class="nav-links">
         <a class="nav-item" [routerLink]="['/books']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <mat-icon>menu_book</mat-icon>
@@ -29,7 +29,7 @@
         <!-- Super Admin Scope Link (Visible when acting as SuperAdmin) -->
         <a class="nav-item" *ngIf="rbacService.isSuperAdmin()" [routerLink]="['/superadmin']" routerLinkActive="active">
           <mat-icon>military_tech</mat-icon>
-          <span>Super Admin Console</span>
+          <span>Super Admin</span>
         </a>
       </nav>
 
@@ -38,87 +38,63 @@
       <!-- Right Header Actions -->
       <div class="nav-actions">
 
-        <!-- ======================================================== -->
-        <!-- HIERARCHICAL ACTING ROLE SELECTOR                        -->
-        <!-- Superadmin: acts as superadmin, admin, user             -->
-        <!-- Admin: acts as admin, user                               -->
-        <!-- User: acts ONLY as user                                  -->
-        <!-- ======================================================== -->
-        <div class="acting-role-container">
-          <span class="acting-label">Acting As:</span>
-
-          <!-- If Super Admin: Can act as Superadmin, Admin, and User -->
-          <div class="role-scope-pills" *ngIf="primaryRole === 'superadmin'">
-            <button type="button" class="btn-scope-pill super-pill"
-              [class.active]="actingRole === 'superadmin'"
-              (click)="selectActingRole('superadmin')"
-              matTooltip="Act as Super Administrator (Tier 3)">
-              👑 SuperAdmin
-            </button>
-            <button type="button" class="btn-scope-pill admin-pill"
-              [class.active]="actingRole === 'admin'"
-              (click)="selectActingRole('admin')"
-              matTooltip="Act as Workspace Administrator (Tier 2)">
-              🛡️ Admin
-            </button>
-            <button type="button" class="btn-scope-pill user-pill-btn"
-              [class.active]="actingRole === 'user'"
-              (click)="selectActingRole('user')"
-              matTooltip="Act as Standard User (Tier 1)">
-              👤 User
-            </button>
+        <!-- Role & Persona Scope Selector -->
+        <div class="persona-control">
+          <!-- Super Admin Persona Switcher -->
+          <div class="persona-pills-wrap" *ngIf="primaryRole === 'superadmin'">
+            <span class="persona-label">Persona:</span>
+            <div class="persona-pills">
+              <button type="button" class="persona-pill pill-super"
+                [class.active]="actingRole === 'superadmin'"
+                (click)="selectActingRole('superadmin')"
+                matTooltip="Assume Super Administrator Persona (Platform-wide)">
+                👑 SuperAdmin
+              </button>
+              <button type="button" class="persona-pill pill-admin"
+                [class.active]="actingRole === 'admin'"
+                (click)="selectActingRole('admin')"
+                matTooltip="Assume Workspace Administrator Persona">
+                🛡️ Admin
+              </button>
+              <button type="button" class="persona-pill pill-user"
+                [class.active]="actingRole === 'user'"
+                (click)="selectActingRole('user')"
+                matTooltip="Assume Standard User Persona (Read-Only)">
+                👤 User
+              </button>
+            </div>
           </div>
 
-          <!-- If Admin: Can act as Admin and User -->
-          <div class="role-scope-pills" *ngIf="primaryRole === 'admin'">
-            <button type="button" class="btn-scope-pill admin-pill"
-              [class.active]="actingRole === 'admin'"
-              (click)="selectActingRole('admin')"
-              matTooltip="Act as Workspace Administrator (Tier 2)">
-              🛡️ Admin
-            </button>
-            <button type="button" class="btn-scope-pill user-pill-btn"
-              [class.active]="actingRole === 'user'"
-              (click)="selectActingRole('user')"
-              matTooltip="Act as Standard User (Tier 1)">
-              👤 User
-            </button>
-            <button type="button" class="btn-scope-pill disabled-pill"
-              (click)="testRestrictedAction()"
-              matTooltip="Super Admin role not permitted for Admin account (Click to see error prompt)">
-              🔒 SuperAdmin
-            </button>
+          <!-- Admin Persona Switcher -->
+          <div class="persona-pills-wrap" *ngIf="primaryRole === 'admin'">
+            <span class="persona-label">Persona:</span>
+            <div class="persona-pills">
+              <button type="button" class="persona-pill pill-admin"
+                [class.active]="actingRole === 'admin'"
+                (click)="selectActingRole('admin')"
+                matTooltip="Assume Workspace Administrator Persona">
+                🛡️ Admin
+              </button>
+              <button type="button" class="persona-pill pill-user"
+                [class.active]="actingRole === 'user'"
+                (click)="selectActingRole('user')"
+                matTooltip="Assume Standard User Persona (Read-Only)">
+                👤 User
+              </button>
+            </div>
           </div>
 
-          <!-- If User: Acts ONLY as User -->
-          <div class="single-user-badge" *ngIf="primaryRole === 'user'"
-            matTooltip="Standard User account — Only User role permitted" matTooltipPosition="below">
-            <span class="user-lock-dot"></span>
-            <span>👤 Standard User (Only Role)</span>
+          <!-- Standard User Fixed Role Badge -->
+          <div class="user-role-badge" *ngIf="primaryRole === 'user'" matTooltip="Standard User Account · Catalog Access">
+            <span class="role-dot user-dot"></span>
+            <span>Standard User</span>
           </div>
         </div>
 
-        <!-- Account Switcher Dropdown (user1, admin1, superadmin) -->
-        <div class="account-switcher-box" matTooltip="Switch Authenticated Account" matTooltipPosition="below">
-          <span class="acc-label">Account:</span>
-          <div class="acc-buttons">
-            <button type="button" class="acc-btn" [class.active]="primaryRole === 'user'" [disabled]="switchingRole" (click)="switchAccount('user')">user1</button>
-            <button type="button" class="acc-btn" [class.active]="primaryRole === 'admin'" [disabled]="switchingRole" (click)="switchAccount('admin')">admin1</button>
-            <button type="button" class="acc-btn" [class.active]="primaryRole === 'superadmin'" [disabled]="switchingRole" (click)="switchAccount('superadmin')">superadmin</button>
-          </div>
-        </div>
-
-        <!-- Simulate Unauthorized Action Test Button -->
-        <button mat-stroked-button class="btn-test-rbac" (click)="testRestrictedAction()" 
-          matTooltip="Trigger RBAC Error Window" matTooltipPosition="below">
-          <mat-icon class="test-icon">shield</mat-icon>
-          <span>Test Error</span>
-        </button>
-
-        <!-- Tenant Badge -->
-        <div class="tenant-pill" matTooltip="Active PostgreSQL Tenant Partition" matTooltipPosition="below">
+        <!-- Tenant Partition Badge -->
+        <div class="tenant-pill" [matTooltip]="primaryRole === 'superadmin' ? 'Global Platform Administration Scope' : 'Active Tenant Workspace Partition #' + tenantId">
           <span class="tenant-dot"></span>
-          <span class="tenant-label">Tenant #{{ tenantId }}</span>
+          <span class="tenant-label">{{ primaryRole === 'superadmin' ? 'Global Platform' : 'Tenant #' + tenantId }}</span>
         </div>
 
         <!-- User Profile Pill -->
@@ -130,14 +106,14 @@
         </div>
 
         <!-- Logout Button -->
-        <button mat-icon-button class="btn-logout" (click)="logout()" matTooltip="Logout" aria-label="Sign Out">
+        <button mat-icon-button class="btn-logout" (click)="logout()" matTooltip="Sign Out" aria-label="Sign Out">
           <mat-icon>logout</mat-icon>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main View -->
+  <!-- Main Content View -->
   <main class="main-body">
     <div class="container-xl">
       <router-outlet></router-outlet>
@@ -147,7 +123,8 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-content">
-      <p>&copy; 2026 WebStarter Multi-Tenant Application. Enforcing Role Hierarchy: SuperAdmin (all 3 roles), Admin (admin &amp; user), User (only user).</p>
+      <p>&copy; 2026 WebStarter Multi-Tenant Enterprise Platform &middot; Role-Based Access Control Enforced</p>
     </div>
   </footer>
 </div>
+

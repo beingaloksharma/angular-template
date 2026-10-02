@@ -88,7 +88,7 @@ Use these accounts to test the hierarchical RBAC capabilities:
 | **Standard User** | `user1` | `User@12345!` | `USER` |
 
 > [!TIP]
-> Use the **Role Persona** dropdown or the **Quick Switch Account** buttons in the navigation header to toggle between these identities without typing credentials.
+> Use the **Persona Switcher** in the navigation header to toggle between authorized acting roles on the fly (`SuperAdmin`, `Admin`, `User`) without logging out.
 
 ---
 

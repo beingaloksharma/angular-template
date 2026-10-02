@@ -88,34 +88,25 @@ export class ForgotpasswordComponent {
       password: this.forgotForm.value['password'],
       confirm_password: this.forgotForm.value['confirm_password'],
     }
+    this.loading = true;
     //Call Service 
-    this._commonService.post(this._constants.SERVER_URL + "forgot", this.payload).subscribe((res: any) => {
-      //Promt success message
-      this._toastr.success("Password Updated sucessfully");
-      //Set Loader true 
-      this.loading = true;
-      setTimeout(() => {
-        //Set Loader false 
+    this._commonService.post(this._constants.SERVER_URL + "forgot", this.payload).subscribe({
+      next: (res: any) => {
         this.loading = false;
-        //Reset the form in Initial state 
-        this.onReset();
-        //redirect to home page 
-        this._router.navigate(['auth/login']);
-      }, 1000)
-    },
-      (error: HttpErrorResponse) => {
-        //Print Log
-        console.warn("Error Message :: ", error.message);
-        console.warn("Error StatusText :: ", error.statusText);
-        console.warn("Error URL :: ", error.url);
-        //Check Status Code
-        if (error.error && error.error.error_message) {
-          this._toastr.error(error.error.error_message);
+        if (res["status_code"] === 'success-200') {
+          this._toastr.success("Password reset successfully! Please sign in.", "Password Updated");
+          this.onReset();
+          this._router.navigate(['auth/login']);
         } else {
-          this._toastr.error("Something went wrong. Please try again.");
+          this._toastr.error(res["status_message"] || "Failed to update password", "Reset Error");
         }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        const msg = error.error?.error_message || error.error?.message || "Failed to reset password. Please try again.";
+        this._toastr.error(msg, "Reset Error");
       }
-    )
+    });
   }
 
   //Reset Form 

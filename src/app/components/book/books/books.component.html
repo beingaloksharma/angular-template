@@ -3,267 +3,95 @@
 </div>
 
 <ng-template #tableBlock>
-  <div class="books-page">
-    <!-- Page Header & Action -->
+  <div class="books-page animate-fade">
     <!-- Page Header & Action -->
     <div class="page-header-row">
-      <div>
-        <!-- Role Tier Context Badge -->
-        <div class="catalog-tier-banner" [ngClass]="'tier-' + rbacService.getCurrentRole()">
-          <mat-icon class="tier-icon">{{ rbacService.isAdmin() ? 'verified_user' : 'lock_clock' }}</mat-icon>
-          <span *ngIf="rbacService.isSuperAdmin()">Super Admin Mode: Platform-wide catalog access &amp; governance</span>
-          <span *ngIf="rbacService.isAdmin() && !rbacService.isSuperAdmin()">Workspace Admin Mode: Full authoring &amp; catalog management active</span>
-          <span *ngIf="rbacService.isUser()">Read-Only Viewer Mode (Standard User): Catalog browsing enabled</span>
+      <div class="header-text-group">
+        <div class="header-badge-row">
+          <!-- Role Context Chip -->
+          <div class="role-context-chip" [ngClass]="'role-' + rbacService.getCurrentRole()">
+            <mat-icon class="context-icon">
+              {{ rbacService.isSuperAdmin() ? 'military_tech' : (rbacService.isAdmin() ? 'shield' : 'visibility') }}
+            </mat-icon>
+            <span *ngIf="rbacService.isSuperAdmin()">SuperAdmin View &middot; Platform Governance</span>
+            <span *ngIf="rbacService.isAdmin() && !rbacService.isSuperAdmin()">Admin View &middot; Full Authoring Active</span>
+            <span *ngIf="rbacService.isUser()">Viewer Mode &middot; Read-Only Access</span>
+          </div>
         </div>
-        <h1 class="page-title">Book Management</h1>
-        <p class="page-subtitle">Manage your tenant catalog, book editions, and publication status</p>
+        <h1 class="page-title">Book Catalog</h1>
+        <p class="page-subtitle">Browse, search, and manage publications in your organization's collection</p>
       </div>
-      <div class="header-action-group">
+
+      <!-- Header Action (Admins Only) -->
+      <div class="header-action-group" *ngIf="rbacService.isAdmin()">
         <button mat-raised-button color="primary" (click)="onCreateBook()" class="btn-create" 
-          [matTooltip]="!rbacService.isAdmin() ? 'Requires Workspace Admin privileges (Click to test RBAC prompt)' : 'Add new book to tenant catalog'">
-          <mat-icon>{{ rbacService.isAdmin() ? 'add' : 'lock' }}</mat-icon>
-          <span>{{ rbacService.isAdmin() ? 'Create Book' : 'Create Book (Admin Only)' }}</span>
+          matTooltip="Add new book title to catalog">
+          <mat-icon>add</mat-icon>
+          <span>Create Book</span>
         </button>
       </div>
     </div>
 
-    <!-- Total Record Carousel & Metrics Section -->
-    <div class="carousel-section-wrap" [class.section-collapsed]="!isOpen">
-      <!-- Carousel Top Bar -->
-      <div class="carousel-nav-header">
-        <div class="carousel-title-group">
-          <div class="carousel-pill-badge clickable" (click)="toggleOpenClose()" role="button" tabindex="0" [matTooltip]="isOpen ? 'Click to Collapse' : 'Click to Expand'">
-            <mat-icon>analytics</mat-icon>
-            <span>Total Records Overview</span>
-            <mat-icon class="badge-caret">{{ isOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-          </div>
-
-          <!-- Quick summary visible when collapsed -->
-          <div class="mini-summary-pills" *ngIf="!isOpen" (click)="toggleOpenClose()" role="button">
-            <span class="mini-pill">Total: <strong>{{ totalBooks || 0 }}</strong></span>
-            <span class="mini-pill success">Active: <strong>{{ activeBooks || 0 }}</strong></span>
-            <span class="mini-pill danger">Archived: <strong>{{ deletedBooks || 0 }}</strong></span>
-            <span class="mini-pill accent">Authors: <strong>{{ totalAuthors || 0 }}</strong></span>
-          </div>
+    <!-- Quick Metric KPI Summary Cards (Interactive Filter Bar) -->
+    <div class="kpi-grid">
+      <!-- Total Catalog -->
+      <div class="kpi-card kpi-primary" [class.kpi-active]="filterStatus === 'all'" (click)="setFilter('all')" role="button" tabindex="0">
+        <div class="kpi-icon-wrap primary-gradient">
+          <mat-icon>menu_book</mat-icon>
         </div>
-
-        <div class="carousel-action-controls">
-          <!-- Autoplay toggle (only when open & in carousel mode) -->
-          <button mat-icon-button type="button" class="btn-ctrl" (click)="toggleAutoPlay()" 
-            [matTooltip]="isAutoPlay ? 'Pause Carousel Autoplay' : 'Play Carousel Autoplay'"
-            *ngIf="isOpen && carouselMode === 'carousel'">
-            <mat-icon>{{ isAutoPlay ? 'pause_circle_outline' : 'play_circle_outline' }}</mat-icon>
-          </button>
-
-          <!-- Mode Switcher (only when open) -->
-          <button mat-button type="button" class="btn-mode-toggle" (click)="toggleViewMode()" *ngIf="isOpen">
-            <mat-icon>{{ carouselMode === 'carousel' ? 'grid_view' : 'view_carousel' }}</mat-icon>
-            <span>{{ carouselMode === 'carousel' ? 'Grid View' : 'Carousel View' }}</span>
-          </button>
-
-          <!-- Prev / Next Controls (only when open & in carousel mode) -->
-          <div class="carousel-arrows" *ngIf="isOpen && carouselMode === 'carousel'">
-            <button mat-icon-button type="button" class="btn-arrow" (click)="prevSlide()" aria-label="Previous Slide">
-              <mat-icon>chevron_left</mat-icon>
-            </button>
-            <span class="slide-count-badge">{{ carouselIndex + 1 }} / {{ totalSlides }}</span>
-            <button mat-icon-button type="button" class="btn-arrow" (click)="nextSlide()" aria-label="Next Slide">
-              <mat-icon>chevron_right</mat-icon>
-            </button>
-          </div>
-
-          <!-- Open / Close Toggle Button -->
-          <button mat-button type="button" class="btn-toggle-open" (click)="toggleOpenClose()"
-            [matTooltip]="isOpen ? 'Collapse Overview' : 'Expand Overview'">
-            <mat-icon>{{ isOpen ? 'unfold_less' : 'unfold_more' }}</mat-icon>
-            <span>{{ isOpen ? 'Close' : 'Open' }}</span>
-          </button>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Titles</span>
+          <div class="kpi-value">{{ totalBooks || 0 }}</div>
+          <span class="kpi-subtext">All catalog records</span>
         </div>
       </div>
 
-      <!-- Collapsible Body Container -->
-      <div class="carousel-collapsible-body" *ngIf="isOpen">
-
-      <!-- CAROUSEL VIEW -->
-      <div class="carousel-viewport" *ngIf="carouselMode === 'carousel'">
-        <div class="carousel-track" [style.transform]="'translateX(-' + (carouselIndex * 100) + '%)'">
-          
-          <!-- Slide 0: Total Catalog -->
-          <div class="carousel-slide">
-            <div class="record-slide-card primary-slide" (click)="setFilter('all')">
-              <div class="slide-card-glow"></div>
-              <div class="slide-card-main">
-                <div class="slide-icon-wrap primary-theme">
-                  <mat-icon>menu_book</mat-icon>
-                </div>
-                <div class="slide-content">
-                  <span class="slide-badge">Total Catalog Records</span>
-                  <div class="slide-val-row">
-                    <span class="slide-metric-val">{{ totalBooks || 0 }}</span>
-                    <span class="slide-metric-unit">Titles in Library</span>
-                  </div>
-                  <p class="slide-desc">All books registered across tenant catalog and database partitions.</p>
-                </div>
-              </div>
-              <div class="slide-card-footer">
-                <span class="slide-tag">100% Catalog Capacity</span>
-                <span class="slide-action-link">
-                  <span>Show All Records</span>
-                  <mat-icon>arrow_forward</mat-icon>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 1: Active Books -->
-          <div class="carousel-slide">
-            <div class="record-slide-card success-slide" (click)="setFilter('Active')">
-              <div class="slide-card-glow"></div>
-              <div class="slide-card-main">
-                <div class="slide-icon-wrap success-theme">
-                  <mat-icon>check_circle</mat-icon>
-                </div>
-                <div class="slide-content">
-                  <span class="slide-badge">Active Publications</span>
-                  <div class="slide-val-row">
-                    <span class="slide-metric-val">{{ activeBooks || 0 }}</span>
-                    <span class="slide-metric-unit">Live Entries</span>
-                  </div>
-                  <p class="slide-desc">Published and currently available for catalog search, borrowing, and view.</p>
-                </div>
-              </div>
-              <div class="slide-card-footer">
-                <span class="slide-tag success-tag">{{ getActivePercentage() }}% of Catalog Active</span>
-                <span class="slide-action-link">
-                  <span>Filter Active</span>
-                  <mat-icon>arrow_forward</mat-icon>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 2: Archived Records -->
-          <div class="carousel-slide">
-            <div class="record-slide-card danger-slide" (click)="setFilter('Delete')">
-              <div class="slide-card-glow"></div>
-              <div class="slide-card-main">
-                <div class="slide-icon-wrap danger-theme">
-                  <mat-icon>delete_sweep</mat-icon>
-                </div>
-                <div class="slide-content">
-                  <span class="slide-badge">Archived Records</span>
-                  <div class="slide-val-row">
-                    <span class="slide-metric-val">{{ deletedBooks || 0 }}</span>
-                    <span class="slide-metric-unit">Archived</span>
-                  </div>
-                  <p class="slide-desc">Soft-deleted items maintained securely for audit logs and historical restoration.</p>
-                </div>
-              </div>
-              <div class="slide-card-footer">
-                <span class="slide-tag danger-tag">{{ getArchivedPercentage() }}% Archived</span>
-                <span class="slide-action-link">
-                  <span>Filter Archived</span>
-                  <mat-icon>arrow_forward</mat-icon>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 3: Authors -->
-          <div class="carousel-slide">
-            <div class="record-slide-card accent-slide">
-              <div class="slide-card-glow"></div>
-              <div class="slide-card-main">
-                <div class="slide-icon-wrap accent-theme">
-                  <mat-icon>group</mat-icon>
-                </div>
-                <div class="slide-content">
-                  <span class="slide-badge">Registered Authors</span>
-                  <div class="slide-val-row">
-                    <span class="slide-metric-val">{{ totalAuthors || 0 }}</span>
-                    <span class="slide-metric-unit">Contributors</span>
-                  </div>
-                  <p class="slide-desc">Unique authors and writers who have publications published in your catalog.</p>
-                </div>
-              </div>
-              <div class="slide-card-footer">
-                <span class="slide-tag accent-tag">Verified Authors</span>
-                <span class="slide-action-link">
-                  <span>Catalog Authors</span>
-                  <mat-icon>arrow_forward</mat-icon>
-                </span>
-              </div>
-            </div>
-          </div>
-
+      <!-- Active Books -->
+      <div class="kpi-card kpi-success" [class.kpi-active]="filterStatus === 'Active'" (click)="setFilter('Active')" role="button" tabindex="0">
+        <div class="kpi-icon-wrap success-gradient">
+          <mat-icon>check_circle</mat-icon>
         </div>
-
-        <!-- Carousel Pagination Dots -->
-        <div class="carousel-pagination-dots">
-          <button *ngFor="let dot of [0, 1, 2, 3]; let i = index" 
-            type="button" 
-            class="dot-pill" 
-            [class.active]="carouselIndex === i"
-            (click)="setSlide(i)"
-            [attr.aria-label]="'Go to slide ' + (i + 1)">
-          </button>
+        <div class="kpi-content">
+          <span class="kpi-label">Active Books</span>
+          <div class="kpi-value">{{ activeBooks || 0 }}</div>
+          <span class="kpi-subtext">{{ getActivePercentage() }}% published &amp; live</span>
         </div>
       </div>
 
-      <!-- GRID VIEW (Alternate Display) -->
-      <div class="metrics-grid" *ngIf="carouselMode === 'grid'">
-        <div class="metric-card" (click)="setFilter('all')">
-          <div class="metric-icon-wrap primary-icon">
-            <mat-icon>menu_book</mat-icon>
-          </div>
-          <div class="metric-details">
-            <span class="metric-label">Total Catalog</span>
-            <span class="metric-val">{{totalBooks || 0}}</span>
-          </div>
+      <!-- Archived Books -->
+      <div class="kpi-card kpi-danger" [class.kpi-active]="filterStatus === 'Delete'" (click)="setFilter('Delete')" role="button" tabindex="0">
+        <div class="kpi-icon-wrap danger-gradient">
+          <mat-icon>inventory_2</mat-icon>
         </div>
-
-        <div class="metric-card" (click)="setFilter('Active')">
-          <div class="metric-icon-wrap success-icon">
-            <mat-icon>check_circle</mat-icon>
-          </div>
-          <div class="metric-details">
-            <span class="metric-label">Active Books</span>
-            <span class="metric-val">{{activeBooks || 0}}</span>
-          </div>
-        </div>
-
-        <div class="metric-card" (click)="setFilter('Delete')">
-          <div class="metric-icon-wrap danger-icon">
-            <mat-icon>delete_sweep</mat-icon>
-          </div>
-          <div class="metric-details">
-            <span class="metric-label">Archived</span>
-            <span class="metric-val">{{deletedBooks || 0}}</span>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-icon-wrap accent-icon">
-            <mat-icon>group</mat-icon>
-          </div>
-          <div class="metric-details">
-            <span class="metric-label">Authors</span>
-            <span class="metric-val">{{totalAuthors || 0}}</span>
-          </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Archived</span>
+          <div class="kpi-value">{{ deletedBooks || 0 }}</div>
+          <span class="kpi-subtext">{{ getArchivedPercentage() }}% soft-deleted</span>
         </div>
       </div>
+
+      <!-- Authors -->
+      <div class="kpi-card kpi-accent">
+        <div class="kpi-icon-wrap accent-gradient">
+          <mat-icon>people_alt</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Authors</span>
+          <div class="kpi-value">{{ totalAuthors || 0 }}</div>
+          <span class="kpi-subtext">Registered writers</span>
+        </div>
       </div>
     </div>
 
-    <!-- Main Card Container -->
+    <!-- Main Catalog Card -->
     <mat-card class="catalog-card">
       <div class="catalog-controls">
         <!-- Search Field -->
         <div class="search-box">
           <mat-form-field appearance="outline" class="w-100 search-field">
             <mat-icon matPrefix class="text-muted">search</mat-icon>
-            <mat-label>Search by title, author, publication...</mat-label>
-            <input matInput (keyup)="applyFilter()" placeholder="Type to search..." #input>
+            <mat-label>Search by title, author, publisher, ISBN...</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter..." #input>
             <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Clear" (click)="input.value = ''; applyFilter()">
               <mat-icon class="text-muted">close</mat-icon>
             </button>
@@ -273,13 +101,13 @@
         <!-- Filter Chips -->
         <div class="filter-chips">
           <button class="filter-btn" [class.active]="filterStatus === 'all'" (click)="setFilter('all')">
-            All
+            All ({{ totalBooks || 0 }})
           </button>
           <button class="filter-btn" [class.active]="filterStatus === 'Active'" (click)="setFilter('Active')">
-            Active
+            Active ({{ activeBooks || 0 }})
           </button>
           <button class="filter-btn" [class.active]="filterStatus === 'Delete'" (click)="setFilter('Delete')">
-            Archived
+            Archived ({{ deletedBooks || 0 }})
           </button>
         </div>
       </div>
@@ -299,8 +127,13 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Book Title </th>
             <td mat-cell *matCellDef="let row" class="title-cell">
               <div class="book-title-wrap">
-                <mat-icon class="book-icon">book</mat-icon>
-                <span>{{row.name | titlecase}}</span>
+                <div class="book-mini-icon">
+                  <mat-icon>auto_stories</mat-icon>
+                </div>
+                <div>
+                  <span class="book-name-text">{{row.name | titlecase}}</span>
+                  <span class="book-category-subtext" *ngIf="row.category">{{row.category | titlecase}}</span>
+                </div>
               </div>
             </td>
           </ng-container>
@@ -308,7 +141,9 @@
           <!-- Author Column -->
           <ng-container matColumnDef="author_name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
-            <td mat-cell *matCellDef="let row"> {{row.author_name | titlecase}} </td>
+            <td mat-cell *matCellDef="let row">
+              <span class="author-name-text">{{row.author_name | titlecase}}</span>
+            </td>
           </ng-container>
 
           <!-- Publication Column -->
@@ -335,9 +170,11 @@
           <ng-container matColumnDef="language">
             <th mat-header-cell *matHeaderCellDef> Languages </th>
             <td mat-cell *matCellDef="let row">
-              <span class="lang-badge" *ngFor="let lang of row.languages">
-                {{lang.language | titlecase}}
-              </span>
+              <div class="lang-tags-wrap">
+                <span class="lang-badge" *ngFor="let lang of row.languages">
+                  {{lang.language | titlecase}}
+                </span>
+              </div>
             </td>
           </ng-container>
 
@@ -346,6 +183,7 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
             <td mat-cell *matCellDef="let row">
               <span class="status-badge" [ngClass]="{'status-active': row.status === 'Active', 'status-deleted': row.status === 'Delete'}">
+                <span class="status-dot"></span>
                 {{row.status | titlecase}}
               </span>
             </td>
@@ -356,32 +194,32 @@
             <th mat-header-cell *matHeaderCellDef class="text-end"> Actions </th>
             <td mat-cell *matCellDef="let row" class="text-end">
               <div class="action-group">
-                <!-- View -->
+                <!-- View (Available to all authenticated users) -->
                 <button mat-icon-button class="btn-action btn-view" [hidden]="row.status === 'Delete'" [routerLink]="['/books/book', row.id]" matTooltip="View Book Details">
                   <mat-icon>visibility</mat-icon>
                 </button>
 
-                <!-- Edit (RBAC Enforced) -->
-                <button mat-icon-button class="btn-action btn-edit" [hidden]="row.status === 'Delete'" 
+                <!-- Edit (Admin & SuperAdmin only) -->
+                <button mat-icon-button class="btn-action btn-edit" *ngIf="rbacService.isAdmin()" [hidden]="row.status === 'Delete'" 
                   (click)="onEditBook(row.id)" 
-                  [matTooltip]="rbacService.isAdmin() ? 'Edit Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
-                  <mat-icon>{{ rbacService.isAdmin() ? 'edit' : 'lock' }}</mat-icon>
+                  matTooltip="Edit Book Record">
+                  <mat-icon>edit</mat-icon>
                 </button>
 
-                <!-- Delete / Archive (RBAC Enforced) -->
-                <button mat-icon-button class="btn-action btn-delete" 
+                <!-- Archive (Admin & SuperAdmin only) -->
+                <button mat-icon-button class="btn-action btn-delete" *ngIf="rbacService.isAdmin()"
                   (click)="UpdateBookStatus(row.id, 'Delete')" 
                   [hidden]="row.status === 'Delete'" 
-                  [matTooltip]="rbacService.isAdmin() ? 'Archive Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
-                  <mat-icon>{{ rbacService.isAdmin() ? 'delete_outline' : 'lock' }}</mat-icon>
+                  matTooltip="Archive Book">
+                  <mat-icon>delete_outline</mat-icon>
                 </button>
 
-                <!-- Restore (RBAC Enforced) -->
-                <button mat-icon-button class="btn-action btn-restore" 
+                <!-- Restore (Admin & SuperAdmin only) -->
+                <button mat-icon-button class="btn-action btn-restore" *ngIf="rbacService.isAdmin()"
                   (click)="UpdateBookStatus(row.id, 'Active')" 
                   [hidden]="row.status !== 'Delete'" 
-                  [matTooltip]="rbacService.isAdmin() ? 'Restore Book' : 'Requires Admin Role (Click to test RBAC prompt)'">
-                  <mat-icon>{{ rbacService.isAdmin() ? 'restore_from_trash' : 'lock' }}</mat-icon>
+                  matTooltip="Restore to Active Catalog">
+                  <mat-icon>restore_from_trash</mat-icon>
                 </button>
               </div>
             </td>
@@ -394,9 +232,14 @@
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell text-center py-5" colspan="9">
               <div class="empty-state">
-                <mat-icon class="empty-icon">search_off</mat-icon>
-                <h3>No books match your criteria</h3>
-                <p>Try searching for a different keyword or reset active filters.</p>
+                <div class="empty-icon-wrap">
+                  <mat-icon class="empty-icon">search_off</mat-icon>
+                </div>
+                <h3>No books found</h3>
+                <p>No catalog records match your query or active filter. Try resetting search.</p>
+                <button mat-stroked-button color="primary" (click)="setFilter('all'); input.value = ''; applyFilter()">
+                  Reset Filters
+                </button>
               </div>
             </td>
           </tr>
@@ -404,7 +247,7 @@
 
         <!-- Paginator -->
         <mat-paginator [length]="totalBooks" [pageIndex]="pageIndex" [pageSize]="limit"
-          [pageSizeOptions]="[5, 10, 25, 50]" aria-label="Select page" (page)="pageChanged()"
+          [pageSizeOptions]="[5, 10, 25, 50]" aria-label="Select page" (page)="pageChanged($event)"
           class="custom-paginator">
         </mat-paginator>
       </div>

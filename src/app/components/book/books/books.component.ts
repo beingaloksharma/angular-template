@@ -34,21 +34,12 @@ export class BooksComponent implements OnInit, OnDestroy {
   deletedBooks: number = 0;
   totalAuthors: number = 0;
   filterStatus: string = 'all';
-  limit: number = 5;
+  limit: number = 10;
   // ********************** Mat Paginator ******************** //
 
   // To Store Loading Information
-  loading: boolean;
-  // Check Status
+  loading: boolean = false;
   status: boolean;
-
-  // ********************** Total Record Carousel State ******************** //
-  carouselIndex: number = 0;
-  totalSlides: number = 4;
-  isAutoPlay: boolean = true;
-  private autoPlayTimer: any;
-  carouselMode: 'carousel' | 'grid' = 'carousel';
-  isOpen: boolean = false;
 
   // Constructor 
   constructor(
@@ -63,58 +54,9 @@ export class BooksComponent implements OnInit, OnDestroy {
   // ng Life Cycle 
   ngOnInit() {
     this.getAllBooks();
-    if (this.isOpen) {
-      this.startAutoPlay();
-    }
   }
 
   ngOnDestroy() {
-    this.stopAutoPlay();
-  }
-
-  startAutoPlay() {
-    this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
-      if (this.isAutoPlay && this.carouselMode === 'carousel') {
-        this.nextSlide();
-      }
-    }, 4500);
-  }
-
-  stopAutoPlay() {
-    if (this.autoPlayTimer) {
-      clearInterval(this.autoPlayTimer);
-      this.autoPlayTimer = null;
-    }
-  }
-
-  toggleOpenClose() {
-    this.isOpen = !this.isOpen;
-    if (!this.isOpen) {
-      this.stopAutoPlay();
-    } else if (this.isAutoPlay) {
-      this.startAutoPlay();
-    }
-  }
-
-  toggleAutoPlay() {
-    this.isAutoPlay = !this.isAutoPlay;
-  }
-
-  toggleViewMode() {
-    this.carouselMode = this.carouselMode === 'carousel' ? 'grid' : 'carousel';
-  }
-
-  nextSlide() {
-    this.carouselIndex = (this.carouselIndex + 1) % this.totalSlides;
-  }
-
-  prevSlide() {
-    this.carouselIndex = (this.carouselIndex - 1 + this.totalSlides) % this.totalSlides;
-  }
-
-  setSlide(index: number) {
-    this.carouselIndex = index;
   }
 
   getActivePercentage(): number {

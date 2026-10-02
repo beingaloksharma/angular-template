@@ -1,7 +1,9 @@
 import { Routes } from "@angular/router";
 import { RoleGuard } from "../services/role.guard";
+import { NotfoundComponent } from "../components/notfound/notfound.component";
 
 export const contentRoutes: Routes = [
+  { path: '', redirectTo: 'books', pathMatch: 'full' },
   { path: 'user', loadChildren: () => import('../../components/myprofile/myprofile.module').then(m => m.MyprofileModule) },
   { path: 'books', loadChildren: () => import('../../components/book/book.module').then(m => m.BookModule) },
   {
@@ -16,4 +18,5 @@ export const contentRoutes: Routes = [
     canActivate: [RoleGuard],
     data: { minRole: 'superadmin', resourceName: 'Super Administrator Platform Console' }
   },
+  { path: '**', component: NotfoundComponent }
 ];

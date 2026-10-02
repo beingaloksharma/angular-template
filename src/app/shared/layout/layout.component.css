@@ -120,166 +120,94 @@
 }
 
 /* ======================================================== */
-/* HIERARCHICAL ACTING ROLE BAR                              */
+/* HIERARCHICAL PERSONA & ROLE CONTROLS                     */
 /* ======================================================== */
-.acting-role-container {
+.persona-control {
+  display: flex;
+  align-items: center;
+}
+
+.persona-pills-wrap {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 9999px;
-  padding: 3px 6px 3px 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: #f8fafc;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--border-radius-pill);
+  padding: 3px 4px 3px 10px;
 }
 
-.acting-label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #475569;
+.persona-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--slate-500);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.role-scope-pills {
+.persona-pills {
   display: flex;
   gap: 3px;
 }
 
-.btn-scope-pill {
+.persona-pill {
   border: 1px solid transparent;
-  background: #f1f5f9;
-  padding: 3px 9px;
-  border-radius: 9999px;
+  background: transparent;
+  padding: 3px 10px;
+  border-radius: var(--border-radius-pill);
   font-size: 0.75rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--slate-600);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-scope-pill:hover:not(.disabled-pill) {
-  color: #0f172a;
-  background: #e2e8f0;
+.persona-pill:hover {
+  background: var(--slate-200);
+  color: var(--slate-900);
 }
 
-/* SuperAdmin Scope Active */
-.btn-scope-pill.super-pill.active {
+.persona-pill.pill-super.active {
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
 }
 
-/* Admin Scope Active */
-.btn-scope-pill.admin-pill.active {
+.persona-pill.pill-admin.active {
   background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
 }
 
-/* User Scope Active */
-.btn-scope-pill.user-pill-btn.active {
+.persona-pill.pill-user.active {
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }
 
-/* Disabled pill */
-.btn-scope-pill.disabled-pill {
-  opacity: 0.45;
-  background: #f1f5f9;
-  color: #94a3b8;
-  cursor: pointer;
-}
-
-/* Single User Fixed Badge */
-.single-user-badge {
+/* Single User Role Badge */
+.user-role-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 4px 12px;
   background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 9999px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--border-radius-pill);
   font-size: 0.75rem;
   font-weight: 700;
-  color: #334155;
+  color: var(--slate-700);
 }
 
-.user-lock-dot {
-  width: 6px;
-  height: 6px;
+.role-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #64748b;
 }
 
-/* Account Switcher */
-.account-switcher-box {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 2px 6px;
-}
-
-.acc-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-}
-
-.acc-buttons {
-  display: flex;
-  gap: 2px;
-}
-
-.acc-btn {
-  border: none;
-  background: transparent;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #64748b;
-  cursor: pointer;
-}
-
-.acc-btn:hover:not(:disabled) {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-.acc-btn.active {
-  background: #0f172a;
-  color: #ffffff;
-}
-
-/* Test Restricted Action Button */
-.btn-test-rbac {
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  height: 32px !important;
-  border-radius: 8px !important;
-  border-color: #fecaca !important;
-  color: #dc2626 !important;
-  background: #fff5f5 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  padding: 0 10px !important;
-}
-
-.btn-test-rbac:hover {
-  background: #fee2e2 !important;
-}
-
-.test-icon {
-  font-size: 16px !important;
-  width: 16px !important;
-  height: 16px !important;
+.user-dot {
+  background: #0284c7;
+  box-shadow: 0 0 5px rgba(2, 132, 199, 0.5);
 }
 
 .tenant-pill {
@@ -374,14 +302,8 @@
   margin: 0;
 }
 
-@media (max-width: 1200px) {
-  .account-switcher-box {
-    display: none;
-  }
-}
-
 @media (max-width: 900px) {
-  .acting-role-container {
+  .persona-pills-wrap {
     display: none;
   }
 }
@@ -393,7 +315,5 @@
   .tenant-pill {
     display: none;
   }
-  .btn-test-rbac {
-    display: none !important;
-  }
 }
+

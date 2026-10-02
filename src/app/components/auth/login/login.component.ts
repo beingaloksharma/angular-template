@@ -69,32 +69,27 @@ export class LoginComponent {
       user_name: this.loginForm.value['user_name'],
       password: this.loginForm.value['password'],
     }
+    this.loading = true;
     //Call Service 
-    this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe((res: any) => {
-      //Set Loader true 
-      this.loading = true;
-      setTimeout(() => {
-        //Call Auth Service 
-        this._auth.authLogin(res);
-        //Set Loader false 
+    this._commonService.post(this._constants.SERVER_URL + "login", this.payload).subscribe({
+      next: (res: any) => {
         this.loading = false;
-        //Reset the form in Initial state 
-        this.onReset();
-      }, 1000)
-    },
-      (error: HttpErrorResponse) => {
-        //Print Log
-        console.warn("Error Message :: ", error.message);
-        console.warn("Error StatusText :: ", error.statusText);
-        console.warn("Error URL :: ", error.url);
-        //Check Status Code
+        this._auth.authLogin(res);
+        if (res["status_code"] === "success-200") {
+          this.onReset();
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
         if (error.error && error.error.error_message) {
-          this._toastr.error(error.error.error_message);
+          this._toastr.error(error.error.error_message, "Sign In Failed");
+        } else if (error.status === 0) {
+          this._toastr.error("Cannot reach authentication server at localhost:8080", "Server Offline");
         } else {
-          this._toastr.error("Something went wrong. Please try again.");
+          this._toastr.error("Invalid credentials or server error. Please try again.", "Sign In Failed");
         }
       }
-    )
+    });
   }
 
   //Reset Form 

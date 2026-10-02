@@ -5,6 +5,8 @@ import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Book } from 'src/app/shared/models/book';
+import { RbacService } from 'src/app/shared/services/rbac.service';
+import { RbacPromptService } from 'src/app/shared/services/rbac-prompt.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,6 +31,8 @@ export class BookComponent {
     private _toastr: ToastrService,
     private _constants: ConstantsService,
     private _router: Router,
+    public rbacService: RbacService,
+    private rbacPrompt: RbacPromptService
   ) {
     //To get params from URL 
     this._route.params.subscribe((res: any) => {
@@ -81,6 +85,17 @@ export class BookComponent {
 
   // deleteBook
   deleteBook(id: number) {
+    if (!this.rbacService.hasRole('admin')) {
+      this.rbacPrompt.showAccessDenied({
+        requiredRole: 'admin',
+        currentRole: this.rbacService.getCurrentRole(),
+        resourceName: `DELETE /webstarter/book/${id}`,
+        actionName: 'Delete Book Record',
+        message: 'Standard Users have Read-Only permissions. Deleting books requires Workspace Admin (Tier 2) or Super Admin privileges.'
+      });
+      return;
+    }
+
     Swal.fire({
       title: 'Delete Book Permanently?',
       text: 'This action cannot be undone. Are you sure you want to remove this book from the catalog?',
