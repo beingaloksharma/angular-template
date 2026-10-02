@@ -17,6 +17,5 @@ export const contentRoutes: Routes = [
     loadChildren: () => import('../../components/superadmin/superadmin.module').then(m => m.SuperadminModule),
     canActivate: [RoleGuard],
     data: { minRole: 'superadmin', resourceName: 'Super Administrator Platform Console' }
-  },
-  { path: '**', component: NotfoundComponent }
+  }
 ];

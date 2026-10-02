@@ -18,7 +18,6 @@ import { AuthModule } from './components/auth/auth.module';
   imports: [
     BrowserModule,
     SharedModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     ToastrModule.forRoot(
@@ -35,7 +34,8 @@ import { AuthModule } from './components/auth/auth.module';
         countDuplicates: false
       },
     ),
-    AuthModule
+    AuthModule,
+    AppRoutingModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},

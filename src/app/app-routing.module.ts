@@ -4,8 +4,11 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { contentRoutes } from './shared/routes/content.routes';
 import { AuthGuard } from './components/auth/auth.guard';
 
+import { NotfoundComponent } from './shared/components/notfound/notfound.component';
+
 const routes: Routes = [
   { path: '', component: LayoutComponent, children: contentRoutes, canActivate: [AuthGuard] },
+  { path: '**', component: NotfoundComponent }
 ];
 
 @NgModule({

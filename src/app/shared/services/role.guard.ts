@@ -23,8 +23,7 @@ export class RoleGuard implements CanActivate {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      this.router.navigate(['auth/login']);
-      return false;
+      return this.router.parseUrl('/auth/login');
     }
 
     const minRole = (route.data['minRole'] as string || 'user').toLowerCase() as UserRole;
