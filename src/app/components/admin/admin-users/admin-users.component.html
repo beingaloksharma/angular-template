@@ -1,8 +1,4 @@
-<div *ngIf="loading" class="text-center py-5">
-  <app-spinner></app-spinner>
-</div>
-
-<div class="admin-page animate-fade" *ngIf="!loading">
+<div class="admin-page animate-fade">
   <!-- Page Header -->
   <div class="page-header-row">
     <div>
@@ -95,6 +91,7 @@
 
     <!-- Table Responsive -->
     <div class="table-responsive">
+      <mat-progress-bar mode="indeterminate" *ngIf="loading" class="table-progress-bar"></mat-progress-bar>
       <table mat-table [dataSource]="dataSource" matSort class="w-100">
 
         <!-- ID Column -->

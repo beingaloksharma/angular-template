@@ -66,40 +66,21 @@ export class MyprofileComponent {
 
   //Get user Details 
   private getUserDetails(username: string) {
-    //Call Service 
-    this._common.get(this._constants.SERVER_URL + "userprofile?user_name=" + username).subscribe((res: UserProfile) => {
-      this.loading = true;
-      setTimeout(() => {
+    this.loading = true;
+    this._common.get(this._constants.SERVER_URL + "userprofile?user_name=" + username).subscribe({
+      next: (res: UserProfile) => {
         this.userProfile = res;
         this.loading = false;
-      }, 1000)
-    },
-      (error: HttpErrorResponse) => {
-        switch (error.status) {
-          case 400: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 404: {
-            this.loading = true;
-            setTimeout(() => {
-              this._toastr.error(error.error.error_message);
-              //redirect to home page 
-              this._router.navigate(['books'])
-              this.loading = false;
-            }, 1000)
-            break;
-          }
-          case 500: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          default: {
-            this._toastr.error(error.statusText);
-            break;
-          }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        const msg = error.error?.error_message || error.statusText || 'Failed to load user profile';
+        this._toastr.error(msg);
+        if (error.status === 404) {
+          this._router.navigate(['/books']);
         }
-      });
+      }
+    });
   }
 
   // Deactivate or Reactivate Tenant 
@@ -140,30 +121,25 @@ export class MyprofileComponent {
         }
 
         var deactiateTenant: DeactivateTenant = { status: status, updated_by: updatedBy };
-        this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe((res: any) => {
-          Swal.fire({
-            title: isDeactivate ? 'Deactivated!' : 'Reactivated!',
-            text: isDeactivate
-              ? 'Your tenant workspace has been deactivated successfully.'
-              : 'Your tenant workspace is now active.',
-            icon: 'success',
-            confirmButtonColor: '#4f46e5'
-          }).then(() => {
-            this.loading = true;
-            setTimeout(() => {
+          this.loading = true;
+          this._common.post(this._constants.SERVER_URL + 'deactivate', deactiateTenant).subscribe({
+            next: () => {
               this.loading = false;
-              this._router.navigate(['auth/login']);
-            }, 1000);
-          });
-        },
-          (error: HttpErrorResponse) => {
-            const msg = error.error?.error_message || error.statusText || "Something went wrong";
-            this._toastr.error(msg);
-
-            if (error.status === 404) {
-              setTimeout(() => {
+              Swal.fire({
+                title: isDeactivate ? 'Deactivated!' : 'Reactivated!',
+                text: isDeactivate
+                  ? 'Your tenant workspace has been deactivated successfully.'
+                  : 'Your tenant workspace is now active.',
+                icon: 'success',
+                confirmButtonColor: '#4f46e5'
+              }).then(() => {
                 this._router.navigate(['auth/login']);
-              }, 2000);
+              });
+            },
+            error: (error: HttpErrorResponse) => {
+              this.loading = false;
+              const msg = error.error?.error_message || error.statusText || "Something went wrong";
+              this._toastr.error(msg);
             }
           });
       }

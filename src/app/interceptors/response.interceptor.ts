@@ -36,8 +36,9 @@ export class ResponseInterceptor implements HttpInterceptor {
         } else if (error.status === 401) {
           // Don't intercept 401 if it's the login or signup endpoint itself
           if (!request.url.includes('/login') && !request.url.includes('/signup')) {
-            const errorMsg = error.error?.error_message || error.error?.message || 'Session expired or unauthorized';
-            this.rbacPrompt.showUnauthorizedError(errorMsg);
+            localStorage.clear();
+            this.toastr.warning('Session expired or unauthorized. Please sign in.', 'Session Expired');
+            window.location.href = '/auth/login';
           }
         } else if (error.status === 404) {
           const errorMsg = error.error?.error_message || error.error?.message;

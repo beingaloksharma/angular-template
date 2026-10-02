@@ -1,9 +1,4 @@
-<div *ngIf="loading; else tableBlock">
-  <app-spinner></app-spinner>
-</div>
-
-<ng-template #tableBlock>
-  <div class="books-page animate-fade">
+<div class="books-page animate-fade">
     <!-- Page Header & Action -->
     <div class="page-header-row">
       <div class="header-text-group">
@@ -114,6 +109,7 @@
 
       <!-- Table Wrapper -->
       <div class="table-responsive">
+        <mat-progress-bar mode="indeterminate" *ngIf="loading" class="table-progress-bar"></mat-progress-bar>
         <table mat-table [dataSource]="dataSource" matSort class="w-100">
 
           <!-- ID Column -->
@@ -228,10 +224,10 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="catalog-row"></tr>
 
-          <!-- No Data Row -->
+          <!-- No Data / Loading Row -->
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell text-center py-5" colspan="9">
-              <div class="empty-state">
+              <div class="empty-state" *ngIf="!loading">
                 <div class="empty-icon-wrap">
                   <mat-icon class="empty-icon">search_off</mat-icon>
                 </div>
@@ -240,6 +236,13 @@
                 <button mat-stroked-button color="primary" (click)="setFilter('all'); input.value = ''; applyFilter()">
                   Reset Filters
                 </button>
+              </div>
+              <div class="empty-state" *ngIf="loading">
+                <div class="empty-icon-wrap">
+                  <mat-icon class="empty-icon text-primary">hourglass_top</mat-icon>
+                </div>
+                <h3>Loading catalog records...</h3>
+                <p>Retrieving publications from server.</p>
               </div>
             </td>
           </tr>
@@ -253,4 +256,3 @@
       </div>
     </mat-card>
   </div>
-</ng-template>

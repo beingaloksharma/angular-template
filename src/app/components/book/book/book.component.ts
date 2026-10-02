@@ -49,38 +49,21 @@ export class BookComponent {
 
   //getBookById
   public getBookById(id: number) {
-    this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: Book) => {
-      this.loading = true;
-      setTimeout(() => {
+    this.loading = true;
+    this._common.get(this._constants.SERVER_URL + 'book/' + id).subscribe({
+      next: (res: Book) => {
         this.book = res;
         this.loading = false;
-      }, 1000)
-    },
-      (error: HttpErrorResponse) => {
-        switch (error.status) {
-          case 400: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          case 404: {
-            this._toastr.error(error.error.error_message);
-            this.loading = true
-            setTimeout(() => {
-              this._router.navigate(['/books']);
-              this.loading = false;
-            }, 3000);
-            break;
-          }
-          case 500: {
-            this._toastr.error(error.error.error_message);
-            break;
-          }
-          default: {
-            this._toastr.error(error.statusText);
-            break;
-          }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        const msg = error.error?.error_message || error.statusText || 'Unable to load book details';
+        this._toastr.error(msg);
+        if (error.status === 404) {
+          this._router.navigate(['/books']);
         }
-      });
+      }
+    });
   }
 
   // deleteBook
@@ -107,32 +90,25 @@ export class BookComponent {
       cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe((res: any) => {
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'The book has been permanently deleted.',
-            icon: 'success',
-            confirmButtonColor: '#4f46e5'
-          }).then(() => {
-            this.loading = true;
-            setTimeout(() => {
-              this.loading = false;
+        this.loading = true;
+        this._common.delete(this._constants.SERVER_URL + 'book/', id).subscribe({
+          next: () => {
+            this.loading = false;
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'The book has been permanently deleted.',
+              icon: 'success',
+              confirmButtonColor: '#4f46e5'
+            }).then(() => {
               this._router.navigate(['/books']);
-            }, 1000);
-          });
-        },
-          (error: HttpErrorResponse) => {
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loading = false;
             const msg = error.error?.error_message || error.statusText || "Something went wrong";
             this._toastr.error(msg);
-
-            if (error.status === 404) {
-              this.loading = true;
-              setTimeout(() => {
-                this._router.navigate(['/books']);
-                this.loading = false;
-              }, 3000);
-            }
-          });
+          }
+        });
       }
     });
   }

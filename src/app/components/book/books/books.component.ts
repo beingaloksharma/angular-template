@@ -217,11 +217,7 @@ export class BooksComponent implements OnInit, OnDestroy {
               icon: 'success',
               confirmButtonColor: '#4f46e5'
             }).then(() => {
-              this.loading = true;
-              setTimeout(() => {
-                this.loading = false;
-                this.getAllBooks();
-              }, 800);
+              this.getAllBooks();
             });
           },
           error: (error: HttpErrorResponse) => {

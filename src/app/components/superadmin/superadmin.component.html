@@ -44,13 +44,10 @@
     </button>
   </div>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="loading" class="text-center py-5">
-    <app-spinner></app-spinner>
-  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="loading" class="table-progress-bar mb-3"></mat-progress-bar>
 
   <!-- Content Section -->
-  <div *ngIf="!loading">
+  <div>
 
     <!-- TAB 1: WORKSPACES -->
     <div *ngIf="activeTab === 'workspaces'">

@@ -48,11 +48,6 @@ export class RequestInterceptor implements HttpInterceptor {
       headersConfig['X-Tenant-Id'] = x_tenant_id;
     }
 
-    const actingRole = localStorage.getItem('acting_role') || 'user';
-    if (!request.headers.has('X-Acting-Role')) {
-      headersConfig['X-Acting-Role'] = actingRole;
-    }
-
     const reqHeader = request.clone({
       setHeaders: headersConfig
     });

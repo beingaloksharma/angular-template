@@ -212,33 +212,19 @@ export class CreateBookComponent implements OnInit {
             created_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
-          this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
-            //Set Loader true 
-            this.loading = true;
-            setTimeout(() => {
-              //Set Loader false 
+          this.loading = true;
+          this._commonService.post(this._constants.SERVER_URL + 'book', this.payload).subscribe({
+            next: () => {
               this.loading = false;
-              //Reset the form in Initial state 
               this.onReset();
-              //Promt success message
-              this._toastr.success("Book record added sucessfully");
-              //redirect to home page 
+              this._toastr.success("Book record added successfully");
               this._router.navigate(['/books']);
-            }, 1000)
-          },
-            (error: HttpErrorResponse) => {
-              switch (error.error.error_code) {
-                case error.error.error_code: {
-                  this._toastr.error(error.error.error_message);
-                  break;
-                }
-                default: {
-                  this._toastr.error("Something went wrong");
-                  break;
-                }
-              }
+            },
+            error: (error: HttpErrorResponse) => {
+              this.loading = false;
+              this._toastr.error(error.error?.error_message || "Something went wrong adding book");
             }
-          );
+          });
           break;
         case DBOps.Update:
           //set data to form 
@@ -261,33 +247,19 @@ export class CreateBookComponent implements OnInit {
             updated_by: JSON.parse(localStorage.getItem('userdetails')).name,
           }
           //call service
-          this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe((res: any) => {
-            //Set Loader true 
-            this.loading = true;
-            setTimeout(() => {
-              //Set Loader false 
+          this.loading = true;
+          this._commonService.put(this._constants.SERVER_URL + 'book', this.payload).subscribe({
+            next: () => {
               this.loading = false;
-              //Reset the form in Initial state 
               this.onReset();
-              //Promt success message
-              this._toastr.success("User record updated sucessfully");
-              //redirect to home page 
+              this._toastr.success("Book record updated successfully");
               this._router.navigate(['/books/book/', this.payload.id]);
-            }, 1000)
-          },
-            (error: HttpErrorResponse) => {
-              switch (error.error.error_code) {
-                case error.error.error_code: {
-                  this._toastr.error(error.error.error_message);
-                  break;
-                }
-                default: {
-                  this._toastr.error("Something went wrong");
-                  break;
-                }
-              }
+            },
+            error: (error: HttpErrorResponse) => {
+              this.loading = false;
+              this._toastr.error(error.error?.error_message || "Something went wrong updating book");
             }
-          );
+          });
           break;
       }
     }
@@ -325,47 +297,22 @@ export class CreateBookComponent implements OnInit {
 
   //getBookDetailsForUpdate
   private getBookDetailsForUpdate(id: number) {
-    //call service 
-    this._commonService.get(this._constants.SERVER_URL + 'book/' + id).subscribe((res: any) => {
-      //Loading true
-      this.loading = true
-      setTimeout(() => {
-        //Set Value to bookForm
+    this.loading = true;
+    this._commonService.get(this._constants.SERVER_URL + 'book/' + id).subscribe({
+      next: (res: any) => {
         this.bookForm.patchValue(res);
-        //Set btnAction 
         this.btnText = "Update";
-        //Set DbOps
         this.dbOps = DBOps.Update;
-        //Loading false
         this.loading = false;
-      }, 1000);
-    },
-      (error: HttpErrorResponse) => {
-        switch (error.status) {
-          case 400: {
-            this._toastr.error("Bad request");
-            break;
-          }
-          case 404: {
-            this._toastr.error("Record not found");
-            this.loading = true
-            setTimeout(() => {
-              this._router.navigate(['/books']);
-              this.loading = false;
-            }, 3000);
-            break;
-          }
-          case 500: {
-            this._toastr.error("Internal Server Error");
-            break;
-          }
-          default: {
-            this._toastr.error("Something went wrong");
-            break;
-          }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        this._toastr.error(error.error?.error_message || "Record not found");
+        if (error.status === 404) {
+          this._router.navigate(['/books']);
         }
       }
-    )
+    });
   }
 
   //Format Slider Label

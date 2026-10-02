@@ -20,6 +20,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const components = [
   MatToolbarModule,
@@ -34,6 +35,7 @@ const components = [
   MatCheckboxModule,
   MatRippleModule,
   MatProgressSpinnerModule,
+  MatProgressBarModule,
   MatPaginatorModule,
   MatTableModule,
   MatDividerModule,
