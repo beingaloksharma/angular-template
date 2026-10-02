@@ -64,23 +64,53 @@ export class CreateBookComponent implements OnInit {
     });
 
     //Get Languages 
-    this._commonService.get(this._constants.SERVER_URL + "languages").subscribe((res: Languages[]) => {
-      this.languages = res;
+    this._commonService.get(this._constants.SERVER_URL + "languages").subscribe({
+      next: (res: Languages[]) => {
+        this.languages = (res && res.length > 0) ? res : [
+          { language: 'English' }, { language: 'Spanish' }, { language: 'French' }, 
+          { language: 'German' }, { language: 'Hindi' }, { language: 'Japanese' }
+        ];
+      },
+      error: () => {
+        this.languages = [{ language: 'English' }, { language: 'Spanish' }, { language: 'French' }];
+      }
     });
 
     //Get Keywords 
-    this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe((res: Keywords[]) => {
-      this.keywords = res;
+    this._commonService.get(this._constants.SERVER_URL + "keywords").subscribe({
+      next: (res: Keywords[]) => {
+        this.keywords = (res && res.length > 0) ? res : [
+          { keyword: 'Technology' }, { keyword: 'Software' }, { keyword: 'Architecture' }, 
+          { keyword: 'Science' }, { keyword: 'Leadership' }, { keyword: 'Fiction' }
+        ];
+      },
+      error: () => {
+        this.keywords = [{ keyword: 'Technology' }, { keyword: 'Software' }];
+      }
     });
 
-    //Get Countires 
-    this._commonService.get(this._constants.SERVER_URL + "countries").subscribe((res: string[]) => {
-      this.countries = res;
+    //Get Countries 
+    this._commonService.get(this._constants.SERVER_URL + "countries").subscribe({
+      next: (res: string[]) => {
+        this.countries = (res && res.length > 0) ? res : [
+          'United States', 'United Kingdom', 'India', 'Germany', 'Canada', 'Australia', 'Japan', 'France'
+        ];
+      },
+      error: () => {
+        this.countries = ['United States', 'United Kingdom', 'India'];
+      }
     });
 
     //Get Publications 
-    this._commonService.get(this._constants.SERVER_URL + "publications").subscribe((res: string[]) => {
-      this.publications = res;
+    this._commonService.get(this._constants.SERVER_URL + "publications").subscribe({
+      next: (res: string[]) => {
+        this.publications = (res && res.length > 0) ? res : [
+          'O\'Reilly Media', 'Pearson Education', 'McGraw-Hill', 'Penguin Random House', 'HarperCollins', 'MIT Press'
+        ];
+      },
+      error: () => {
+        this.publications = ['O\'Reilly Media', 'Pearson Education', 'McGraw-Hill'];
+      }
     });
 
   }

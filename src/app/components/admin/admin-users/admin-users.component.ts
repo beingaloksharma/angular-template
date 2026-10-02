@@ -17,7 +17,7 @@ import { UserListItem, CreateTenantUserDTO } from 'src/app/shared/models/rbac.mo
 })
 export class AdminUsersComponent implements OnInit {
   displayedColumns: string[] = ['id', 'user_name', 'name', 'email', 'moblie', 'role', 'status', 'created_at', 'action'];
-  dataSource: MatTableDataSource<UserListItem>;
+  dataSource: MatTableDataSource<UserListItem> = new MatTableDataSource<UserListItem>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -67,7 +67,7 @@ export class AdminUsersComponent implements OnInit {
         this.standardUserCount = this.users.filter(u => (u.role || '').toLowerCase() === 'user').length;
         this.activeCount = this.users.filter(u => u.status === 'Active').length;
 
-        this.dataSource = new MatTableDataSource(this.users);
+        this.dataSource.data = this.users;
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
         }
@@ -77,6 +77,7 @@ export class AdminUsersComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
+        this.dataSource.data = [];
         const msg = err.error?.error_message || err.statusText || 'Failed to load tenant users';
         this.toastr.error(msg);
       }
@@ -84,6 +85,7 @@ export class AdminUsersComponent implements OnInit {
   }
 
   applyFilter(event: Event): void {
+    if (!this.dataSource) return;
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
@@ -93,6 +95,7 @@ export class AdminUsersComponent implements OnInit {
 
   setRoleFilter(role: string): void {
     this.filterRole = role;
+    if (!this.dataSource) return;
     if (role === 'all') {
       this.dataSource.data = this.users;
     } else {

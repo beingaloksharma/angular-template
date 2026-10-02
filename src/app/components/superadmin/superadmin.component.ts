@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { ConstantsService } from 'src/app/shared/services/constants.service';
@@ -121,26 +122,20 @@ export class SuperadminComponent implements OnInit {
 
   loadRbacData(): void {
     this.loading = true;
-    this.common.get(this.constants.SERVER_URL + 'superadmin/roles').subscribe({
+    forkJoin({
+      roles: this.common.get(this.constants.SERVER_URL + 'superadmin/roles'),
+      roleMappings: this.common.get(this.constants.SERVER_URL + 'superadmin/role-mappings'),
+      endpointRoles: this.common.get(this.constants.SERVER_URL + 'superadmin/endpoint-roles')
+    }).subscribe({
       next: (res: any) => {
-        this.roles = res.roles || [];
-        this.common.get(this.constants.SERVER_URL + 'superadmin/role-mappings').subscribe({
-          next: (rmRes: any) => {
-            this.roleMappings = rmRes.role_mappings || [];
-            this.common.get(this.constants.SERVER_URL + 'superadmin/endpoint-roles').subscribe({
-              next: (epRes: any) => {
-                this.loading = false;
-                this.endpointRoles = epRes.endpoint_roles || [];
-              },
-              error: () => { this.loading = false; }
-            });
-          },
-          error: () => { this.loading = false; }
-        });
+        this.loading = false;
+        this.roles = res.roles?.roles || [];
+        this.roleMappings = res.roleMappings?.role_mappings || [];
+        this.endpointRoles = res.endpointRoles?.endpoint_roles || [];
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.toastr.error(err.error?.error_message || 'Failed to load RBAC roles');
+        this.toastr.error(err.error?.error_message || 'Failed to load RBAC security data');
       }
     });
   }

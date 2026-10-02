@@ -22,7 +22,7 @@ export class BooksComponent implements OnInit, OnDestroy {
   // Column Names for Table
   displayedColumns: string[] = ['id', 'name', 'author_name', 'publication', 'edition', 'publication_date', 'language', 'status', 'action'];
   // Table Datasource
-  dataSource: MatTableDataSource<Book>;
+  dataSource: MatTableDataSource<Book> = new MatTableDataSource<Book>([]);
   // Get HTML element from component
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -79,34 +79,28 @@ export class BooksComponent implements OnInit, OnDestroy {
 
   // Get All Books
   getAllBooks() {
+    this.loading = true;
     this._common.get(this._constants.SERVER_URL + 'books' + `?pageno=${this.pageIndex}&limit=${this.limit}`).subscribe({
       next: (res: any) => {
-        this.loading = true;
-        setTimeout(() => {
-          this.loading = false;
-          this.dataSource = new MatTableDataSource(res["books"]);
-          this.totalBooks = res["total"];
-          const books = res["books"] || [];
-          this.activeBooks = books.filter((b: any) => b.status === 'Active').length;
-          this.deletedBooks = books.filter((b: any) => b.status === 'Delete').length;
-          this.totalAuthors = new Set(books.map((b: any) => b.author_name)).size;
+        this.loading = false;
+        const books = (res && res["books"]) ? res["books"] : [];
+        this.dataSource.data = books;
+        this.totalBooks = (res && res["total"] !== undefined) ? res["total"] : books.length;
+        this.activeBooks = books.filter((b: any) => b.status === 'Active').length;
+        this.deletedBooks = books.filter((b: any) => b.status === 'Delete').length;
+        this.totalAuthors = new Set(books.map((b: any) => b.author_name)).size;
+        if (this.paginator) {
           this.dataSource.paginator = this.paginator;
-        }, 800);
+        }
+        if (this.sort) {
+          this.dataSource.sort = this.sort;
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false;
-        switch (error.status) {
-          case 400:
-          case 404:
-          case 500: {
-            this._toastr.error(error.error?.error_message || error.statusText);
-            break;
-          }
-          default: {
-            this._toastr.error(error.statusText);
-            break;
-          }
-        }
+        this.dataSource.data = [];
+        const msg = error.error?.error_message || error.statusText || 'Failed to load books catalog';
+        this._toastr.error(msg, 'Catalog Error');
       }
     });
   }
@@ -114,6 +108,7 @@ export class BooksComponent implements OnInit, OnDestroy {
   // Filter On Table
   setFilter(status: string) {
     this.filterStatus = status;
+    if (!this.dataSource) return;
     if (status === 'all') {
       this.dataSource.filter = '';
     } else {
@@ -125,6 +120,7 @@ export class BooksComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event?: Event) {
+    if (!this.dataSource) return;
     if (event) {
       const filterValue = (event.target as HTMLInputElement).value;
       this.dataSource.filter = filterValue.trim().toLowerCase();
